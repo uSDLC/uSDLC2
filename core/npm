@@ -1,0 +1,6 @@
+#!/bin/bash
+# Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see GPL for license
+export uSDLC_base=$(cd `dirname "${BASH_SOURCE[0]}"` && cd ".." && pwd) 
+export NODE_PATH=$uSDLC_base/server:$uSDLC_base/core/node/lib/node_modules
+export PATH=$uSDLC_base/core/node/bin:$PATH
+npm $1 $2 $3 $4 $5
