@@ -3,7 +3,10 @@ Unifying the Software Development Lifecycle
 
 uSDLC2 is the second release - a complete rewrite based on learnings from the proof of concept.
 
-To install a production copy from the master branch without pulling a github copy download 
+To install a production copy from the master branch without pulling a github copy download
+
+https://raw.github.com/uSDLC/uSDLC2/master/release/install-usdlc-on-unix.sh for OS X/Linux or
+https://raw.github.com/uSDLC/uSDLC2/master/release/install-usdlc-on-windows.bat for Windows
  
 Use `go.sh` or `go.bat` to start the server. Use the URL printed to open a client.
 
