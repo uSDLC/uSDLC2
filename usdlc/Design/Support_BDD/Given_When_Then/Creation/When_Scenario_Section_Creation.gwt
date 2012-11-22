@@ -1,0 +1,5 @@
+I enter 'JB Heaven' in the Title field
+and I enter 'A jar with 12 jelly-beans' in the Given field
+and I enter 'I top the jar up from a bag of 500 jelly-beans' in the When field
+and I enter 'The jar holds 512 jelly-beans' in the Then field
+and I press the 'Scenario' button

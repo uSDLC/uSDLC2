@@ -1,0 +1,7 @@
+Given_UnixScriptDownload.gwt,changed
+,succeeded
+Then_UnixScriptDownload.gwt,changed
+Then_WindowsInstallerDownload.gwt,changed
+Setup.coffee,changed
+When_UnixScriptDownload.gwt,changed
+,succeeded

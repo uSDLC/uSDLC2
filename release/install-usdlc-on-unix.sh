@@ -1,11 +1,12 @@
 #!/bin/bash
+# Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 
 ####################################################
 # Install where commanded or to the default location
 ####################################################
-base = $1
-: ${base:="~/uSDLC2"}
+base=${1:-~/dev/uSDLC2}
 echo "Installing uSDLC2 to '$base' (move it afterwards if you like)"
+echo "The best place for it is the directory containing all your development projects"
 ###############################
 # Set up our target directories
 ###############################
@@ -18,7 +19,7 @@ mkdir -p $core 2>/dev/null
 curl -OL https://github.com/uSDLC/uSDLC2/archive/master.zip
 unzip -q master.zip
 rm master.zip
-rsync -qrulpt uSDLC-master $base
+rsync -qrulpt uSDLC2-master/ $base
 rm -rf uSDLC-master
 
 ################################################################
