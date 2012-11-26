@@ -26,4 +26,9 @@ rm -rf uSDLC-master
 # Now we can run packages stuff to install Node and node-modules
 ################################################################
 cd $base
-./go.sh
+case $1 in
+  no-go) echo "To complete installation run '$base/go'"
+         ;;
+  *) ./go.sh
+     ;;
+esac

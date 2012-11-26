@@ -4,7 +4,7 @@ echo "Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GP
 # The go script is in the root directory of uSDLC2
 export uSDLC_base=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)
 # node require statements will look here
-export NODE_PATH=.:$uSDLC_base/server:$uSDLC_base/ext/node_modules
+export NODE_PATH=$uSDLC_base/server:$uSDLC_base/ext/node_modules:.
 # add scripts and node itself to the path for convenience
 export PATH=$uSDLC_base/bin:$uSDLC_base/ext/node/bin:$PATH
 
@@ -13,10 +13,10 @@ cd "$uSDLC_base"
 cd ..
 
 # Is this a first-time run - as will happent after install-usdlc-on-nnnn.sh is run
-if [ ! -d ext/node ]; then
+if [ ! -d uSDLC2/ext/node ]; then
 	echo "First time only install of node.js"
 	# fetch a specific version of node
-   update-node-on-unix
+  update-node-on-unix
 	# fetch all the node modules uSDLC relies on
 	update
 fi

@@ -1,3 +1,2 @@
-#!/bin/bash
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
-node uSDLC2/scripts/coffee.js uSDLC2/scripts/server.coffee $@
+module.exports = (request, response) -> require('proc').fork 'gwt', request, response

@@ -1,3 +1,3 @@
 #!/bin/bash
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
-node "$uSDLC_base/ext/node/bin/npm" --prefix ext $@
+node "$uSDLC_base/ext/node/bin/npm" --prefix uSDLC2/ext $@

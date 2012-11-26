@@ -4,4 +4,6 @@ Then_UnixScriptDownload.gwt,changed
 Then_WindowsInstallerDownload.gwt,changed
 Setup.coffee,changed
 When_UnixScriptDownload.gwt,changed
+When_Unix_Script_Download.gwt,changed
+Then_Unix_Script_Download.gwt,changed
 ,succeeded

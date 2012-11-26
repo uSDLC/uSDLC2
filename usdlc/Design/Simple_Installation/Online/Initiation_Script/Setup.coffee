@@ -1,8 +1,16 @@
-gwt = require('gwt').instance()
+gwt = module.parent.gwt
+internet = require('internet')(gwt)
+instrument = require('instrument')(gwt)
 
-tmpDir = os.tmpDir()
+download_file_name = ''
 
-gwt /(\w+) operating system/, (all, system) -> gwt.required.os(system)
-gwt /Internet access/, -> gwt.required.internet()
+gwt.rules(
+  /(\w+) operating system/, (all, system) => instrument.os_required(system)
+  /Internet access/, => internet.available()
+
+  /download '(.*)'/, (all, href) =>
+    download_file_name = internet.download href
   
-gwt /download '(.*)'/, all, url ->
+  /downloaded file exists/, (all) =>
+    instrument.file_exists download_file_name
+)
