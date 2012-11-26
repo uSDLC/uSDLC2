@@ -4,18 +4,19 @@
 # It will run Setup.coffee from the base directory, then process each statement.
 # Everything is anynchronous and output goes to stdout / stderr.
 path = require 'path'; os = require 'os'; fs = require 'fs'; timer = require 'timer'
-http = require 'http'; read_lines = require 'read-lines'
+http = require 'http'; Line_Reader = require 'Line-Reader'
 
 class GWT extends require('stream').Stream
   # new GWT().base_directory(dir).rules(list).scripts(script...)
   constructor: () ->
     @files = []
+    @patterns = []
     @processing = false
     @paused = false
     @timer = timer() # date-stamp and timing
     
   base_directory: (@dir) -> return this
-  rules: (@patterns...) -> return this
+  rules: (patterns...) -> @patterns = @patterns.concat(patterns); return this
   
   # Do the grunt work of reading and processing statements from a list of script files
   scripts: (files...) ->
@@ -32,16 +33,24 @@ class GWT extends require('stream').Stream
     @processing = true
     name = @files.shift()
     @timer.elapsed()
-    console.log ">>#{name}"
+    console.log ">>#{name.split('_')[0]}"
     file = "#{path.join dir, name}.gwt"
-    @reader = read_lines(fs.createReadStream(file))
+    @reader = Line_Reader(fs.createReadStream(file))
     @reader.on 'data', (statement) =>
       # Look for a matching statement, then process the action
       for pattern, index in @patterns by 2
         if match = pattern.exec(statement)
           console.log ">>> #{statement}"
           return @patterns[index + 1](match...)
-      throw "Error - unknown statement:\n    #{statement}"
+      throw """Unknown statement, add:
+        ```
+        gwt = module.gwt = module.parent.gwt
+        require '../Setup'
+        gwt.rules(
+          /#{statement.replace(/\//g, '.')}/, (all) =>
+            throw 'not implemented'
+        )
+        ```"""
     # finished with this file - on ot the next
     @reader.on 'end', =>
       @reader.destroy(); 

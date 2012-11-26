@@ -1,5 +1,6 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 
+# Read lines from a stream - with the same stream pattern of pause and resume.
 class Line_Reader extends require('stream').Stream
   constructor: (@reader) ->
     @paused = false

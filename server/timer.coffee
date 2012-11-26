@@ -1,6 +1,5 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 
-
 class Timer # Use to report elapsed times
   # Timer = require 'timer'; timer = Timer() # creates a new instance and prints current date
   constructor: ->
