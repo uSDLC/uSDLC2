@@ -16,10 +16,10 @@ mkdir -p $ext 2>/dev/null
 ##########################################################################
 # First is uSDLC2 as it includes scripts needed to finish the installation
 ##########################################################################
-curl -OL https://github.com/uSDLC/uSDLC2/archive/master.zip
+curl -OL# https://github.com/uSDLC/uSDLC2/archive/master.zip
 unzip -q master.zip
 rm master.zip
-rsync -qrulpt# uSDLC2-master/ $base
+rsync -qrulpt uSDLC2-master/ $base
 rm -rf uSDLC-master
 
 ################################################################
