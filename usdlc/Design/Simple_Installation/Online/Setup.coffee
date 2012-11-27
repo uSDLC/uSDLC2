@@ -20,7 +20,7 @@ gwt.rules(
 
   /run the downloaded bash script with parameters '(.*)'/, (all, args) =>
     instrument.in_directory temp_uSDLC2_dir, ->
-      proc = Processes()
+      proc = Processes().stream(gwt)
       proc.spawn '/bin/bash', download_file_name, args.split(' ')...
 
   /use a temporary directory ending in '(.*)'/, (all, path) =>

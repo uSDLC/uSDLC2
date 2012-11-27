@@ -25,7 +25,6 @@ class Processes # proc = require('proc')() # sets default streaming and options
   # Spawn off a separate OS process
   spawn: (program, args...) ->
     @streamer.pause()
-    console.log "#{program} -- #{args}"
     child.spawn(program, args, @options).on 'exit', -> @onExit  
 
 module.exports = -> new Processes()
