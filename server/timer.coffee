@@ -4,7 +4,7 @@ class Timer # Use to report elapsed times
   # Timer = require 'timer'; timer = Timer() # creates a new instance and prints current date
   constructor: ->
     @start = @now = new Date()
-    console.log "~~#{@now}"
+    console.log "#{@now} <b>"
   # timer.elapsed() # will print seconds since start or last elapsed
   elapsed: ->
     time = Math.floor((new Date().getTime() - @now.getTime()) / 1000)
@@ -13,5 +13,6 @@ class Timer # Use to report elapsed times
   # timer.total() # will print seconds since timer was instantiated
   total: ->
     time = Math.floor((new Date().getTime() - @start.getTime()) / 1000)
-    console.log "~~#{time} seconds total"
+    console.log "~~#{time} seconds total <b>"
+
 module.exports = -> new Timer()

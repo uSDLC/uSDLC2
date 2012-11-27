@@ -1,7 +1,7 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 child = require 'child_process'
     
-class Proc # proc = require('proc')() # sets default streaming and options
+class Processes # proc = require('proc')() # sets default streaming and options
   constructor: () ->
     @streamer = {resume:(->), pause:(->)}
     @onExit = => @streamer.resume()
@@ -28,4 +28,4 @@ class Proc # proc = require('proc')() # sets default streaming and options
     console.log "#{program} -- #{args}"
     child.spawn(program, args, @options).on 'exit', -> @onExit  
 
-module.exports = -> new Proc()
+module.exports = -> new Processes()

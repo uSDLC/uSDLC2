@@ -9,7 +9,7 @@ nodeVersion=v0.8.14
 ################################################
 # Now we download the correct version of node-js
 ################################################
-cd core
+cd uSDLC2/ext
 
 os="`uname`-`uname -m`"
 case $os in

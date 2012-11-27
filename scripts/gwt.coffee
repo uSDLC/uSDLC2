@@ -33,24 +33,22 @@ class GWT extends require('stream').Stream
     @processing = true
     name = @files.shift()
     @timer.elapsed()
-    console.log ">>#{name.split('_')[0]}"
+    console.log "#{name.split('_')[0]} <1>"
     file = "#{path.join dir, name}.gwt"
     @reader = Line_Reader(fs.createReadStream(file))
     @reader.on 'data', (statement) =>
       # Look for a matching statement, then process the action
       for pattern, index in @patterns by 2
         if match = pattern.exec(statement)
-          console.log ">>> #{statement}"
+          console.log "#{statement} <2>"
           return @patterns[index + 1](match...)
-      throw """Unknown statement, add:
-        ```
+      throw """Unknown statement, add: <c>
         gwt = module.gwt = module.parent.gwt
         require '../Setup'
         gwt.rules(
           /#{statement.replace(/\//g, '.')}/, (all) =>
             throw 'not implemented'
-        )
-        ```"""
+        ) <c>"""
     # finished with this file - on ot the next
     @reader.on 'end', =>
       @reader.destroy(); 

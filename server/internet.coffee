@@ -13,10 +13,11 @@ class Internet
 
   # download a file - pausing the stream while it happens
   download: (address, dir = os.tmpDir()) ->
-    @stream.pause()
+    #@stream.pause()
     href = url.parse address
     file_name = path.basename href.pathname
     file_path = path.join dir, file_name
+    return file_path # todo: delete me
     
     options = {host: href.hostname, path: href.pathname, method: 'GET'}
     
