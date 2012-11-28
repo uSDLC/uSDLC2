@@ -1,1 +1,2 @@
-A temporary file 'go' exists
+we run '/bin/bash install-usdlc-on-unix.sh . no-go'
+and confirm a file 'go' now exists

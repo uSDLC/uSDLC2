@@ -14,6 +14,16 @@ class GWT extends require('stream').Stream
     @processing = false
     @paused = false
     @timer = timer() # date-stamp and timing
+
+    @skip =
+      # gwt.skip.statements(1) # skip one or more statements in the current script
+      statements: (count = 1) => @statement_skip = count
+      # gwt.skip.script() # skip the currently running script (eg. Given, When, Then)
+      script: => @statement_skip = Infinity
+      # gwt.skip.sections(1) # skip the current section
+      sections: (count = 1) => @statement_skip = Infinity; @section_skip = count
+      # gwt.skip.all() # terminate test run
+      all: => @statement_skip = Infinity; @section_skip = Infinity
     
   base_directory: (@dir) -> return this
   rules: (patterns...) -> @patterns = @patterns.concat(patterns); return this
@@ -32,11 +42,21 @@ class GWT extends require('stream').Stream
       return @processing = false
     @processing = true
     name = @files.shift()
+    
+    # if we have been asked to skip sections, countdown and drop out as needed
+    if name is 'section'
+      @section_skip-- if @section_skip
+      return process_file() # we don't want to process the section marker
+    return process_file() if @section_skip  # jump ahead if we are still skipping
+    
     @timer.elapsed()
     console.log "#{name.split('_')[0]} <1>"
     file = "#{path.join dir, name}.gwt"
+    @statement_skip = 0
     @reader = Line_Reader(fs.createReadStream(file))
     @reader.on 'data', (statement) =>
+      # jump statements if asked to do so
+      return @statement_skip-- if @statement_skip # with gwt.skip.statements(n)
       # Look for a matching statement, then process the action
       for pattern, index in @patterns by 2
         if match = pattern.exec(statement)
@@ -64,9 +84,7 @@ class GWT extends require('stream').Stream
     if @reader then @reader.resume() else @process_file()
   
   # Terminate the test. This is not a failure, just lacking preconditions
-  destroy: -> 
-    @files = [] # so no more files will be processed
-    @reader.destroy() # so current reader won't pick up any more lines
+  destroy: -> @skip.sections 1  # next section will have a different precondition
  
 # This script expects a base directory followed by statement script names.
 querystring = require 'querystring'
@@ -78,7 +96,7 @@ scripts = querystring.parse(query).scripts.split(',')
 # process statements from all specified scripts - starting with Setup.coffee
 gwt = new GWT().base_directory(dir)
 # It will run Setup.coffee from the base directory - module.parent.gwt(pattern,action,...)
-module.gwt = gwt
+global.gwt = gwt
 require(path.join(dir, 'Setup'))
 # then process each statement.
 gwt.scripts(scripts...)

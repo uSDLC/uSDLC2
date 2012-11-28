@@ -1,0 +1,2 @@
+we run '/bin/bash go pwd'
+and confirm a file 'ext/node/bin/node' now exists

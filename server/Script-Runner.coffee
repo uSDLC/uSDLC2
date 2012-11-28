@@ -11,7 +11,7 @@ class Script_Runner
     
   # Fork off a separate node process to run the V8 scripts in a separate space
   fork: (script) -> # require('Script-Runner')(request, response).fork(program) 
-    @proc.fork 'uSDLC2/scripts/coffee.js', ["uSDLC2/scripts/#{script}.coffee", args...]...
+    @proc.fork 'uSDLC2/scripts/coffee.js', ["uSDLC2/scripts/#{script}.coffee", args...]
   
   # require('Script-Runner')(request, response).spawm(program) 
   spawn: (program) -> @proc.spawn program, args... # Spawn off a separate OS process

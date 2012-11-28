@@ -1,31 +1,54 @@
-gwt = module.parent.gwt
+gwt = global.gwt
+
 internet = require('Internet')(gwt)
 instrument = require('Instrument')(gwt)
 Processes = require('Processes')
-path = require('path')
+path = require('path'); os = require('os')
 
-temp_uSDLC2_dir = ''
+file_name = ''
+temp_directory = ''
+file_path = -> path.join temp_directory, file_name
 
-download_file_name = ''
-
+set_temp_directory = (ending) ->
+  temp_directory = path.join os.tmpDir(), ending
+    
 gwt.rules(
   /(\w+) operating system/, (all, system) => instrument.os_required(system)
   /Internet access/, => internet.available()
-
-  /download '(.*)'/, (all, href) =>
-    download_file_name = internet.download href
   
-  /downloaded file exists/, (all) =>
-    instrument.file_exists download_file_name
-
-  /run the downloaded bash script with parameters '(.*)'/, (all, args) =>
-    instrument.in_directory temp_uSDLC2_dir, ->
+  /working with a file called '(.*)'/, (all, name) => file_name = name
+  
+  /in a temporary directory ending in '.*'/, (all, ending) =>
+    set_temp_directory(ending)
+    
+  /download from github project '(.*)' at '(.*)'/, (all, project, at) =>
+    internet.download.to(file_path()).
+      from("https://raw.github.com/#{project}/#{at}/#{file_name}")
+  
+  /file exists/, (all) =>
+    instrument.file_exists file_path()
+    
+  /run '(.*)'/, (all, command_line) =>
+    instrument.in_directory temp_directory, =>
       proc = Processes().stream(gwt)
-      proc.spawn '/bin/bash', download_file_name, args.split(' ')...
-
-  /use a temporary directory ending in '(.*)'/, (all, path) =>
-    temp_uSDLC2_dir = instrument.temporary_path('uSDLC2')
+      [program, args...] = command_line.split ' '
+      proc.spawn program, args
       
-  /A temporary file '(.*)' exists/, (all, name) =>
-    instrument.file_exists path.join temp_uSDLC2_dir, name
+  /if the file does not already exit/, (all) => gwt.skip.statements()
+      
+  /and confirm a file '(.*)' now exists/, (all, name) =>
+    instrument.file_exists path.join temp_directory, name
+    
+  /download from github project '(.*)'/, (all, project) =>
+    set_temp_directory(project.split('/')[-1])
+    old_file_name = file_name
+    file_name = 'install-usdlc-on-unix.sh'
+    at = 'master/release'
+    internet.download.to(file_path()).
+      from "https://raw.github.com/#{project}/#{at}/#{file_name}", (next) =>
+        instrument.in_directory temp_directory, =>
+          proc = Processes()
+          proc.spawn '/bin/bash', [file_path(), args.split(' ')...], =>
+            file_name = old_file_name
+            next()
 )

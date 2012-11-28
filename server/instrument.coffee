@@ -3,37 +3,37 @@ fs = require 'fs'; os = require 'os'; path = require 'path'; child = require 'ch
 
 
 class Instrument  # instrument = require('instrument')(gwt)
-  constructor: (@stream) ->
+  constructor: (@gwt) ->
   
   # some scripts are platform dependent - so terminates without an error
   os_required: (system) -> # instrument.os_required('windows|unix|darwin|linux')
     runningOn = os.type().toLowerCase()
     system = system.toLowerCase()
     return true if system is runningOn or system is 'unix' and runningOn isnt 'windows'
-    @stream.destroy()
+    @gwt.skip.section()
     return false
     
   # see if a file exists - raising an error if it doesn't
   file_exists: (name) ->
-    @stream.pause()
+    @gwt.pause()
     fs.stat name, (error, data) =>
       throw error if error
-      @stream.resume()
+      @gwt.resume()
 
   # look in a file for a matching regular expression. Raise an error if it is not found.
   file_contains: (name, pattern) ->
-    @stream.pause()
+    @gwt.pause()
     fs.readFile name, 'utf8', (error, data) =>
       throw error if error
       match = new RegExp(pattern).exec(data)
       throw "No match for #{pattern}" if match.length is 0
-      @stream.resume()
+      @gwt.resume()
       
   # return a path in the temp directory - allowing one more level down in 'ending'
   temporary_path: (ending) ->
-    @stream.pause()
+    @gwt.pause()
     dir = path.join os.tmpDir(), ending
-    fs.mkdir dir, => @stream.resume()
+    fs.mkdir dir, => @gwt.resume()
     return dir
     
   # run a function with current working directory set - then set back afterwards

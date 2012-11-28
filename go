@@ -14,7 +14,7 @@ cd ..
 
 # Is this a first-time run - as will happent after install-usdlc-on-nnnn.sh is run
 if [ ! -d uSDLC2/ext/node ]; then
-	echo "First time only install of node.js"
+	echo "First time only install of node.js to '$uSDLC_base'"
 	# fetch a specific version of node
   update-node-on-unix
 	# fetch all the node modules uSDLC relies on

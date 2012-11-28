@@ -1,2 +1,2 @@
-I download 'https://raw.github.com/uSDLC/uSDLC2/master/release/install-usdlc-on-unix.sh'
-and I run the downloaded bash script with parameters '. no-go'
+if the file does not already exit
+  we download from github project 'uSDLC/uSDLC2' at 'master/release'

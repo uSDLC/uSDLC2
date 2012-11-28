@@ -4,19 +4,22 @@ http = require 'http'; https = require 'https'
 
 
 class Internet
-  constructor: (@stream) ->
+  constructor: (@gwt) ->
+    # download a file - pausing the stream while it happens
+    @download =
+      from: (@from, next = (last) -> last()) => @download_now(next) if @to; return @download
+      to: (@to, next = (last) -> last()) => @download_now(next) if @from; return @download
   # Abort stream if Internet unavailable - require(internet).available(gwt)
   available: ->
-    @stream.pause()
+    @gwt.pause()
     http.request({host: 'google.com', path: '/', method: 'HEAD'}, 
-      (response) => @stream.resume()).on('error', =>  @stream.destroy()).end()
-
-  # download a file - pausing the stream while it happens
-  download: (address, dir = os.tmpDir()) ->
-    @stream.pause()
-    href = url.parse address
+      (response) => @gwt.resume()).on('error', =>  @gwt.skip.section()).end()
+    
+  download_now: (next) ->
+    @gwt.pause()
+    href = url.parse @from
     file_name = path.basename href.pathname
-    file_path = path.join dir, file_name
+    file_path = "#{@to}"
     
     options = {host: href.hostname, path: href.pathname, method: 'GET'}
     
@@ -24,13 +27,14 @@ class Internet
       response.setEncoding 'binary'
       writer = fs.createWriteStream file_path
       response.pipe writer
-      response.on 'end', => console.log '...done'; @stream.resume()
+      response.on 'end', => console.log '...done'; next(=> @gwt.resume())
 
     console.log "Downloading //#{file_name}//..."
     if href.protocol is 'http:'
       options.port = 80; http.request(options, responder).end()
     else
       options.port = 443; https.request(options, responder).end()
+    @from = @to = ''
     return file_path
 
 module.exports = (stream) -> new Internet(stream)

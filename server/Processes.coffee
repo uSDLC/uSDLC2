@@ -18,13 +18,13 @@ class Processes # proc = require('proc')() # sets default streaming and options
   resume: (resume) -> @streamer.resume = resume; return this
     
   # Fork off a separate node process to run the V8 scripts in a separate space
-  fork: (script, args...) ->
+  fork: (script, args, next = (last) -> last()) ->
     @streamer.pause()
-    child.fork('uSDLC2/scripts/coffee.js', [script, args...], @options).on 'exit', @onExit
+    child.fork('uSDLC2/scripts/coffee.js', [script, args...], @options).on 'exit', => next @onExit
   
   # Spawn off a separate OS process
-  spawn: (program, args...) ->
+  spawn: (program, args, next = (last) -> last()) ->
     @streamer.pause()
-    child.spawn(program, args, @options).on 'exit', -> @onExit  
+    child.spawn(program, args, @options).on 'exit', => next @onExit  
 
 module.exports = -> new Processes()

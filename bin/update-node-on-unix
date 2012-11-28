@@ -23,7 +23,7 @@ case $os in
 esac
 fileName=node-$nodeVersion-$os
 
-curl -OL http://nodejs.org/dist/v0.8.14/$fileName.tar.gz
+curl -sOL http://nodejs.org/dist/v0.8.14/$fileName.tar.gz
 tar -xzf $fileName.tar.gz
 rm $fileName.tar.gz
 rm -r node 2>/dev/null
