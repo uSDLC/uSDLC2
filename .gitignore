@@ -1,3 +1,5 @@
 .*
 !.gitignore
 /ext
+pagestate.txt
+runstates.csv

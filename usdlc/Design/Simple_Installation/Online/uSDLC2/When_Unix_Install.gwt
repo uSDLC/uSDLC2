@@ -1,2 +1,2 @@
-if the file does not already exit
+if the file does not exist
   we download from github project 'uSDLC/uSDLC2' at 'master/release'

@@ -2,9 +2,9 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 function update {
   if [ -d ext/node_modules/$1 ]; then
-    npm update $1
+    npm --silent update $1
   else
-    npm install $1
+    npm --silent install $1
   fi
 }
 update coffee-script

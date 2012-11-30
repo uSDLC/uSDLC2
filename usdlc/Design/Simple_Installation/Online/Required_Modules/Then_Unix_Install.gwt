@@ -1,0 +1,2 @@
+we run '/bin/bash go update'
+and confirm a file 'ext/node_modules/coffee-script/README' now exists

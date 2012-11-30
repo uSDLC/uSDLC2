@@ -1,7 +1,6 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 fs = require 'fs'; os = require 'os'; path = require 'path'; child = require 'child_process'
 
-
 class Instrument  # instrument = require('instrument')(gwt)
   constructor: (@gwt) ->
   
@@ -13,12 +12,10 @@ class Instrument  # instrument = require('instrument')(gwt)
     @gwt.skip.section()
     return false
     
-  # see if a file exists - raising an error if it doesn't
-  file_exists: (name) ->
+  # instrument.file_exists name, (exists, next) -> # default next is to throw on error
+  file_exists: (name, next = (exists, later) -> throw "no file #{name}" if not exists; later()) ->
     @gwt.pause()
-    fs.stat name, (error, data) =>
-      throw error if error
-      @gwt.resume()
+    fs.stat name, (error, data) => next(not error, => @gwt.resume())
 
   # look in a file for a matching regular expression. Raise an error if it is not found.
   file_contains: (name, pattern) ->
@@ -30,10 +27,10 @@ class Instrument  # instrument = require('instrument')(gwt)
       @gwt.resume()
       
   # return a path in the temp directory - allowing one more level down in 'ending'
-  temporary_path: (ending) ->
+  temporary_path: (ending, next = (later) -> later()) ->
     @gwt.pause()
     dir = path.join os.tmpDir(), ending
-    fs.mkdir dir, => @gwt.resume()
+    fs.mkdir dir, => next(=> @gwt.resume())
     return dir
     
   # run a function with current working directory set - then set back afterwards

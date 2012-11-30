@@ -76,7 +76,7 @@ class GWT extends require('stream').Stream
       @process_file()
   
   # Pause the GWT loop - probably because the resume is part of a callback
-  pause: -> @paused = true; @reader.pause()
+  pause: -> @paused = true; @reader?.pause()
   
   # Resume a previously paused GWT loop - in asynchronous callback
   resume: ->
