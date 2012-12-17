@@ -1,0 +1,3 @@
+the response contains 'Administrator'
+and when I get from url 'http://127.0.0.1:9011/exit
+the return code is 0

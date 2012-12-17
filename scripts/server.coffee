@@ -5,7 +5,7 @@ serve = require 'serve-files'; save = require 'save-files'
 # process the command line
 args = querystring.parse(process.argv[2..].join('&'))
 port = args.port ? 9009
-user = args.user ? 'Administrator'
+user = args.user ? 'Guest'
 debug_mode = args.debug
 
 if debug_mode
@@ -41,6 +41,6 @@ server.listen port
 console.log """
 usage: go server port=#{port} user=#{user}
 
-uSDLC running on http://localhost:#{port}
+uSDLC2 running on http://localhost:#{port}
 
 """

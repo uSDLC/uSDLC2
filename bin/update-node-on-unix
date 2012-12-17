@@ -4,11 +4,12 @@
 ##################################################
 # change this as new versions of node are released
 ##################################################
-nodeVersion=v0.8.14
+nodeVersion=v0.8.16
 
 ################################################
 # Now we download the correct version of node-js
 ################################################
+mkdir uSDLC2/ext 2>/dev/null
 cd uSDLC2/ext
 
 os="`uname`-`uname -m`"
@@ -23,7 +24,7 @@ case $os in
 esac
 fileName=node-$nodeVersion-$os
 
-curl -sOL http://nodejs.org/dist/v0.8.14/$fileName.tar.gz
+curl -sOL http://nodejs.org/dist/v0.8.16/$fileName.tar.gz
 tar -xzf $fileName.tar.gz
 rm $fileName.tar.gz
 rm -r node 2>/dev/null

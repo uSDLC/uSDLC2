@@ -6,7 +6,7 @@
 path = require 'path'; os = require 'os'; fs = require 'fs'; timer = require 'timer'
 http = require 'http'; Line_Reader = require 'Line-Reader'
 
-class GWT extends require('stream').Stream
+class GWT extends require('stream')
   # new GWT().base_directory(dir).rules(list).scripts(script...)
   constructor: () ->
     @files = []

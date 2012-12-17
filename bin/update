@@ -11,3 +11,4 @@ update coffee-script
 update node-inspector
 update stylus
 update send
+update ensureDir

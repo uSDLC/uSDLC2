@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>usdlc/Design/Simple_Installation/Online/uSDLC2/Setup.coffee</string>
+	<string>bin/update-node-on-unix</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -21,56 +21,14 @@
 	<integer>222</integer>
 	<key>metaData</key>
 	<dict>
-		<key>bin/npm</key>
+		<key>bin/update-node-on-unix</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>52</integer>
+				<integer>40</integer>
 				<key>line</key>
-				<integer>2</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>release/install-usdlc-on-unix.sh</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>7</integer>
-				<key>line</key>
-				<integer>32</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>scripts/gwt.coffee</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>66</integer>
-				<key>line</key>
-				<integer>18</integer>
-			</dict>
-			<key>firstVisibleColumn</key>
-			<integer>0</integer>
-			<key>firstVisibleLine</key>
-			<integer>0</integer>
-		</dict>
-		<key>usdlc/Design/Simple_Installation/Online/uSDLC2/Setup.coffee</key>
-		<dict>
-			<key>caret</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>0</integer>
+				<integer>26</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -80,13 +38,11 @@
 	</dict>
 	<key>openDocuments</key>
 	<array>
-		<string>scripts/gwt.coffee</string>
-		<string>usdlc/Design/Simple_Installation/Online/uSDLC2/Setup.coffee</string>
-		<string>release/install-usdlc-on-unix.sh</string>
+		<string>bin/update-node-on-unix</string>
 	</array>
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{1112, 274}, {806, 881}}</string>
+	<string>{{560, 4}, {806, 742}}</string>
 </dict>
 </plist>

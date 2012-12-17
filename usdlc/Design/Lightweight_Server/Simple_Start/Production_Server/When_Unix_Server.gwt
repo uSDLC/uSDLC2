@@ -1,0 +1,2 @@
+I run '/bin/bash go server port=2011 user=Administrator'
+and I get from url 'http://127.0.0.1:9011'

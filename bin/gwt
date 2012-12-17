@@ -1,4 +1,4 @@
 #!/bin/bash
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 echo "usage: go gwt base-directory scripts=a,b,c"
-node uSDLC2/scripts/coffee.js uSDLC2/scripts/gwt $@
+node uSDLC2/scripts/coffee.js uSDLC2/scripts/gwt.coffee $@
