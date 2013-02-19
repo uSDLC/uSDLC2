@@ -1,5 +1,5 @@
 gwt = global.gwt
-Processes = require('Processes')
+Processes = require('processes')
 fs = require 'file-system'
 
 proc = null
@@ -7,7 +7,7 @@ dir = ''
 
 gwt.rules(
   /(.*) as current directory/, (all, cwd) => dir = cwd
-  
+
   /run '(.*)'$/,
     (all, command_line) =>
       gwt.pause()
@@ -16,8 +16,8 @@ gwt.rules(
         proc = Processes()
         proc.spawn program, args, =>
           gwt.resume()
-      
+
   /return code is (\d+)$/,
-    (all, code) => 
+    (all, code) =>
       throw "return code is #{proc.code}, not #{code}" if +code isnt +proc.code
 )

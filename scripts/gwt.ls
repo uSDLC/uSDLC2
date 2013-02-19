@@ -3,12 +3,12 @@
 # This script expects a base directory, query string, hash
 # It will run Setup.coffee from the base directory, then process each statement.
 # Everything is anynchronous and output goes to stdout / stderr.
-path = require 'path'; os = require 'os'; fs = require 'fs'; timer = require 'timer'
-http = require 'http'; Line_Reader = require 'Line-Reader'
+require! path; require! os; require! fs; require! timer
+require! http; require! 'line-reader'; require !stream
 
-class GWT extends require('stream')
+class GWT extends stream
   # new GWT().base_directory(dir).rules(list).scripts(script...)
-  constructor: () ->
+  ->
     @files = []
     @patterns = []
     @processing = false
@@ -24,16 +24,16 @@ class GWT extends require('stream')
       sections: (count = 1) => @statement_skip = Infinity; @section_skip = count
       # gwt.skip.all() # terminate test run
       all: => @statement_skip = Infinity; @section_skip = Infinity
-    
-  base_directory: (@dir) -> return this
-  rules: (patterns...) -> @patterns = @patterns.concat(patterns); return this
-  
+
+  base_directory: (@dir) -> return @
+  rules: (patterns...) -> @patterns = @patterns.concat(patterns); return @
+
   # Do the grunt work of reading and processing statements from a list of script files
-  scripts: (files...) ->
+  scripts: (...files) ->
     @files = @files.concat files
     @process_file() if not @processing
-    return this
-    
+    return @
+
   process_file: ->
     return if @paused
     if not @files.length
@@ -42,18 +42,18 @@ class GWT extends require('stream')
       return @processing = false
     @processing = true
     name = @files.shift()
-    
+
     # if we have been asked to skip sections, countdown and drop out as needed
     if name is 'section'
       @section_skip-- if @section_skip
       return process_file() # we don't want to process the section marker
     return process_file() if @section_skip  # jump ahead if we are still skipping
-    
+
     @timer.elapsed()
     console.log "#{name.split('_')[0]} <1>"
     file = "#{path.join dir, name}.gwt"
     @statement_skip = 0
-    @reader = Line_Reader(fs.createReadStream(file))
+    @reader = line-reader(fs.createReadStream(file))
     @reader.on 'data', (statement) =>
       # jump statements if asked to do so
       return @statement_skip-- if @statement_skip # with gwt.skip.statements(n)
@@ -71,34 +71,36 @@ class GWT extends require('stream')
         ) <c>"""
     # finished with this file - on ot the next
     @reader.on 'end', =>
-      @reader.destroy(); 
+      @reader.destroy();
       @reader = null
       @process_file()
-  
+
   # Pause the GWT loop - probably because the resume is part of a callback
   pause: -> @paused = true; @reader?.pause()
-  
+
   # Resume a previously paused GWT loop - in asynchronous callback
   resume: ->
     @paused = false;
     if @reader then @reader.resume() else @process_file()
-  
+
   # Terminate the test. This is not a failure, just lacking preconditions
   destroy: -> @skip.sections 1  # next section will have a different precondition
- 
-# This script expects a base directory followed by statement script names.
-querystring = require 'querystring'
-console.log "[run | #{process.argv.join(' ')}]"
-[url_path, query, hash] = process.argv[2..]
-dir = path.dirname(url_path)
-scripts = querystring.parse(query).scripts.split(',')
 
-# process statements from all specified scripts - starting with Setup.coffee
-gwt = new GWT().base_directory(dir)
-# It will run Setup.coffee from the base directory - module.parent.gwt(pattern,action,...)
-global.gwt = gwt
-require(path.join(dir, 'Setup'))
-# then process each statement.
-gwt.scripts(scripts...)
-# When all is done gwt will emit 'end' - and we can terminate the process/script
-gwt.on 'end', -> process.exit(0)
+module.exports = (...args) ->
+  # This script expects a base directory followed by statement script names.
+  querystring = require 'querystring'
+  console.log "[run | #{args.join(' ')}]"
+  query = querystring.parse args[3]
+  dir = path.dirname query.path
+  scripts = query.scripts.split(',')
+
+  # process statements from all specified scripts - starting with Setup.coffee
+  gwt = new GWT().base_directory(dir)
+  # It will run Setup.coffee from the base directory - module.parent.gwt(pattern,action,...)
+  global.gwt = gwt
+  require(path.join(dir, 'Setup'))
+  # then process each statement.
+  gwt.scripts(scripts...)
+  # When all is done gwt will emit 'end' - and we can terminate the process/script
+  gwt.on 'end', -> process.exit(0)
+
