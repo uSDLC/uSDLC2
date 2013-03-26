@@ -4,3 +4,6 @@
 pagestate.txt
 runstates.csv
 /gen
+nohup.out
+.store
+.idea

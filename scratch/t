@@ -1,0 +1,2 @@
+#!/bin/bash
+uSDLC2/go gwt Roaster/usdlc/Design/Seamless_Installation/OS_X_Installation/Given_Installation_Script.gwt scripts=Given_Installation_Script,When_Installation_Script,Then_Installation_Script

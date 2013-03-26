@@ -1,5 +1,5 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
-require! querystring; require! processes
+querystring = require 'querystring'; processes = require 'processes'
 
 module.exports = (exchange) ->
   gwt = processes("$uSDLC_node_path/boot/load.js")
@@ -11,4 +11,3 @@ module.exports = (exchange) ->
   query = querystring.stringify(exchange.request.query)
   proc.options.stdio = ['ignore', exchange.response, exchange.response]
   proc.node "boot/run", 'gwt', query -> exchange.response.end()
-
