@@ -7,7 +7,6 @@ module.exports = (options) ->
   options.runner_file = path.join options.project, "gen/usdlc2/#{options.document}.list"
   extractor = new EventEmitter; processor_depth = 0
 
-  debugger
   if newer options.runner_file, options.document_path
     setTimeout (-> extractor.emit 'end'), 10
     return extractor
