@@ -1,16 +1,14 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
-Parser = require 'html_parser'; fs = require 'file-system'; path = require 'path'
+Parser = require 'html_parser'; fs = require 'fs'; path = require 'path'
 EventEmitter = require('events').EventEmitter; mkdirs = require('dirs').mkdirsSync
-newer = require 'newer'
+newer = require 'newer'; steps = require 'steps'
 
-module.exports = (options) ->
-  options.runner_file = path.join options.project, "gen/usdlc2/#{options.document}.list"
-  extractor = new EventEmitter; processor_depth = 0
+module.exports = (options, next) ->
+  options.runner_file =
+    path.join options.project, "gen/usdlc2/#{options.document}.list"
+  processor_depth = 0
 
-  debugger
-  if newer options.runner_file, options.document_path
-    setTimeout (-> extractor.emit 'end'), 10
-    return extractor
+  return next() if newer options.runner_file, options.document_path
 
   script_content = null; script_name = ''; parse_complete = false
   depth = 0; in_heading = false; headings = [options.document]
@@ -25,14 +23,14 @@ module.exports = (options) ->
         depth = 0 if attributes.id is 'page_title'
         headings[headings.length = depth] = ''
       else if name is 'pre' and attributes.type
-        script_content = ''
+        script_content = []
         script_name = "#{path.join headings...}.#{attributes.type}"
         script_name = script_name.replace(/\s+/g, '_')
         script_name = path.join options.project, 'gen/usdlc2', script_name
 
     parser.on 'text', (text) ->
       headings[depth] += text if in_heading
-      script_content += text if script_content?
+      script_content.push(text) if script_content?
 
     parser.on 'close', (name) ->
       in_heading = false if name[0] is 'h'
@@ -42,15 +40,18 @@ module.exports = (options) ->
         mkdirs path.dirname script_name
         fs.appendFile options.runner_file, "#{script_name}\n"
         processor_depth++
-        fs.writeFile script_name, script_content, ->
-          extractor.emit 'end' if not --processor_depth and parse_complete
-        script_content = null
+        steps(
+          ->  @script_content = script_content
+          ->  @requires 'ent'
+          ->  @content = @ent.decode @script_content.join '\n'
+          ->  @script_content = null
+          ->  fs.writeFile script_name, @content, @next
+          ->  next() if not --processor_depth and parse_complete
+        )
 
     parser.on 'end', ->
       parse_complete = true
-      extractor.emit 'end' if not processor_depth
+      next() if not processor_depth
 
     fs.unlink options.runner_file, ->
       parser.file path.join options.project, "usdlc2/#{options.document}.html"
-
-  return extractor
