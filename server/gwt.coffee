@@ -1,13 +1,14 @@
 # Copyright (C) 2013 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 EventEmitter = require('events').EventEmitter
-path = require 'path'; timer = require 'timer'
+path = require 'path'; timer = require 'timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
 script_extractor = require 'script_extractor'
 
 class GWT extends EventEmitter
   constructor: (@options) ->
     gwt = @
-    @options.document_path = path.join @options.project, "usdlc2/#{@options.document}.html"
+    @options.document_path = path.join(
+      @options.project, "usdlc2/#{@options.document}.html")
     @options.script_path = path.join @options.project, @options.script_path
     scripts = []; @actions = []; @tests = 0; @patterns = []
     @statement_skip = @section_skip = 0; @failures = 0
@@ -28,7 +29,7 @@ class GWT extends EventEmitter
 
     steps(
       # 1: extract scripts from documentation (if newer)
-      ->  script_extractor(gwt.options).on 'end', @next
+      ->  script_extractor gwt.options, @next
       # 2: read a list of available scripts
       ->
         reader = line_reader.for_file gwt.options.runner_file, (line) =>
@@ -36,10 +37,11 @@ class GWT extends EventEmitter
         reader.on 'end', @next
       # 3: load tests - either gwt or explicitly in coffee-script
       ->
+        @asynchronous()
         gwt.timer = timer pre: '# ', post: ''
         re = new RegExp(gwt.options.sections ? '')
         scripts = (script for script in scripts when re.test script)
-        read_script = =>
+        do read_script = =>
           if not scripts.length
             gwt.section()
             return @next()
@@ -52,7 +54,7 @@ class GWT extends EventEmitter
                 gwt.add (gwt) -> gwt.test_statement statement
             reader.on 'end', read_script
           else
-            script = path.resolve fs.base(), script
+            script = path.resolve dirs.base(), script
             actor = require(script)
             if typeof actor is 'function'
               switch actor.length
@@ -61,7 +63,6 @@ class GWT extends EventEmitter
                 else actor gwt; read_script() # synchronouus
             else
               read_script()
-        read_script() # kick off sequential reading of scripts
       # 4: run the tests
       -> gwt.go()
       )
@@ -96,7 +97,10 @@ class GWT extends EventEmitter
         # jump statements if asked to do so
         return @skip('', @statement_skip--) if @statement_skip
         @title statement
-        return @patterns[index + 1].apply(@, matched)
+
+        if not action = @patterns[index + 1]
+          return @todo("add action to rule '#{pattern}'")
+        return action.apply(@, matched)
     @fail """
            Unknown statement, add:
              gwt.rules(
@@ -146,10 +150,13 @@ class GWT extends EventEmitter
              gwt did not resume in #{@options.maximum_step_time} seconds <e>
                increase gwt.maximum_step_time in seconds if needed <t>"""),
                                  @options.maximum_step_time * 1000
-    return @actions.shift()(gwt) if @actions.length
+    try
+      return @actions.shift()(gwt) if @actions.length
+    catch err then return @fail err
     # all done - clean up
     clearTimeout @paused_timeout
-    percent = Math.floor((@tests - @failures - @skipped) * 100 / @tests)
+    passes = @tests - @failures - @skipped
+    percent = Math.floor(passes * 100 / @tests)
     console.log "Failed #{@failures}/#{@tests}, #{@skipped} skipped, #{percent}% okay"
     @timer.total()
     @exit()
@@ -165,19 +172,19 @@ class GWT extends EventEmitter
     for extension in modules
       extension = extension.replace /\s/g, '_'
       if extension[0] is '/'
-        extension = path.resolve fs.base @options.script_path, extension
-      for name, func of require extension
-        GWT.prototype[name] = func
+        extension = path.resolve path.join @options.script_path, extension
+      GWT.prototype[name] = func for name, func of require extension
     return @
+  # require a file from the project under test
+  require: (name) -> return require path.join @options.project, name
 
   on_exit: (func) -> @cleanups.unshift func
   exit: ->
-    func = =>
+    do func = =>
       return if not @cleanups.length
       cleanup = @cleanups.shift()
       cleanup(func)
       func() if not cleanup.length #synchronous
-    func()
 
 module.exports =
   load: (@options) -> module.exports = global.gwt = new GWT @options

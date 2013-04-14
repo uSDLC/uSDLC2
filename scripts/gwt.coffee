@@ -20,8 +20,9 @@ module.exports = (args...) ->
   program = "./go gwt"
   return os.help(program, default_options) if not args.length
   # This script expects a base directory followed by statement script names.
-  console.log "./go gwt #{args.join(' ')}"
-  options = os.command_line default_options
+  console.log "# ./go gwt #{args.join(' ')}"
+  options = os.command_line()
+  options[key] ?= value for key, value of default_options
 
   # process.chdir options.project if options.project
   gwt = gwt.load options

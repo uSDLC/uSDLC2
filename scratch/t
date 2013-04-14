@@ -1,2 +1,3 @@
 #!/bin/bash
-uSDLC2/go gwt Roaster/usdlc/Design/Seamless_Installation/OS_X_Installation/Given_Installation_Script.gwt scripts=Given_Installation_Script,When_Installation_Script,Then_Installation_Script
+#uSDLC2/go gwt Roaster/usdlc/Design/Seamless_Installation/OS_X_Installation/Given_Installation_Script.gwt scripts=Given_Installation_Script,When_Installation_Script,Then_Installation_Script
+~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Collection/Command_Transmission.*
