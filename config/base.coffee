@@ -9,7 +9,7 @@ projects = { uSDLC2 : '.' }
 dirs.add_project = (project_name, project_path) ->
   project_path = path.relative dirs.base(), project_path
   projects[project_name] = project_path
-  fs.appendFile 'ext/projects.ini', "#{project_name}=#{project_path}\n"
+  fs.appendFile 'projects.ini', "#{project_name}=#{project_path}\n"
 
 module.exports = (environment) ->
   require(dirs.node('/config/base'))(environment)
@@ -28,7 +28,7 @@ roaster_find = (name, next) ->
 # this one is run once to load projects from disk
 files.find = (name, next) ->
   files.find = roaster_find
-  reader = line_reader.for_file dirs.base('ext/projects.ini'), (line) ->
+  reader = line_reader.for_file dirs.base('projects.ini'), (line) ->
     return if line.length is 0 or line[0] is '#'
     [project_name, project_path] = line.split '='
     projects[project_name] = project_path
