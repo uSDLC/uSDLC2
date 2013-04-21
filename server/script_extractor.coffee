@@ -1,5 +1,5 @@
 # Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
-Parser = require 'html_parser'; fs = require 'file-system'; path = require 'path'
+Parser = require 'html_parser'; fs = require 'fs'; path = require 'path'
 EventEmitter = require('events').EventEmitter; mkdirs = require('dirs').mkdirsSync
 newer = require 'newer'
 
