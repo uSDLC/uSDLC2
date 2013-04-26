@@ -1,6 +1,6 @@
 # Copyright (C) 2013 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
 EventEmitter = require('events').EventEmitter
-path = require 'path'; timer = require 'timer'; dirs = require 'dirs'
+path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
 script_extractor = require 'script_extractor'
 
@@ -124,7 +124,12 @@ class GWT extends EventEmitter
     @skip.section('fail')
     @next()
 
-  expect: (value, to_be) ->
+  # test and show message on failure
+  test: (test, msg = '') => if test then @pass msg else @fail msg
+  # pass err and fail if it exists
+  err: (err, msg = '') => if err then @fail err else @pass msg
+
+  expect: (value, to_be) =>
     if value is to_be
       @pass "'#{value}' correct"
     else
@@ -147,8 +152,8 @@ class GWT extends EventEmitter
     clearTimeout @paused_timeout
     @paused_timeout = setTimeout ( =>
       @fail """
-             gwt did not resume in #{@options.maximum_step_time} seconds <e>
-               increase gwt.maximum_step_time in seconds if needed <t>"""),
+             gwt did not resume in #{@options.maximum_step_time} seconds
+               increase gwt.maximum_step_time in seconds if needed"""),
                                  @options.maximum_step_time * 1000
     try
       return @actions.shift()(gwt) if @actions.length
