@@ -45,15 +45,14 @@ usdlc.edit_page = (page, next = ->) ->
   localStorage.url = localStorage["#{localStorage.project}_url"] = page
   [pathname,hash] = page.split('#')
   hash = "##{hash}" if hash
-  key = path.basename(pathname).split('.')[0]
   steps(
     ->  @data pathname
-    ->  localStorage.page_html = @[key]
-    ->  usdlc.page_editor.setData @[key], @next
+    ->  localStorage.page_html = @[localStorage.document = @key]
+    ->  usdlc.page_editor.setData @[@key], @next
     ->  # we have just loaded, so editor is not really dirty
         usdlc.page_editor.resetDirty()
         usdlc.goto_section(hash)
-        $('title').html "#{key} - uSDLC2"
+        $('title').html "#{@key} - uSDLC2"
         history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         next()
   )

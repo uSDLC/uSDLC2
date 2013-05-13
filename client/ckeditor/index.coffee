@@ -1,9 +1,11 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 
 # load ckeditor plugins
-CKEDITOR.plugins.addExternal 'projects', '/client/ckeditor/', 'projects.coffee'
-# CKEDITOR.addExternal 'sections', '/client/ckeditor/sections.coffee'
-roaster.ckeditor.default_options.extraPlugins += ',projects'
+external = (names...) ->
+  for name in names
+    CKEDITOR.plugins.addExternal name, '/client/ckeditor/', "#{name}.coffee"
+    roaster.ckeditor.default_options.extraPlugins += ",#{name}"
+external 'projects', 'documents'
 roaster.ckeditor.default_options.toolbarGroups.push name: 'usdlc'
 roaster.ckeditor.default_options.toolbarViews.uSDLC = 'usdlc'
 # Open a full page html editor ready to load with current document
@@ -26,11 +28,27 @@ module.exports.ready = (next) ->
       usdlc.save_page()
     usdlc.page_editor.commands.save.enable()
     next()
+    
 
 usdlc.richCombo = (options) ->
   CKEDITOR.plugins.add( options.name,
     requires: 'richcombo'
     init: (editor) ->
+      build_list = (next) ->
+        options.items (items) =>
+          # remove old if pre-built
+          $(@_.panel?._.iframe.$).contents().find('ul').remove()
+          @_.items = {}
+          @_.list?._.items = {}
+          # load items (again)
+          for item in items.sort()
+            name = item.replace(/_/g, ' ')
+            @add(name, name, item)
+          @add 'create', '<i><b>New...</b></i>', 'New...'
+          @_.committed = 0
+          @commit()
+          next()
+
       editor.ui.addRichCombo( options.name,
         label: options.label
         title: options.label
@@ -43,11 +61,13 @@ usdlc.richCombo = (options) ->
           attributes: 'aria-label': options.label
         init: ->
           @startGroup options.label
-          for item in options.items.sort()
-            name = item.replace(/_/g, ' ')
-            @add(name, name, item)
-          @startGroup "Add #{options.label}"
-          @add('create', 'New...', 'New...')
+          @add options.selected()
+          showBlock= @_.panel.showBlock
+          @_.list.mark = ->
+          @_
+          @_.panel.showBlock = (args...) =>
+            build_list.call @, =>
+              showBlock.apply @_.panel, args if @_.panel
         onClick: (value) ->
           editor.focus()
           options.select(value)
@@ -57,6 +77,5 @@ usdlc.richCombo = (options) ->
             @setValue options.selected()
           editor.on 'selectionChange', selectionChange, this
         onOpen: ->
-        reset: ->
       )
   )
