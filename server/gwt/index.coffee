@@ -1,4 +1,4 @@
-# Copyright (C) 2013 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
+# Copyright (C) 2013 paul@marrington.net, see GPL for license
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
@@ -14,6 +14,7 @@ class GWT extends EventEmitter
     @statement_skip = @section_skip = 0; @failures = 0
     section_path = ''; @cleanups = []; @skipped = 0
     @after_sections = []; @paused_timeout = null
+    @extensions = {}
 
     @skip = (msg) -> @pass "# SKIP #{msg}", @skipped++
     # gwt.skip.statements(1) # skip one or more statements in the current script
@@ -100,7 +101,9 @@ class GWT extends EventEmitter
 
         if not action = @patterns[index + 1]
           return @todo("add action to rule '#{pattern}'")
-        return action.apply(@, matched)
+        try return action.apply(@, matched) catch err
+          console.log action.toString()
+          throw err
     @fail """
            Unknown statement, add:
              gwt.rules(
@@ -111,29 +114,6 @@ class GWT extends EventEmitter
   title: (text) -> console.log "#2    #{text}"
   # called by instrumentation scripts to set up rules for gwt
   rules: (patterns...) -> @patterns = @patterns.concat(patterns); return @
-
-  # called if test passes
-  pass: (msg = '') ->
-    console.log "ok #{++@count} - #{msg}"
-    @next()
-
-  # called if test fails
-  fail: (msg = '') ->
-    @failures++
-    console.log "not ok #{++@count} - #{msg}"
-    @skip.section('fail')
-    @next()
-
-  # test and show message on failure
-  test: (test, msg = '') => if test then @pass msg else @fail msg
-  # pass err and fail if it exists
-  err: (err, msg = '') => if err then @fail err else @pass msg
-
-  expect: (value, to_be) =>
-    if value is to_be
-      @pass "'#{value}' correct"
-    else
-      @fail "'#{value}' isn't '#{to_be}'"
 
   # go to next script without marking pass or failure
   go: -> @next()
@@ -165,25 +145,17 @@ class GWT extends EventEmitter
     console.log "Failed #{@failures}/#{@tests}, #{@skipped} skipped, #{percent}% okay"
     @timer.total()
     @exit()
-
-  # call if test is not yet created
-  todo: (msg) -> @fail "# TODO #{msg ? 'under construction'}"
-
-  # call if test is not valid in the current setting
-  skip: (msg = '') -> @pass "# SKIP #{msg}"
-
   # extend gwt with methods of interest to the current test suite
   extend: (modules...) ->
     for extension in modules
       extension = extension.replace /\s/g, '_'
       if extension[0] is '/'
         extension = path.resolve path.join @options.script_path, extension
-      GWT.prototype[name] = func for name, func of require extension
+      if not @extensions[extension]
+        @extensions[extension] = require extension
+        GWT.prototype[name] = func for name, func of @extensions[extension]
     return @
-  # require a file from the project under test
-  require: (name) -> return require path.join @options.project, name
-
-  on_exit: (func) -> @cleanups.unshift func
+  # all done ... clean up
   exit: ->
     do func = =>
       return if not @cleanups.length
@@ -192,4 +164,6 @@ class GWT extends EventEmitter
       func() if not cleanup.length #synchronous
 
 module.exports =
-  load: (@options) -> module.exports = global.gwt = new GWT @options
+  load: (@options) ->
+    module.exports = global.gwt = gwt = new GWT @options
+    gwt.extend 'gwt/base'

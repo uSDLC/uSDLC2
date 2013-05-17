@@ -7,14 +7,14 @@ module.exports = (exchange) ->
     usdlc2_path = path.join exchange.environment.projects[project], 'usdlc2'
     fs.readdir usdlc2_path, (err, documents) ->
       exchange.respond.json (path.basename(name, '.html') \
-        for name in documents when path.extname(name) is '.html')
+        for name in documents when path.extname(name) is '.html').sort()
     return
   # code run on client
   exchange.respond.client ->
     usdlc.richCombo
       name: 'documents'
       label: 'Documents'
-      toolbar: 'usdlc'
+      toolbar: 'usdlc,2'
       items: (next) ->
         url = "/client/ckeditor/documents.coffee?project=#{localStorage.project}"
         steps(

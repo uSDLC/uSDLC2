@@ -4,7 +4,7 @@ module.exports = (exchange) ->
     usdlc.richCombo
       name: 'projects'
       label: 'Projects'
-      toolbar: 'usdlc'
+      toolbar: 'usdlc,1'
       items: (next) ->
         next (key for key, value of roaster.environment.projects).sort()
       selected: -> localStorage.project.replace /_/g, ' '

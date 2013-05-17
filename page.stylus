@@ -1,1 +1,22 @@
 // Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
+body
+  for lvl in 1..6
+    counter-reset: s(join('',section_, lvl))
+
+counter_set(range)
+  buf = ''
+  for lvl,index in range
+    lvl = join('',section_, lvl)
+    buf += ' "." ' if index
+    buf += 'counter(' + lvl + ')'
+  return s(buf)
+
+for lvl in 0..5
+  h{lvl + 1}:before
+    counter-increment: s(join('',section_, lvl + 1))
+    counter-reset: s(join('',section_, lvl + 2))
+    content: counter_set(1..lvl) " "
+  h{lvl + 1}
+    margin-left: lvl * 10px
+    font-size: 1.4 - (lvl * 0.2)em
+    font-weight: normal

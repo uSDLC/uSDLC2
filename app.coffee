@@ -16,6 +16,7 @@ localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
 
 usdlc.goto_section = (name) ->
+usdlc.current_section = ->
 
 usdlc.save_page = ->
   if usdlc.page_editor.checkDirty()

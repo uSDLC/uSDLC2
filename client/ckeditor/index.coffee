@@ -5,7 +5,7 @@ external = (names...) ->
   for name in names
     CKEDITOR.plugins.addExternal name, '/client/ckeditor/', "#{name}.coffee"
     roaster.ckeditor.default_options.extraPlugins += ",#{name}"
-external 'projects', 'documents'
+external 'projects', 'documents', 'sections'
 roaster.ckeditor.default_options.toolbarGroups.push name: 'usdlc'
 roaster.ckeditor.default_options.toolbarViews.uSDLC = 'usdlc'
 # Open a full page html editor ready to load with current document
@@ -28,9 +28,9 @@ module.exports.ready = (next) ->
       usdlc.save_page()
     usdlc.page_editor.commands.save.enable()
     next()
-    
 
 usdlc.richCombo = (options) ->
+  options = _.clone(options)
   CKEDITOR.plugins.add( options.name,
     requires: 'richcombo'
     init: (editor) ->
@@ -41,10 +41,12 @@ usdlc.richCombo = (options) ->
           @_.items = {}
           @_.list?._.items = {}
           # load items (again)
-          for item in items.sort()
-            name = item.replace(/_/g, ' ')
-            @add(name, name, item)
-          @add 'create', '<i><b>New...</b></i>', 'New...'
+          for item in items
+            [name,html,tooltip] = item.split('|')
+            html ?= name
+            name = name.replace(/_/g, ' ')
+            @add(name, html, tooltip)
+          @add 'create', '<i><b>New...</b></i>', 'New...' if not options.no_create
           @_.committed = 0
           @commit()
           next()
@@ -73,9 +75,12 @@ usdlc.richCombo = (options) ->
           options.select(value)
         onRender: ->
           selectionChange = (ev) ->
-            $('.cke_combo__projects .cke_combo_text').css('width', 'auto')
             @setValue options.selected()
           editor.on 'selectionChange', selectionChange, this
         onOpen: ->
+            panel = $('.cke_combopanel')
+            panel.removeClass(usdlc.lastListClass) if usdlc.lastListClass
+            usdlc.lastListClass = options.className
+            panel.addClass(options.className) if options.className
       )
   )
