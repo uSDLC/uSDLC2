@@ -12,6 +12,13 @@ steps(
       usdlc.edit_page localStorage.url, ->
 )
 
+load_ace = (next) ->
+  load_ace = ->
+  steps(
+    ->  @package "coffee-script,ace"
+    ->  next()
+  )
+
 localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
 
@@ -54,6 +61,7 @@ usdlc.edit_page = (page, next = ->) ->
     ->  @data pathname
     ->  localStorage.page_html = @[localStorage.document = @key]
     ->  usdlc.page_editor.setData @[@key], @next
+    ->  load_ace @next  # so we can set source edit fields
     ->  # we have just loaded, so editor is not really dirty
         usdlc.page_editor.resetDirty()
         usdlc.document().find('pre[type]').attr('contenteditable', false).

@@ -1,5 +1,5 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
-dirs = require "dirs"
+dirs = require "dirs"; files = require "files"
 
 module.exports = (environment) ->
   require(dirs.node('/config/base'))(environment)

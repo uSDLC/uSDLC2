@@ -51,5 +51,5 @@ module.exports =
     for name, options of servers
       module.exports[name] =
         module.exports[name.replace(/\s/g, '_')] = new Server name, options
-  start_command: "./go server config=debug"
+  start_command: "./go server mode=gwt config=debug"
   stop_url: 'server/http/terminate.coffee?signal=SIGKILL' 
