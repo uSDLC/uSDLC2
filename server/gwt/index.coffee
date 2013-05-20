@@ -40,12 +40,12 @@ class GWT extends EventEmitter
       ->
         @asynchronous()
         gwt.timer = timer pre: '# ', post: ''
-        re = new RegExp(gwt.options.sections ? '')
+        sections = (gwt.options.sections ? '')+'|.*/uSDLC_Instrumentation.*'
+        re = new RegExp(sections)
         scripts = (script for script in scripts when re.test script)
         do read_script = =>
           if not scripts.length
-            gwt.section()
-            return @next()
+            gwt.section(); return @next()
           script = scripts.shift()
           if (script_section = path.dirname script) isnt section_path
             gwt.section section_path = script_section
@@ -79,14 +79,17 @@ class GWT extends EventEmitter
   # call to separate sections
   section: (name) ->
     @actions.push (gwt) =>
+      return @next() if @actions.length is 1  # no actions for this section
       @section_skip -= 1 if @section_skip
       @statement_skip = 0 if not @section_skip
       name = if name then name.split('/').slice(-1)[0].replace('_', ' ') else ''
       console.log "#1 Section: #{name}" if name
-      func = =>
+      do func = =>
         return @next() unless @after_sections.length
-        @after_sections.shift()(func)
-      func()
+        section = @after_sections.shift()
+        try section(func) catch error
+          console.log section.toString()
+          throw error
       @timer.elapsed()
 
   test_statement: (statement) ->
@@ -103,6 +106,7 @@ class GWT extends EventEmitter
           return @todo("add action to rule '#{pattern}'")
         try return action.apply(@, matched) catch err
           console.log action.toString()
+          console.log err.stack if err.stack
           throw err
     @fail """
            Unknown statement, add:
@@ -136,8 +140,11 @@ class GWT extends EventEmitter
                increase gwt.maximum_step_time in seconds if needed"""),
                                  @options.maximum_step_time * 1000
     try
-      return @actions.shift()(gwt) if @actions.length
-    catch err then return @fail err
+      action = @actions.shift()
+      return action(gwt) if @actions.length
+    catch err
+      console.log action.toString()
+      return @fail err
     # all done - clean up
     clearTimeout @paused_timeout
     passes = @tests - @failures - @skipped
@@ -162,6 +169,8 @@ class GWT extends EventEmitter
       cleanup = @cleanups.shift()
       cleanup(func)
       func() if not cleanup.length #synchronous
+      
+  server: -> require 'gwt/server'
 
 module.exports =
   load: (@options) ->

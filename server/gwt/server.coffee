@@ -1,8 +1,45 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 _ = require 'underscore'; processes = require 'processes'; gwt = require 'gwt'
 url = require 'url'; dirs = require 'dirs'; internet = require 'internet'
+util = require 'util'
 
 class Server
+  constructor: (@name, options) ->
+    _.extend @, options
+    # helper to get to internet for the server
+    @net = internet(options.url)
+    @start_command ?= module.exports.start_command
+    @stop_url ?= module.exports.stop_url
+  # start the active or named server
+  start: ->
+    return gwt.pass("#{@name} already running") if @running_instance
+    dirs.in_directory @dir, =>
+      @running_instance = processes().cmd @start_command, =>
+    check = =>
+      @net.get @ping ? '', (error) =>
+        if error
+          @running_instance = null
+          return gwt.fail "Server #{@name} did not start (#{error})"
+        gwt.pass "#{@name} running"
+    setTimeout check, 2000
+    gwt.on_exit (next) =>
+      @running_instance.on 'exit', =>
+        @running_instance = null
+        next()
+      @net.get @stop_url, ->
+  # retrieve or infer port number
+  port: -> url.parse(@url).port
+  
+  get: (cmd, args) ->
+    key = cmd.split('/').slice(-1)[0].split('.')[0]
+    @net.get_json cmd, query: args, (error, results) =>
+      gwt[key] = results
+      return gwt.fail(error) if error
+      return gwt.fail("No JSON response for #{cmd}") if not results
+      return gwt.fail(results.error) if results?.error
+      gwt.pass(cmd)
+
+module.exports = 
   # dictionary of known servers accessed by name. Each record has:
   #   url: base url (e.g. http://localhost:9020)
   #   ping: relative url to ping for live check
@@ -10,37 +47,9 @@ class Server
   #   start: command to start the server (defaults to './go server')
   #   stop: repative url to stop the server
   # add to the list of known servers
-  add: (servers, active) ->
-    _.extend @, servers
-    @activate active if active
-  # server we are currently working with
-  activate: (@name) ->
-    return gwt.fail "No server '#{@name}'" if not (@active = @[@name])
-    @net.base = @active.url
-  # helper to get to internet for the server
-  net: internet()
-  # start the active or named server
-  start: (server = @name) ->
-    @activate server
-    return gwt.pass("#{@name} already running") if @active.running
-    dirs.rmdirs "#{@active.dir}/files/99999999999999", =>
-    dirs.in_directory @active.dir, =>
-      starter = @active.start ? "./go server config=debug"
-      @active.instance = processes().cmd starter, =>
-    check = =>
-      @net.get @active.ping ? '', (err) =>
-        return gwt.fail "Server #{@name} did not start (#{err})" if err
-        server.running = true
-        gwt.pass "#{@name} running"
-    setTimeout check, 2000
-    gwt.on_exit (next) =>
-      @active.instance.on 'exit', ->
-        server.running = false
-        next()
-      @net.get @active.stop ? 'server/http/terminate.coffee?signal=SIGKILL', ->
-  # retrieve or infer port number
-  port: (server = @name) ->
-    @activate server
-    return url.parse(@active.url).port
-
-module.exports = new Server
+  add: (servers) ->
+    for name, options of servers
+      module.exports[name] =
+        module.exports[name.replace(/\s/g, '_')] = new Server name, options
+  start_command: "./go server config=debug"
+  stop_url: 'server/http/terminate.coffee?signal=SIGKILL' 

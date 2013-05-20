@@ -9,7 +9,7 @@ external 'projects', 'documents', 'sections'
 roaster.ckeditor.default_options.toolbarGroups.push name: 'usdlc'
 roaster.ckeditor.default_options.toolbarViews.uSDLC = 'usdlc'
 # Open a full page html editor ready to load with current document
-usdlc.page_editor = roaster.ckeditor.open 'document'#,
+usdlc.page_editor = roaster.ckeditor.open 'document',
   # filebrowserBrowseUrl: '/file_browser.coffee'
   # filebrowserImageBrowseLinkUrl: '/image_browser.coffee'
   # filebrowserImageBrowseUrl: '/image_browser.coffee'

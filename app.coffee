@@ -23,6 +23,7 @@ usdlc.save_page = ->
     save_url = "/server/http/save.coffee?name=#{localStorage.url}"
     original = localStorage.page_html
     changed = usdlc.page_editor.getData()
+    usdlc.document().find('pre[type]').removeAttr('contenteditable')
     steps(
       ->  @requires '/common/patch.coffee'
       ->  @patch.create localStorage.url, original, changed, @next (@changes) ->
@@ -31,6 +32,8 @@ usdlc.save_page = ->
       ->  usdlc.page_editor.resetDirty()
 
     )
+    
+usdlc.document = -> return $(usdlc.page_editor.document.getBody().$)
 
 usdlc.edit_page = (page, next = ->) ->
   # keep a copy of location information for back button
@@ -46,16 +49,22 @@ usdlc.edit_page = (page, next = ->) ->
   localStorage.url = localStorage["#{localStorage.project}_url"] = page
   [pathname,hash] = page.split('#')
   hash = "##{hash}" if hash
+  usdlc.page_editor.config.baseHref = "/#{localStorage.project}/"
   steps(
     ->  @data pathname
     ->  localStorage.page_html = @[localStorage.document = @key]
     ->  usdlc.page_editor.setData @[@key], @next
     ->  # we have just loaded, so editor is not really dirty
         usdlc.page_editor.resetDirty()
+        usdlc.document().find('pre[type]').attr('contenteditable', false).
+          on 'click', -> usdlc.edit_source($(@))
         usdlc.goto_section(hash)
         $('title').html "#{@key} - uSDLC2"
         history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         next()
   )
+
+usdlc.edit_source = (pre) ->
+  console.log "EDIT",pre
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

@@ -11,17 +11,16 @@ module.exports = (options, next) ->
   return next() if newer options.runner_file, options.document_path
 
   script_content = null; script_name = ''; parse_complete = false
-  depth = 0; in_heading = false; headings = [options.document]
+  depth = 0; in_heading = false; headings = []
   Parser (parser) ->
     parser.on 'open', (name, attributes) ->
       if in_heading
         attr = ("#{key}=#{value}" for key, value of attributes).join(' ')
         headings[depth] += "<#{name} #{attr}>"
-      else if name[0] is 'h'
+      else if name[0] is 'h' and not isNaN(depth = +name[1])
         in_heading = true
-        depth = +name[1]
-        depth = 0 if attributes.id is 'page_title'
-        headings[headings.length = depth] = ''
+        # depth = 0 if attributes.id is 'page_title'
+        headings[headings.length = --depth] = ''
       else if name is 'pre' and attributes.type
         script_content = []
         script_name = "#{path.join headings...}.#{attributes.type}"

@@ -6,18 +6,23 @@ script_extractor = require 'script_extractor'
 
 module.exports =
   # called if test passes
-  pass: (msg = '') -> console.log "ok #{++@count} - #{msg}"; @next()
+  pass: (msg = '') -> 
+    # try throw new Error() catch error then console.log error.stack
+    console.log "ok #{++@count} - #{msg}"; @next()
   # called if test fails
   fail: (msg) ->
     @failures++
+    # try throw new Error() catch error then console.log error.stack
     console.log "not ok #{++@count} - #{msg}"
-    console.log msg.trace if msg.trace
+    console.log msg.stack if msg?.stack
     @skip.section('fail')
     @next() 
   # test and show message on failure
-  test: (test, msg = '') -> if test then @pass msg else @fail msg
+  test: (test, msg = '') ->
+    if test then @pass msg else @fail msg
   # pass err and fail if it exists
-  check_for_error: (err, msg = '') -> if err then @fail err else @pass msg
+  check_for_error: (err, msg = '') ->
+    if err then @fail err else @pass msg
   # test and provide a message if not as expected
   expect: (value, to_be) ->
     if value is to_be
