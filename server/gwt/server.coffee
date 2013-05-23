@@ -1,7 +1,7 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 _ = require 'underscore'; processes = require 'processes'; gwt = require 'gwt'
 url = require 'url'; dirs = require 'dirs'; internet = require 'internet'
-util = require 'util'
+util = require 'util'; send = require 'send'
 
 class Server
   constructor: (@name, options) ->
@@ -38,6 +38,30 @@ class Server
       return gwt.fail("No JSON response for #{cmd}") if not results
       return gwt.fail(results.error) if results?.error
       gwt.pass(cmd)
+
+  bin: (cmd, args) ->
+    key = cmd.split('/').slice(-1)[0].split('.')[0]
+    @net.get cmd, query: args, (error, results) =>
+      gwt[key] = results
+      return gwt.fail(error) if error
+      gwt.pass(cmd)
+      
+  check_get: (contents, against) ->
+    result = []
+    for key, value of against
+      switch key
+        when 'size'
+          bytes = contents.length
+          if bytes < value[0] or bytes > value[1]
+            result.push "Size #{bytes} outside range #{value}"
+        when 'ext'
+          ext = @net.response.headers['content-type']
+          value = ".#{value}" if value.indexOf('.') is -1
+          expecting = send.mime.lookup value
+          if ext isnt expecting
+            result.push "Expecting type #{expecting}, received #{ext}"
+    return gwt.pass() if not result.length
+    gwt.fail result.join '\n'
 
 module.exports = 
   # dictionary of known servers accessed by name. Each record has:
