@@ -4,8 +4,7 @@ window.usdlc = {}
 
 steps(
   ->  @package "jquery,ckeditor"
-  ->  @requires "/client/ckeditor/index.coffee"
-  ->  @index.ready @next
+  ->  @requires "/client/ckeditor/ckeditor.coffee"
   ->  # Go to page specified or return to the last page and location
       if window.location.search is '?edit'
         localStorage.url = "#{window.location.pathname}##{window.location.hash}"
@@ -13,9 +12,14 @@ steps(
 )
 
 load_ace = (next) ->
-  load_ace = ->
+  load_ace = (next) -> next() # only called once
+  doc = usdlc.page_editor.document.$
+  roaster.context.ace =
+    document: usdlc.page_editor.document.$
+    window: doc.defaultView ? doc.parentWindow
   steps(
     ->  @package "coffee-script,ace"
+    ->  @requires "/client/ace/ace.coffee"
     ->  next()
   )
 
@@ -31,18 +35,20 @@ usdlc.save_page = ->
     original = localStorage.page_html
     changed = usdlc.page_editor.getData()
     usdlc.document().find('pre[type]').removeAttr('contenteditable')
+    usdlc.ace.hide()
     steps(
       ->  @requires '/common/patch.coffee'
       ->  @patch.create localStorage.url, original, changed, @next (@changes) ->
       ->  xhr = $.post save_url, @changes, @next (data, status, xhr) ->
           xhr.fail -> alert "Save failed"
       ->  usdlc.page_editor.resetDirty()
-
     )
-    
+    usdlc.ace.show()
+
 usdlc.document = -> return $(usdlc.page_editor.document.getBody().$)
 
 usdlc.edit_page = (page, next = ->) ->
+  usdlc.ace?.clear()
   # keep a copy of location information for back button
   from = "#{window.location.pathname}?edit##{window.location.hash}"
   # make page address is absolute
@@ -63,16 +69,13 @@ usdlc.edit_page = (page, next = ->) ->
     ->  usdlc.page_editor.setData @[@key], @next
     ->  load_ace @next  # so we can set source edit fields
     ->  # we have just loaded, so editor is not really dirty
+        usdlc.ace.edit()
         usdlc.page_editor.resetDirty()
-        usdlc.document().find('pre[type]').attr('contenteditable', false).
-          on 'click', -> usdlc.edit_source($(@))
         usdlc.goto_section(hash)
         $('title').html "#{@key} - uSDLC2"
         history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         next()
   )
 
-usdlc.edit_source = (pre) ->
-  console.log "EDIT",pre
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

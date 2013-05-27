@@ -15,7 +15,7 @@ usdlc.page_editor = roaster.ckeditor.open 'document',
   # filebrowserImageBrowseUrl: '/image_browser.coffee'
   # filebrowserUploadUrl: '/image_upload.coffee'
 
-module.exports.ready = (next) ->
+module.exports.initialise = (next) ->
   # Do things only available once the editor is up and loaded
   usdlc.page_editor.once 'instanceReady', ->
     # 'New Page' button opens index page on curent project
