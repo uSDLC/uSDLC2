@@ -1,15 +1,11 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 
 # load ckeditor plugins
-external = (names...) ->
-  for name in names
-    CKEDITOR.plugins.addExternal name, '/client/ckeditor/', "#{name}.coffee"
-    roaster.ckeditor.default_options.extraPlugins += ",#{name}"
-external 'projects', 'documents', 'sections'
-roaster.ckeditor.default_options.toolbarGroups.push name: 'usdlc'
-roaster.ckeditor.default_options.toolbarViews.uSDLC = 'usdlc'
+roaster.ckeditor.toolbar 'ckeditor', 'uSDLC', 'projects', 'documents', 'sections'
+roaster.ckeditor.toolbar 'ace', 'Ace', 'ace_configuration'
 # Open a full page html editor ready to load with current document
 usdlc.page_editor = roaster.ckeditor.open 'document',
+  {}
   # filebrowserBrowseUrl: '/file_browser.coffee'
   # filebrowserImageBrowseLinkUrl: '/image_browser.coffee'
   # filebrowserImageBrowseUrl: '/image_browser.coffee'
@@ -17,16 +13,16 @@ usdlc.page_editor = roaster.ckeditor.open 'document',
 
 module.exports.initialise = (next) ->
   # Do things only available once the editor is up and loaded
-  usdlc.page_editor.once 'instanceReady', ->
+  usdlc.page_editor.onInstanceReady.push ->
     # 'New Page' button opens index page on curent project
     usdlc.page_editor.getCommand('newpage').exec = (editor) ->
       usdlc.edit_page 'Index'
       return true
-    usdlc.page_editor.getCommand('preview').exec = (editor) ->
-      window.open localStorage.url
-    usdlc.page_editor.getCommand('save').exec = (editor) ->
-      usdlc.save_page()
-    usdlc.page_editor.commands.save.enable()
+    # usdlc.page_editor.getCommand('preview').exec = (editor) ->
+    #   window.open localStorage.url
+    # usdlc.page_editor.getCommand('save').exec = (editor) ->
+    #   usdlc.save_page()
+    # usdlc.page_editor.commands.save.enable()
     next()
 
 usdlc.richCombo = (options) ->
@@ -66,7 +62,6 @@ usdlc.richCombo = (options) ->
           @add options.selected()
           showBlock= @_.panel.showBlock
           @_.list.mark = ->
-          @_
           @_.panel.showBlock = (args...) =>
             build_list.call @, =>
               showBlock.apply @_.panel, args if @_.panel
@@ -76,11 +71,11 @@ usdlc.richCombo = (options) ->
         onRender: ->
           selectionChange = (ev) ->
             @setValue options.selected()
-          editor.on 'selectionChange', selectionChange, this
+          editor.on 'selectionChange', selectionChange, @
         onOpen: ->
-            panel = $('.cke_combopanel')
-            panel.removeClass(usdlc.lastListClass) if usdlc.lastListClass
-            usdlc.lastListClass = options.className
-            panel.addClass(options.className) if options.className
+          panel = $('.cke_combopanel')
+          panel.removeClass(usdlc.lastListClass) if usdlc.lastListClass
+          usdlc.lastListClass = options.className
+          panel.addClass(options.className) if options.className
       )
   )

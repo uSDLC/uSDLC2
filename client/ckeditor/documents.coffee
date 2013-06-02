@@ -14,7 +14,7 @@ module.exports = (exchange) ->
     usdlc.richCombo
       name: 'documents'
       label: 'Documents'
-      toolbar: 'usdlc,2'
+      toolbar: 'uSDLC,2'
       items: (next) ->
         url = "/client/ckeditor/documents.coffee?project=#{localStorage.project}"
         steps(
