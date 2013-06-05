@@ -1,7 +1,10 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 
 # load ckeditor plugins
-roaster.ckeditor.toolbar 'ckeditor', 'uSDLC', 'projects', 'documents', 'sections'
+roaster.ckeditor.toolbar(
+  'ckeditor', 'uSDLC', 'projects', 'documents', 'sections',
+  'gwt', 'gwt_coffee'
+)
 roaster.ckeditor.toolbar 'ace', 'Ace', 'ace_configuration'
 # Open a full page html editor ready to load with current document
 usdlc.page_editor = roaster.ckeditor.open 'document',

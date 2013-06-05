@@ -1,3 +1,4 @@
 #!/bin/bash
 #~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Processing/Audio/.*
-~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Processing/Audio/Retrieve_MP3.*Full_Audio.*
+#~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Processing/Audio/Retrieve_MP3.*Full_Audio.*
+~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Collection/Sending_a_File.*

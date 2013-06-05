@@ -2,6 +2,8 @@
 path = require 'path'
 window.usdlc = {}
 
+roaster.message = (msg) -> console.log msg
+
 steps(
   ->  @package "jquery,ckeditor"
   ->  @requires "/client/ckeditor/ckeditor.coffee"
@@ -12,6 +14,12 @@ steps(
       usdlc.sources = -> $('textarea[source]')
       usdlc.base = $('head base')
       usdlc.edit_page localStorage.url, ->
+
+      actor = null
+      user_action = ->
+        clearTimeout(actor) if actor
+        actor = setTimeout(usdlc.save_page, 5000)
+      $(document.body).keydown(user_action).click(user_action)
 )
 
 load_ace = (next) ->
@@ -26,20 +34,24 @@ localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
 
 usdlc.save_page = ->
-  if usdlc.page_editor.checkDirty()
-    save_url = "/server/http/save.coffee?name=#{localStorage.url}"
-    original = localStorage.page_html
-    changed = usdlc.page_editor.getData()
-    usdlc.sources().removeAttr('contenteditable')
-    usdlc.ace.hide()
-    steps(
-      ->  @requires '/common/patch.coffee'
-      ->  @patch.create localStorage.url, original, changed, @next (@changes) ->
-      ->  xhr = $.post save_url, @changes, @next (data, status, xhr) ->
-          xhr.fail -> alert "Save failed"
-      ->  usdlc.page_editor.resetDirty()
-    )
-    usdlc.ace.show()
+  return unless usdlc.page_editor.checkDirty()
+  roaster.message "Saving..."
+  save_url = "/server/http/save.coffee?name=#{localStorage.url}"
+  usdlc.sources().removeAttr('contenteditable')
+  usdlc.ace.hide()
+  original = localStorage.page_html
+  changed = usdlc.page_editor.getData().replace /&#39;/g, "'"
+  steps(
+    ->  @requires '/common/patch.coffee'
+    ->  @patch.create localStorage.url, original, changed, @next (@changes) ->
+    ->  # send it to the server
+        xhr = $.post save_url, @changes, @next (data, status, xhr) ->
+        xhr.fail -> roaster.message "<b style='color:red'>Save failed</b>"
+    ->  # all done - clean up
+        usdlc.page_editor.resetDirty()
+        roaster.message 'Saved'
+  )
+  usdlc.ace.show()
 
 usdlc.edit_page = (page, next = ->) ->
   usdlc.ace?.clear()
@@ -59,29 +71,32 @@ usdlc.edit_page = (page, next = ->) ->
   usdlc.base.attr 'href', "/#{localStorage.project}/"
   steps(
     ->  @data pathname
-    ->  localStorage.page_html = @[localStorage.document = @key]
-    ->  usdlc.document.html @[@key]
-    ->  load_ace @next  # so we can set source edit fields
+    ->  # parse html into dom
+        localStorage.page_html = @[localStorage.document = @key]
+        usdlc.document.html @[@key]
+        load_ace @next  # so we can set source edit fields
     ->  # we have just loaded, so editor is not really dirty
-        usdlc.ace.edit()
+        usdlc.ace.edit_all()
         usdlc.page_editor.resetDirty()
         if hash?.length > 1
           setTimeout ( -> usdlc.goto_section(hash[1..])), 500
         $('title').html "#{@key} - uSDLC2"
         history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         # resize textareas
-        $('textarea').each usdlc.resize_textarea
+        usdlc.resize_textareas()
         usdlc.document.blur()
         next()
   )
 
-  usdlc.resize_textarea = (index, textarea) ->
-    textarea = $(textarea)
-    lines = textarea.text().split(/\s*\r?\n/)
-    cols = Math.max((line.length for line in lines)...)
-    rows = lines.length
-    textarea.attr('cols', cols)
-    textarea.attr('rows', rows)
+  usdlc.resize_textareas = ->
+    $('textarea').each (index, textarea) ->
+      textarea = $(textarea)
+      lines = textarea.text().split(/\s*\r?\n/)
+      cols = Math.max((line.length for line in lines)...)
+      rows = lines.length
+      rows = Math.floor(rows * 1.25) if rows > 15
+      textarea.attr('cols', Math.floor(cols * 0.8))
+      textarea.attr('rows', rows)
 
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

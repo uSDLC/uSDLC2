@@ -31,18 +31,21 @@ module.exports.initialise = (next) ->
   usdlc.ace =
     clear: ->
       usdlc.sources().each ->
-        textarea = $(@)
+        textarea = $(@).show()
         textarea.data('ace_editor').destroy()
-        textarea.data('ace_container').remove().show()
+        textarea.data('ace_container').remove()
     hide: ->
       usdlc.sources().each ->
-        $(@).data('ace_container').detach().show()
+        $(@).show().data('ace_container').detach()
     show: ->
       usdlc.sources().each ->
-        $(@).hide().data('ace_container').insertAfter(textarea)
-    edit: ->
-      usdlc.sources().attr('contenteditable', false).hide().each (index) ->
-        textarea = $(@)
+        textarea = $(@).hide()
+        textarea.data('ace_container').insertAfter(textarea)
+    edit_all: ->
+      usdlc.sources().attr('contenteditable', false).each (index) ->
+        usdlc.ace.edit @
+    edit: (what) ->
+        textarea = $(what).hide()
         container = container.clone().insertAfter(textarea).text(textarea.text())
         editor = ace.edit(container.get(0))
         textarea.data('ace_editor', editor).data('ace_container', container)

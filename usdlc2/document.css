@@ -1,0 +1,80 @@
+/* Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license */
+span.messages {
+  vertical-align: top;
+  padding-left: 2em;
+  font-size: 90%;
+  color: #AAA;
+  font-style: italic;
+}
+body {
+  counter-reset: H2;
+}
+h2 {
+  counter-reset: H3;
+  margin-left: 10px;
+}
+h2:before {
+  content: counter(H2) " - ";
+  counter-increment: H2;
+}
+h2~* { margin-left: 10px; }
+
+h3 {
+  counter-reset: H4;
+  margin-left: 20px;
+}
+h3:before {
+  content: counter(H2) "." counter(H3) " - ";
+  counter-increment: H3;
+}
+h3~* { margin-left: 20px; }
+h4 {
+  counter-reset: H5;
+  margin-left: 30px;
+}
+h4:before {
+  content: counter(H2) "." counter(H3) "." counter(H4) " - ";
+  counter-increment: H4;
+}
+h4~* { margin-left: 30px; }
+h5 {
+  counter-reset: H6;
+  margin-left: 40px;
+}
+h5:before {
+  content: counter(H2) "." counter(H3) "." counter(H4) "." counter(H5) " - ";
+  counter-increment: H5;
+}
+h5~* { margin-left: 40px; }
+h6 {
+  counter-reset: H7;
+  margin-left: 50px;
+}
+h6:before {
+  content: counter(H2) "." counter(H3) "." counter(H4) "." counter(H5) "." counter(H6) " - ";
+  counter-increment: H6;
+}
+h6~* { margin-left: 50px; }
+
+.outline > * {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+textarea[type] {
+  resize: none;
+  display: inline-block;
+  margin: 0 50px;
+  padding: 0.5em 1em 1em 1em;
+}
+textarea[type=gwt] {
+  border: 1px inset #cff;
+  background-color: #fcffff;
+}
+textarea[source] {
+  border: 1px inset #9f9;
+  background-color: #f8fff8;
+}
+textarea[type="gwt.coffee"] {
+  border: 1px inset #9f9;
+  background-color: #fafffa;
+}
