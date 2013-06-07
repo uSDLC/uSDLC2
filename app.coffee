@@ -11,15 +11,21 @@ steps(
       if window.location.search is '?edit'
         localStorage.url = "#{window.location.pathname}##{window.location.hash}"
       usdlc.document = $('div#document')
+      $('div#base_filler').height($(window).height() - 64)
       usdlc.sources = -> $('textarea[source]')
       usdlc.base = $('head base')
       usdlc.edit_page localStorage.url, ->
 
-      actor = null
+      actor = null; dirty = false
+      save_page = ->
+        dirty = false;
+        usdlc.save_page()
       user_action = ->
         clearTimeout(actor) if actor
-        actor = setTimeout(usdlc.save_page, 5000)
-      $(document.body).keydown(user_action).click(user_action)
+        if not dirty and dirty = usdlc.page_editor.checkDirty()
+          roaster.message "Saving..."
+        actor = setTimeout(save_page, 2000)
+      $(document.body).keyup(user_action).click(user_action)
 )
 
 load_ace = (next) ->
@@ -35,7 +41,6 @@ localStorage.project ?= 'uSDLC2'
 
 usdlc.save_page = ->
   return unless usdlc.page_editor.checkDirty()
-  roaster.message "Saving..."
   save_url = "/server/http/save.coffee?name=#{localStorage.url}"
   usdlc.sources().removeAttr('contenteditable')
   usdlc.ace.hide()
@@ -45,14 +50,19 @@ usdlc.save_page = ->
     ->  @requires '/common/patch.coffee'
     ->  @patch.create localStorage.url, original, changed, @next (@changes) ->
     ->  # send it to the server
+        if @changes.split('\n').length <= 5
+          roaster.message ''
+          usdlc.page_editor.resetDirty()
+          @abort()
         xhr = $.post save_url, @changes, @next (data, status, xhr) ->
-        xhr.fail -> roaster.message "<b style='color:red'>Save failed</b>"
+        xhr.fail -> roaster.message "<b>Save failed</b>"; @abort()
     ->  # all done - clean up
+        localStorage.page_html = changed
         usdlc.page_editor.resetDirty()
         roaster.message 'Saved'
   )
   usdlc.ace.show()
-
+  
 usdlc.edit_page = (page, next = ->) ->
   usdlc.ace?.clear()
   # keep a copy of location information for back button
@@ -84,19 +94,19 @@ usdlc.edit_page = (page, next = ->) ->
         history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         # resize textareas
         usdlc.resize_textareas()
-        usdlc.document.blur()
+        # usdlc.document.blur()
         next()
   )
 
   usdlc.resize_textareas = ->
-    $('textarea').each (index, textarea) ->
+    $('textarea[type]').each (index, textarea) ->
       textarea = $(textarea)
       lines = textarea.text().split(/\s*\r?\n/)
-      cols = Math.max((line.length for line in lines)...)
+      cols = Math.floor(Math.max((line.length for line in lines)...) * 0.8)
       rows = lines.length
       rows = Math.floor(rows * 1.25) if rows > 15
-      textarea.attr('cols', Math.floor(cols * 0.8))
-      textarea.attr('rows', rows)
+      textarea.attr('cols', cols) if +textarea.attr('cols') isnt cols
+      textarea.attr('rows', rows) if +textarea.attr('rows') isnt rows
 
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

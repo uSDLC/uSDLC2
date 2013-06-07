@@ -1,10 +1,13 @@
 /* Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license */
-span.messages {
+span.messages, span.messages b {
   vertical-align: top;
   padding-left: 2em;
   font-size: 90%;
   color: #AAA;
   font-style: italic;
+}
+span.messages b {
+  color: red;
 }
 body {
   counter-reset: H2;

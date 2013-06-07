@@ -1,5 +1,5 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
-container = $('<div>').attr('contenteditable', false).css
+container = $('<p>').attr('contenteditable', false).css
   position: 'relative'
   top: 0
   right: 0
@@ -26,29 +26,46 @@ window_specs = "height=200,width=400,left=0,top=0,location=no,menubar=no,toolbar
 
 base = usdlc.ace_base
 last_tab = null
+aces = []; containers = {}; hidden = false; in_undo = false; scroll_top = 0
 
 module.exports.initialise = (next) ->
+  usdlc.page_editor.on 'beforeCommandExec', (event) ->
+    return if event.data.name isnt 'undo' and event.data.name isnt 'redo'
+    in_undo = true; scroll_top = $(window).scrollTop()
+    usdlc.ace.hide()
+  usdlc.page_editor.on 'afterCommandExec', (event) ->
+    return if event.data.name isnt 'undo' and event.data.name isnt 'redo'
+    in_undo = false; $(window).scrollTop(scroll_top)
+    usdlc.ace.show()
+  usdlc.page_editor.on 'beforeUndoImage', -> 
+    usdlc.ace.hide() unless in_undo
+  usdlc.page_editor.on 'afterUndoImage', -> 
+    usdlc.ace.show() unless in_undo
+  
   usdlc.ace =
-    clear: ->
-      usdlc.sources().each ->
-        textarea = $(@).show()
-        textarea.data('ace_editor').destroy()
-        textarea.data('ace_container').remove()
-    hide: ->
-      usdlc.sources().each ->
-        $(@).show().data('ace_container').detach()
-    show: ->
-      usdlc.sources().each ->
-        textarea = $(@).hide()
-        textarea.data('ace_container').insertAfter(textarea)
+    hide: (msg) ->
+      return if hidden
+      hidden = true
+      for id in aces
+        $("textarea##{id}").show()
+        containers[id] = $("p.#{id}").detach()
+    show: (msg) ->
+      return unless hidden
+      hidden = false
+      for id in aces
+        containers[id].insertAfter(textarea = $("textarea##{id}"))
+        textarea.hide()
     edit_all: ->
       usdlc.sources().attr('contenteditable', false).each (index) ->
         usdlc.ace.edit @
     edit: (what) ->
         textarea = $(what).hide()
+        if not (id = textarea.attr('id'))?.length
+          textarea.attr 'id', id = "gwt_coffee_#{usdlc.sources().length}"
         container = container.clone().insertAfter(textarea).text(textarea.text())
         editor = ace.edit(container.get(0))
-        textarea.data('ace_editor', editor).data('ace_container', container)
+        container.addClass(id)
+        aces.push id
         usdlc.ace.config editor, textarea.attr 'type'
         ace.require('ace/ext/settings_menu').init(editor)
         usdlc.ace.resize(editor, container)
