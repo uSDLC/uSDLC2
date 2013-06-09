@@ -1,0 +1,40 @@
+<link href="document.css" rel="stylesheet" type="text/css" />
+<h1>Instrumentation</h1>
+
+<h2>Given, When, Then</h2>
+
+<h3>A Basic Example</h3>
+
+<p> </p>
+
+<pre style="
+    width: inherit;
+" type="gwt">
+Given a number between 1 and 10
+  When we multiply the number by 2
+  Then the result is an even number</pre>
+
+<p> </p>
+
+<h2>uSDLC Instrumentation</h2>
+
+<p> </p>
+
+<pre id="gwt_coffee_1" source="" style="display: block;" type="gwt.coffee">
+server = gwt.server()
+
+gwt.rules(
+  /a number between (\d+) and (\d+)/, (start, end) ->
+    @number = start - 1 + Math.floor(Math.random() * (end - start))
+    @test(@number < 10, @number)
+    
+  /multiply the number by (\d+)/, (multiplicand) ->
+    @number *= multiplicand
+    @pass(@number)
+  
+  /the result is an even number/, ->
+    @test not (@number % 2), @number
+)
+</pre>
+
+<p> </p>

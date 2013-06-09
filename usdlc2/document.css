@@ -63,21 +63,19 @@ h6~* { margin-left: 50px; }
   margin-top: 0;
   margin-bottom: 0;
 }
-textarea[type] {
-  resize: none;
-  display: inline-block;
+pre[type] {
   margin: 0 50px;
   padding: 0.5em 1em 1em 1em;
 }
-textarea[type=gwt] {
+pre[type=gwt] {
   border: 1px inset #cff;
   background-color: #fcffff;
 }
-textarea[source] {
+pre[source] {
   border: 1px inset #9f9;
   background-color: #f8fff8;
 }
-textarea[type="gwt.coffee"] {
+pre[type="gwt.coffee"] {
   border: 1px inset #9f9;
   background-color: #fafffa;
 }
