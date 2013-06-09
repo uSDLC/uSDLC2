@@ -12,7 +12,7 @@ steps(
         localStorage.url = "#{window.location.pathname}##{window.location.hash}"
       usdlc.document = $('div#document')
       $('div#base_filler').height($(window).height() - 64)
-      usdlc.sources = -> $('textarea[source]')
+      usdlc.sources = -> $('pre[source]')
       usdlc.base = $('head base')
       usdlc.edit_page localStorage.url, ->
 
@@ -64,7 +64,7 @@ usdlc.save_page = ->
   usdlc.ace.show()
   
 usdlc.edit_page = (page, next = ->) ->
-  usdlc.ace?.clear()
+  # usdlc.ace?.clear()
   # keep a copy of location information for back button
   from = "#{window.location.pathname}?edit##{window.location.hash}"
   # make page address is absolute
@@ -92,21 +92,9 @@ usdlc.edit_page = (page, next = ->) ->
           setTimeout ( -> usdlc.goto_section(hash[1..])), 500
         $('title').html "#{@key} - uSDLC2"
         history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
-        # resize textareas
-        usdlc.resize_textareas()
-        # usdlc.document.blur()
+        usdlc.document.blur()
         next()
   )
-
-  usdlc.resize_textareas = ->
-    $('textarea[type]').each (index, textarea) ->
-      textarea = $(textarea)
-      lines = textarea.text().split(/\s*\r?\n/)
-      cols = Math.floor(Math.max((line.length for line in lines)...) * 0.8)
-      rows = lines.length
-      rows = Math.floor(rows * 1.25) if rows > 15
-      textarea.attr('cols', cols) if +textarea.attr('cols') isnt cols
-      textarea.attr('rows', rows) if +textarea.attr('rows') isnt rows
 
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

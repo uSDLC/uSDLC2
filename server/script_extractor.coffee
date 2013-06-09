@@ -21,7 +21,7 @@ module.exports = (options, next) ->
         in_heading = true
         # depth = 0 if attributes.id is 'page_title'
         headings[headings.length = --depth] = ''
-      else if name is 'textarea' and attributes.type
+      else if name is 'pre' and attributes.type
         script_content = []
         script_name = "#{path.join headings...}.#{attributes.type}"
         script_name = script_name.replace(/\s+/g, '_')
@@ -34,7 +34,7 @@ module.exports = (options, next) ->
     parser.on 'close', (name) ->
       in_heading = false if name[0] is 'h'
       headings[depth] += "</#{name}>" if in_heading
-      if name is 'textarea' and script_content?
+      if name is 'pre' and script_content?
         console.log script_name
         mkdirs path.dirname script_name
         fs.appendFile options.runner_file, "#{script_name}\n"
@@ -43,6 +43,7 @@ module.exports = (options, next) ->
           ->  @script_content = script_content
           ->  @requires 'ent'
           ->  @content = @ent.decode @script_content.join '\n'
+          ->  console.log "------\n",@content,"\n------"
           ->  @script_content = null
           ->  fs.writeFile script_name, @content, @next
           ->  next() if not --processor_depth and parse_complete

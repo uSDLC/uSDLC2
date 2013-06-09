@@ -47,30 +47,30 @@ module.exports.initialise = (next) ->
       return if hidden
       hidden = true
       for id in aces
-        $("textarea##{id}").show()
+        $("pre##{id}").show()
         containers[id] = $("p.#{id}").detach()
     show: (msg) ->
       return unless hidden
       hidden = false
       for id in aces
-        containers[id].insertAfter(textarea = $("textarea##{id}"))
-        textarea.hide()
+        containers[id].insertAfter(pre = $("pre##{id}"))
+        pre.hide()
     edit_all: ->
       usdlc.sources().attr('contenteditable', false).each (index) ->
         usdlc.ace.edit @
     edit: (what) ->
-        textarea = $(what).hide()
-        if not (id = textarea.attr('id'))?.length
-          textarea.attr 'id', id = "gwt_coffee_#{usdlc.sources().length}"
-        container = container.clone().insertAfter(textarea).text(textarea.text())
+        pre = $(what).hide()
+        if not (id = pre.attr('id'))?.length
+          pre.attr 'id', id = "gwt_coffee_#{usdlc.sources().length}"
+        container = container.clone().insertAfter(pre).text(pre.text())
         editor = ace.edit(container.get(0))
         container.addClass(id)
         aces.push id
-        usdlc.ace.config editor, textarea.attr 'type'
+        usdlc.ace.config editor, pre.attr 'type'
         ace.require('ace/ext/settings_menu').init(editor)
         usdlc.ace.resize(editor, container)
         editor.on 'change', ->
-          textarea.text(editor.getValue())
+          pre.text(editor.getValue())
           usdlc.ace.resize(editor, container)
         editor.on 'focus', ->
           usdlc.ace.editor = editor
