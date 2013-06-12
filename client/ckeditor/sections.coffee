@@ -13,12 +13,14 @@ module.exports = (exchange) ->
       usdlc.document.blur()
 
     outline = ->
+      listeners = []
       $('h1,h2,h3,h4,h5,h6').each ->
         heading = CKEDITOR.dom.element.get @
-        heading.on 'click', ->
+        listeners.push heading.on 'click', ->
           usdlc.document.children().show()
           usdlc.sources().hide()
           goto_section heading.$
+          listener.removeListener() for listener in listeners
       usdlc.document.children().not('h1,h2,h3,h4,h5,h6').hide()
       usdlc.document.addClass('outline')
 

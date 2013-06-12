@@ -69,7 +69,7 @@ module.exports =
   #   ping: relative url to ping for live check
   #   dir: base directory to run server from (usually relative to uSDLC2)
   #   start: command to start the server (defaults to './go server')
-  #   stop: repative url to stop the server
+  #   stop: relative url to stop the server
   # add to the list of known servers
   add: (servers) ->
     for name, options of servers
