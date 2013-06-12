@@ -12,7 +12,7 @@ steps(
         localStorage.url = "#{window.location.pathname}##{window.location.hash}"
       usdlc.document = $('div#document')
       $('div#base_filler').height($(window).height() - 64)
-      usdlc.sources = -> $('pre[source]')
+      usdlc.sources = -> $('textarea[source]')
       usdlc.base = $('head base')
       usdlc.edit_page localStorage.url, ->
 

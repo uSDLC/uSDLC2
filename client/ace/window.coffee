@@ -1,7 +1,7 @@
-sources = document.getElementsByTagName('pre')
+sources = document.getElementsByTagName('textarea')
 console.log document
-for pre in sources
-  type = pre.getAttribute('type')
+for textarea in sources
+  type = textarea.getAttribute('type')
   if type?.length
     div = document.createElement('div')
     div.setAttribute('style', "
@@ -15,8 +15,8 @@ for pre in sources
       border: 1px solid #eee;
       z-index: 10000;
     ")
-    pre.setAttribute 'style', 'display:none;'
-    pre.parentNode.appendChild div
+    textarea.setAttribute 'style', 'display:none;'
+    textarea.parentNode.appendChild div
     editor = ace.edit(div)
     editor.setTheme("ace/theme/twilight");
     editor.getSession().setMode("ace/mode/#{type}")
