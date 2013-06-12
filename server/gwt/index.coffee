@@ -4,6 +4,8 @@ path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
 script_extractor = require 'script_extractor'
 
+require.extensions['.gwt.coffee'] = require.extensions['.coffee']
+
 class GWT extends EventEmitter
   constructor: (@options) ->
     gwt = @
@@ -51,7 +53,7 @@ class GWT extends EventEmitter
             gwt.section section_path = script_section
           if path.extname(script) is '.gwt'
             reader = line_reader.for_file script, (statement) =>
-              if statement?.length
+              if statement?.length and statement[0] isnt '#'
                 gwt.add (gwt) -> gwt.test_statement statement
             reader.on 'end', read_script
           else
@@ -175,4 +177,4 @@ class GWT extends EventEmitter
 module.exports =
   load: (@options) ->
     module.exports = global.gwt = gwt = new GWT @options
-    gwt.extend 'gwt/base'
+    return gwt.extend 'gwt/base'

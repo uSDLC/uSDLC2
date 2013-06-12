@@ -7,7 +7,6 @@ module.exports = (exchange) ->
         editor.addCommand 'gwt', exec: (editor) ->
           CKEDITOR.instances.document.insertHtml(
             "<pre type='gwt'>Given \nWhen \nThen </pre>")
-          usdlc.resize_textareas()
         editor.ui.addButton 'gwt',
           label: 'Given / When / Then ...'
           command: 'gwt'
