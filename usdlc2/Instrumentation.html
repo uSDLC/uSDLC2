@@ -9,7 +9,9 @@
 When we multiply the number by 2
 Then the result is an even number</pre>
 
-<h2>uSDLC Instrumentation</h2><p><textarea id="gwt_coffee_1" source="" type="gwt.coffee">server = gwt.server()
+<h3>Child Process Output</h3><pre type="gwt">Given a shell
+When we execute 'echo uSDLC child output test'
+Then the response includes 'uSDLC child output test'</pre><h2>uSDLC Instrumentation</h2><p><textarea id="gwt_coffee_1" source="" type="gwt.coffee">server = gwt.server()
 
 gwt.rules(
   /a number between (\d+) and  (\d+)/, (start, end) ->
@@ -20,7 +22,5 @@ gwt.rules(
     @number *= multiplicand
     @pass(@number)
   
-  /the result is an even number/, ->
-    @test not (@number % 2), @number
-)
-</textarea>​<br></p><p>​</p>
+  /the result is an even number/, -> @test not (@number % 2), @number
+)</textarea></p><br>

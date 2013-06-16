@@ -7,7 +7,7 @@ module.exports = (exchange) ->
         editor.addCommand 'gwt_coffee', exec: (editor) ->
           id = "gwt_coffee_#{usdlc.sources().length}"
           CKEDITOR.instances.document.insertHtml(
-            "<pre type='gwt.coffee' id='#{id}'></pre>")
+            "<textarea source='true' type='gwt.coffee' id='#{id}'></pre>")
           usdlc.ace.edit "##{id}"
         editor.ui.addButton 'gwt_coffee',
           label: 'Coffeescript GWT Instrumentation'

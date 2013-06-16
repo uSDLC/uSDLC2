@@ -75,12 +75,10 @@ module.exports.initialise = (next) ->
         textarea.text(editor.getValue())
         usdlc.ace.resize(editor, container)
       editor.on 'focus', ->
-        console.log "FOCUS"
         usdlc.ace.active = true
         usdlc.ace.editor = editor
         last_tab = roaster.ckeditor.show_tab 'Ace'
       editor.on 'blur', ->
-        console.log "BLUR"
         usdlc.ace.active = false
         roaster.ckeditor.show_tab last_tab
     config: (editor, type) ->
@@ -105,9 +103,7 @@ module.exports.initialise = (next) ->
 
   blockEditor = -> return not usdlc.ace.active
   onKeyDown = (event) ->
-    console.log "KEYDOWNPRESS", usdlc.ace.active
     if usdlc.ace.active
-      # event.data.preventDefault(true)
       return false
     return true
   usdlc.page_editor.on 'selectionChange', blockEditor, null, null, 1

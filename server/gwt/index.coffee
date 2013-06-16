@@ -172,9 +172,11 @@ class GWT extends EventEmitter
       cleanup(func)
       func() if not cleanup.length #synchronous
       
-  server: -> require 'gwt/server'
+  server: -> @server = require 'gwt/server'
+  processes: (type) -> return require('gwt/processes')(type)
 
 module.exports =
   load: (@options) ->
     module.exports = global.gwt = gwt = new GWT @options
     return gwt.extend 'gwt/base'
+    require 'gwt/rules'

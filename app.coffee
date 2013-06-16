@@ -88,6 +88,9 @@ usdlc.edit_page = (page, next = ->) ->
     ->  # parse html into dom
         localStorage.page_html = @[localStorage.document = @key]
         usdlc.document.html @[@key]
+        last_tag = usdlc.document.children().last().prop('tagName')
+        console.log last_tag
+        usdlc.document.append('<br>') if last_tag isnt 'BR'
         load_ace @next  # so we can set source edit fields
     ->  # we have just loaded, so editor is not really dirty
         usdlc.ace.edit_all()
