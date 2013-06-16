@@ -1,21 +1,18 @@
-<link href="document.css" rel="stylesheet" type="text/css" />
+<link href="document.css" rel="stylesheet" type="text/css">
 <h1>Instrumentation</h1>
 
 <h2>Given, When, Then</h2>
 
 <h3>A Basic Example</h3>
 
-<pre type="gwt">
-Given a number between 1 and 10
+<pre type="gwt">Given a number between 1 and 10
 When we multiply the number by 2
 Then the result is an even number</pre>
 
-<h2>uSDLC Instrumentation</h2>
-
-<p><textarea id="gwt_coffee_1" source="" style="display: inline-block;" type="gwt.coffee">server = gwt.server()
+<h2>uSDLC Instrumentation</h2><p><textarea id="gwt_coffee_1" source="" type="gwt.coffee">server = gwt.server()
 
 gwt.rules(
-  /a number between (\d+) and (\d+)/, (start, end) ->
+  /a number between (\d+) and  (\d+)/, (start, end) ->
     @number = start - 1 + Math.floor(Math.random() * (end - start))
     @test(@number < 10, @number)
     
@@ -26,4 +23,4 @@ gwt.rules(
   /the result is an even number/, ->
     @test not (@number % 2), @number
 )
-</textarea></p>
+</textarea>​<br></p><p>​</p>

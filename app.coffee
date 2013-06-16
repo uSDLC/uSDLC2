@@ -23,7 +23,7 @@ steps(
       user_action = ->
         clearTimeout(actor) if actor
         if not dirty and dirty = usdlc.page_editor.checkDirty()
-          roaster.message "Saving..."
+          roaster.message ""
         actor = setTimeout(save_page, 2000)
       $(document.body).keyup(user_action).click(user_action)
 )
@@ -39,32 +39,36 @@ load_ace = (next) ->
 localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
 
+clean_html = ->
+  changed = usdlc.document.clone()
+  changed.find('.ace_editor').remove()
+  changed.find('[type]').removeAttr('style')
+  changed.find('textarea[source]').removeAttr('contenteditable')
+  changed = changed.html().replace /&\w+?;/g, (match) ->
+    switch match
+      when '&gt;' then return '>'
+      when '&lt;' then return '<'
+      when '&amp;' then return '&'
+      else return match
+
 usdlc.save_page = ->
-  return unless usdlc.page_editor.checkDirty()
-  save_url = "/server/http/save.coffee?name=#{localStorage.url}"
-  usdlc.sources().removeAttr('contenteditable')
-  usdlc.ace.hide()
   original = localStorage.page_html
-  changed = usdlc.page_editor.getData().replace /&#39;/g, "'"
+  changed = clean_html()
+  roaster.message ''
+  return unless changed isnt original
+  save_url = "/server/http/save.coffee?name=#{localStorage.url}"
   steps(
     ->  @requires '/common/patch.coffee'
     ->  @patch.create localStorage.url, original, changed, @next (@changes) ->
     ->  # send it to the server
-        if @changes.split('\n').length <= 5
-          roaster.message ''
-          usdlc.page_editor.resetDirty()
-          @abort()
         xhr = $.post save_url, @changes, @next (data, status, xhr) ->
         xhr.fail -> roaster.message "<b>Save failed</b>"; @abort()
     ->  # all done - clean up
         localStorage.page_html = changed
-        usdlc.page_editor.resetDirty()
         roaster.message 'Saved'
   )
-  usdlc.ace.show()
   
 usdlc.edit_page = (page, next = ->) ->
-  # usdlc.ace?.clear()
   # keep a copy of location information for back button
   from = "#{window.location.pathname}?edit##{window.location.hash}"
   # make page address is absolute

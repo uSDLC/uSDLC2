@@ -26,7 +26,7 @@ window_specs = "height=200,width=400,left=0,top=0,location=no,menubar=no,toolbar
 
 base = usdlc.ace_base
 last_tab = null
-aces = []; containers = {}; hidden = false; in_undo = false; scroll_top = 0
+aces = []; containers = {}; in_undo = false; scroll_top = 0; hidden = false
 
 module.exports.initialise = (next) ->
   usdlc.page_editor.on 'beforeCommandExec', (event) ->
@@ -41,8 +41,9 @@ module.exports.initialise = (next) ->
     usdlc.ace.hide() unless in_undo
   usdlc.page_editor.on 'afterUndoImage', -> 
     usdlc.ace.show() unless in_undo
-  
+    
   usdlc.ace =
+    active: false
     hide: (msg) ->
       return if hidden
       hidden = true
@@ -56,28 +57,32 @@ module.exports.initialise = (next) ->
         containers[id].insertAfter(textarea = $("textarea##{id}"))
         textarea.hide()
     edit_all: ->
+      aces = []
       usdlc.sources().attr('contenteditable', false).each (index) ->
         usdlc.ace.edit @
     edit: (what) ->
-        textarea = $(what).hide()
-        if not (id = textarea.attr('id'))?.length
-          textarea.attr 'id', id = "gwt_coffee_#{usdlc.sources().length}"
-        container = container.clone().insertAfter(textarea).text(textarea.text())
-        editor = ace.edit(container.get(0))
-        container.addClass(id)
-        aces.push id
-        usdlc.ace.config editor, textarea.attr 'type'
-        ace.require('ace/ext/settings_menu').init(editor)
+      textarea = $(what).hide()
+      if not (id = textarea.attr('id'))?.length
+        textarea.attr 'id', id = "gwt_coffee_#{usdlc.sources().length}"
+      container = container.clone().insertAfter(textarea).text(textarea.text())
+      editor = ace.edit(container.get(0))
+      container.addClass(id)
+      aces.push id
+      usdlc.ace.config editor, textarea.attr 'type'
+      ace.require('ace/ext/settings_menu').init(editor)
+      usdlc.ace.resize(editor, container)
+      editor.on 'change', ->
+        textarea.text(editor.getValue())
         usdlc.ace.resize(editor, container)
-        editor.on 'change', ->
-          textarea.text(editor.getValue())
-          usdlc.ace.resize(editor, container)
-        editor.on 'focus', ->
-          usdlc.ace.editor = editor
-          last_tab = roaster.ckeditor.show_tab 'Ace'
-        editor.on 'blur', ->
-          # usdlc.ace.editor = null
-          roaster.ckeditor.show_tab last_tab
+      editor.on 'focus', ->
+        console.log "FOCUS"
+        usdlc.ace.active = true
+        usdlc.ace.editor = editor
+        last_tab = roaster.ckeditor.show_tab 'Ace'
+      editor.on 'blur', ->
+        console.log "BLUR"
+        usdlc.ace.active = false
+        roaster.ckeditor.show_tab last_tab
     config: (editor, type) ->
       editor.setTheme("ace/theme/twilight")
       type = type.split('.').slice(-1)[0]
@@ -97,4 +102,15 @@ module.exports.initialise = (next) ->
       container = window_container.clone().appendTo(body)
       container.html "#{content}"
       editor = w.ace.edit container.get 0
+
+  blockEditor = -> return not usdlc.ace.active
+  onKeyDown = (event) ->
+    console.log "KEYDOWNPRESS", usdlc.ace.active
+    if usdlc.ace.active
+      # event.data.preventDefault(true)
+      return false
+    return true
+  usdlc.page_editor.on 'selectionChange', blockEditor, null, null, 1
+  usdlc.page_editor.container.on 'keydown', onKeyDown, null, null, 1
+  usdlc.page_editor.container.on 'keypress', onKeyDown, null, null, 1
   next()
