@@ -12,11 +12,15 @@ default_options =
   sections: '.*'
   script_path: 'gen/usdlc2'
   maximum_step_time: 30
-  
-writer = (string, encoding, fd) -> process.send string
-    
-help = ->
-  console.log "usage: ./go gwt project=<project-path> document=<document> sections=[section-path]..."
+
+stdout = null
+forked_writer = (string, encoding, fd)  -> process.send string
+shelled_writer = (string, encoding, fd) -> stdout(string, encoding, fd)
+writer = shelled_writer
+
+help = -> console.log(
+  "usage: ./go gwt project=<project-path>
+  document=<document> sections=[section-path]...")
 
 module.exports = (args...) ->
   return os.help("./go gwt", default_options) if not args.length
@@ -27,7 +31,7 @@ module.exports = (args...) ->
   process.chdir options.project if options.project
   # if we are formed from uSDLC2, send stdout/stderr back via messages
   stdout = process.stdout.write; stderr = process.stderr.write
-  process.stdout.write = process.stderr.write = writer if options.forked
+  process.stdout.write = if options.forked then forked_writer else shelled_writer
   console.log "#: ./go gwt '#{args[0..-2].join("' '")}'"
   # Load rules and start processing
   gwt = gwt.load(options)
