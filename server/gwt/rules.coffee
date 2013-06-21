@@ -2,6 +2,8 @@
 
 gwt.rules(
   /Given a (shell|fork|spawn)/, (type) -> @process = gwt.processes(type)
-    
-  /response includes '(.*)'/, (included) -> gwt.includes_text(included)
+
+  /response includes '(.*)'/, (included) -> @test gwt.includes_text(included)
+
+  /response matches \/(.*)\//, (re) -> @test @matches = gwt.matches_text(re)
 )

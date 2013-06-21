@@ -1,15 +1,15 @@
 <link href="document.css" rel="stylesheet" type="text/css">
 <h1>Instrumentation</h1>
 
-<h2>Given, When, Then</h2>
+<h2>Given, When, Then</h2><p><em><strong>uSDLC</strong></em> will process any set of natural language&nbsp;statements in a GWT block. New blocks can be created with the target icon on the uSDLC tab.</p>
 
-<h3>A Basic Example</h3>
+<h3>A Basic Example</h3><p>Instrumentation consists of a GWT block (below) and the instrumentation bridge code. You can view the code at any time by right-clicking on the GWT block and selecting "<em>Bridge</em>". Bridge code is broken up into a block for each&nbsp;heading leading&nbsp;to the current section. In this way&nbsp;common code is available between sections.</p>
 
 <pre type="gwt">Given a number between 1 and 10
 When we multiply the number by 2
 Then the result is an even number</pre>
 
-<h3>Child Process Output</h3><pre type="gwt">Given a shell
+<h3>Built-in Rules</h3><h4>Given a Shell, Fork or Spawn</h4><h4>Checking output content</h4><h3>Child Process Output</h3><pre type="gwt">Given a shell
 When we execute 'echo uSDLC child output test'
 Then the response includes 'uSDLC child output test'</pre><h2>uSDLC Instrumentation</h2><p><textarea id="gwt_coffee_1" source="" type="gwt.coffee">server = gwt.server()
 

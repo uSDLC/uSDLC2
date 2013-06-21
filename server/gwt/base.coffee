@@ -6,17 +6,19 @@ script_extractor = require 'script_extractor'
 
 module.exports =
   # called if test passes
-  pass: (msg = '') -> 
+  pass: (msg = '') ->
     # try throw new Error() catch error then console.log error.stack
-    console.log "ok #{++@count} - #{msg}"; @next()
+    msg = " - #{msg}" if msg?.length
+    console.log "ok #{++@count}#{msg}"; @next()
   # called if test fails
   fail: (msg) ->
     @failures++
     # try throw new Error() catch error then console.log error.stack
-    console.log "not ok #{++@count} - #{msg}"
+    msg = " - #{msg}" if msg?.length
+    console.log "not ok #{++@count}#{msg}"
     console.log msg.stack if msg?.stack
     @skip.section('fail')
-    @next() 
+    @next()
   # test and show message on failure
   test: (test, msg = '') ->
     if test then @pass msg else @fail msg
@@ -38,5 +40,5 @@ module.exports =
   # what to do when gwt has finished (close servers, etc)
   on_exit: (func) -> @cleanups.unshift func
   # check all output for included text
-  includes_text: (included) ->
-    # TODO: implement
+  includes_text: (included) -> return @output().indexOf(included) != -1
+  matches_text: (re) -> return (new RegExp(re)).test(@output())

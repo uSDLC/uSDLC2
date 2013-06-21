@@ -9,6 +9,7 @@ require.extensions['.gwt.coffee'] = require.extensions['.coffee']
 class GWT extends EventEmitter
   constructor: (@options) ->
     gwt = @
+    # initialise important variables
     @options.document_path = path.join(
       @options.project, "usdlc2/#{@options.document}.html")
     @options.script_path = path.join @options.project, @options.script_path
@@ -17,7 +18,14 @@ class GWT extends EventEmitter
     section_path = ''; @cleanups = []; @skipped = 0
     @after_sections = []; @paused_timeout = null
     @extensions = {}
-
+    # first we take control of stdout and stderr
+    @stdout = process.stdout.write; @stderr = process.stderr.write
+    @cleanups.push ->
+      process.stdout.write = @stdout; process.stderr.write = @stderr
+    @output_array = []
+    process.stdout.write = => @gwt_out arguments...
+    process.stderr.write = => @gwt_err arguments...
+    # all about skipping
     @skip = (msg) -> @pass "# SKIP #{msg}", @skipped++
     # gwt.skip.statements(1) # skip one or more statements in the current script
     @skip.statements = (count = 1) => @statement_skip = count
@@ -71,6 +79,13 @@ class GWT extends EventEmitter
       )
   # done with load as it has already created an instance
   load: -> @
+  gwt_out: (string, encoding, fd) ->
+    @output_array.push string
+    @stdout string, encoding, fd
+  gwt_err: (string, encoding, fd) ->
+    @output_array.push '#!! ', string
+    @stdout string, encoding, fd
+  output: -> (output_array = [@output_array.join('')])[0]
   # add an actor to be run to create a test
   add: (test_list...) ->
     for test in test_list
@@ -166,14 +181,13 @@ class GWT extends EventEmitter
     return @
   # all done ... clean up
   exit: ->
-    do func = =>
+    do next_cleanup = =>
       return if not @cleanups.length
       cleanup = @cleanups.shift()
-      cleanup(func)
-      func() if not cleanup.length #synchronous
-      
+      steps(cleanup, next_cleanup)
+
   server: -> @server = require 'gwt/server'
-  processes: (type) -> return require('gwt/processes')(type)
+  process: (type) -> return require('gwt/processes')(type)
 
 module.exports =
   load: (@options) ->
