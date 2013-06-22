@@ -11,9 +11,9 @@ module.exports = (options, next) ->
 
   script_content = null; script_name = ''
   depth = 0; in_heading = false; headings = []
-  
+
   sax = new Sax()
-  
+
   sax.on 'opening_tag', (name, attributes...) ->
     if in_heading
       headings[depth] += "<#{name} #{attributes.join(' ')}>"
@@ -26,7 +26,7 @@ module.exports = (options, next) ->
         if attr[0..4] is 'type='
           script_content = []
           script_name = "#{path.join headings...}.#{attr[6..-2]}"
-          script_name = script_name.replace(/\s+/g, '_')
+          script_name = script_name.replace(/(\s+|(&nbsp;)+)/g, '_')
           script_name = path.join options.project, 'gen/usdlc2', script_name
           break
 
@@ -47,7 +47,7 @@ module.exports = (options, next) ->
         ->  script_content = null
         ->  fs.writeFile script_name, @content, @next
       )
-      
+
   sax.on 'finish', next
 
   fs.unlink options.runner_file, ->
