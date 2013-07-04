@@ -2,7 +2,7 @@
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
-script_extractor = require 'script_extractor'
+script_extractor = require 'script_extractor'; Rules = require 'common/rules'
 
 require.extensions['.gwt.coffee'] = require.extensions['.coffee']
 
@@ -13,9 +13,9 @@ class GWT extends EventEmitter
     @options.document_path = path.join(
       @options.project, "usdlc2/#{@options.document}.html")
     @options.script_path = path.join @options.project, @options.script_path
-    scripts = []; @actions = []; @tests = 0; @patterns = []
+    scripts = []; @actions = []; @tests = 0; @ruler = new Rules(@)
     @statement_skip = @section_skip = 0; @failures = 0
-    section_path = ''; @cleanups = []; @skipped = 0
+    @cleanups = []; @skipped = 0
     @after_sections = []; @paused_timeout = null
     @extensions = {}
     # first we take control of stdout and stderr
@@ -56,9 +56,7 @@ class GWT extends EventEmitter
         do read_script = =>
           if not scripts.length
             gwt.section(); return @next()
-          script = scripts.shift()
-          if (script_section = path.dirname script) isnt section_path
-            gwt.section section_path = script_section
+          gwt.section script = scripts.shift()
           if path.extname(script) is '.gwt'
             reader = line_reader.for_file script, (statement) =>
               if statement?.length and statement[0] isnt '#'
@@ -99,7 +97,7 @@ class GWT extends EventEmitter
       return @next() if @actions.length is 1  # no actions for this section
       @section_skip -= 1 if @section_skip
       @statement_skip = 0 if not @section_skip
-      name = if name then name.split('/').slice(-1)[0].replace('_', ' ') else ''
+      name = /([^\/]+)\.[\w\.]+$/.exec(name)?[1].replace(/_/g, ' ')
       console.log "#1 Section: #{name}" if name
       do func = =>
         return @next() unless @after_sections.length
@@ -110,31 +108,19 @@ class GWT extends EventEmitter
       @timer.elapsed()
 
   test_statement: (statement) ->
-    # Look for a matching statement, then process the action
-    for pattern, index in @patterns by 2
-      if matched = pattern.exec(statement)
-        # matched = (match.toString() for match in matched)
-        matched = matched[1..] if matched.length > 1
-        # jump statements if asked to do so
-        return @skip('', @statement_skip--) if @statement_skip
-        @title statement
-
-        if not action = @patterns[index + 1]
-          return @todo("add action to rule '#{pattern}'")
-        try return action.apply(@, matched) catch err
-          console.log action.toString()
-          console.log err.stack if err.stack
-          throw err
-    @fail """
-           Unknown statement, add:
-             gwt.rules(
-               /#{statement.replace(/\//g, '.')}/, () =>
-                 @todo 'implement'
-             )"""
+    return @skip('', @statement_skip--) if @statement_skip
+    @title statement
+    if not @ruler.run(statement)
+      @fail """
+             Unknown statement, add:
+               gwt.rules(
+                 /#{statement.replace(/\//g, '.')}/, () =>
+                   @todo 'implement'
+               )"""
+  # called by instrumentation scripts to set up rules for gwt
+  rules: (patterns...) -> @ruler.add(patterns...); return @
   # display a test line title
   title: (text) -> console.log "#2    #{text}"
-  # called by instrumentation scripts to set up rules for gwt
-  rules: (patterns...) -> @patterns = @patterns.concat(patterns); return @
 
   # go to next script without marking pass or failure
   go: -> @next()
@@ -192,5 +178,6 @@ class GWT extends EventEmitter
 module.exports =
   load: (@options) ->
     module.exports = global.gwt = gwt = new GWT @options
-    return gwt.extend 'gwt/base'
+    gwt.extend 'gwt/base'
     require 'gwt/rules'
+    return gwt

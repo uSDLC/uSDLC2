@@ -9,13 +9,15 @@
 When we multiply the number by 2
 Then the result is an even number</pre>
 
-<h3>Built-in Rules</h3><h4>Given a Shell, Fork or Spawn</h4><h4>Checking output content</h4><h3>Child Process Output</h3><pre type="gwt">Given a shell
+<h3>Built-in Rules</h3><h4>Given a Shell, Fork or Spawn</h4><h4>Checking Output Content</h4><h5>Checking Output by Substring</h5><p>Instrumentation captures output from actions and running sub-systems. Sometimes this is the best way to measure a response. For simplicity you can scan the output for a substring.</p><pre type="gwt">Given a number between 1 and 10
+Then the response includes 'ecking Output Co'</pre><h5>Checking Output by Regular Expression</h5><p>For mor complicated checks&nbsp;nothing beats regular expressions. They are, however, less readable.</p><pre type="gwt">Given a number between 1 and 10
+Then response matches /.*ok 1 - \d/</pre><h3>Child Process Output</h3><pre type="gwt">Given a shell
 When we execute 'echo uSDLC child output test'
 Then the response includes 'uSDLC child output test'</pre><h2>uSDLC Instrumentation</h2><p><textarea id="gwt_coffee_1" source="" type="gwt.coffee">server = gwt.server()
 
 gwt.rules(
-  /a number between (\d+) and  (\d+)/, (start, end) ->
-    @number = start - 1 + Math.floor(Math.random() * (end - start))
+  /a number between (\d+) and (\d+)/, (start, end) ->
+    @number = +start + Math.floor(Math.random() * (+end - +start))
     @test(@number < 10, @number)
     
   /multiply the number by (\d+)/, (multiplicand) ->

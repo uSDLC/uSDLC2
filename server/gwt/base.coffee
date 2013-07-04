@@ -7,14 +7,14 @@ script_extractor = require 'script_extractor'
 module.exports =
   # called if test passes
   pass: (msg = '') ->
-    # try throw new Error() catch error then console.log error.stack
-    msg = " - #{msg}" if msg?.length
+    msg = msg.toString()
+    msg = " - #{msg}" if msg.length
     console.log "ok #{++@count}#{msg}"; @next()
   # called if test fails
   fail: (msg) ->
     @failures++
-    # try throw new Error() catch error then console.log error.stack
-    msg = " - #{msg}" if msg?.length
+    msg = msg.toString()
+    msg = " - #{msg}" if msg.length
     console.log "not ok #{++@count}#{msg}"
     console.log msg.stack if msg?.stack
     @skip.section('fail')

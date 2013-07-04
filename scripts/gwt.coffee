@@ -1,4 +1,4 @@
-# Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
+# Copyright (C) 2012,13 paul@marrington.net, see GPL for license
 
 # This script expects a base directory, query string, hash
 # It will run Setup.coffee from the base directory, then process each statement.
@@ -15,7 +15,8 @@ default_options =
 
 stdout = null
 forked_writer = (string, encoding, fd)  -> process.send string
-shelled_writer = (string, encoding, fd) -> stdout(string, encoding, fd)
+shelled_writer = (string, encoding, fd) ->
+  stdout.call(process.stdout, string, encoding, fd)
 writer = shelled_writer
 
 help = -> console.log(

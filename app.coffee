@@ -22,16 +22,16 @@ steps(
         usdlc.save_page()
       user_action = ->
         clearTimeout(actor) if actor
-        if not dirty and dirty = usdlc.page_editor.checkDirty()
-          roaster.message ""
+        roaster.message ""
         actor = setTimeout(save_page, 2000)
-      $(document.body).keyup(user_action).click(user_action)
+      $(document.body).keyup(user_action)
+      usdlc.page_editor.on 'blur', save_page
 )
 
 load_ace = (next) ->
   load_ace = (next) -> next() # only called once
   steps(
-    ->  @package "coffee-script,ace"
+    ->  @package "jqueryui,coffee-script,ace"
     ->  @requires "/client/ace/ace.coffee"
     ->  next()
   )
@@ -67,7 +67,7 @@ usdlc.save_page = ->
         localStorage.page_html = changed
         roaster.message 'Saved'
   )
-  
+
 usdlc.edit_page = (page, next = ->) ->
   # keep a copy of location information for back button
   from = "#{window.location.pathname}?edit##{window.location.hash}"

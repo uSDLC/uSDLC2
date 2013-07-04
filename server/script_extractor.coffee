@@ -1,4 +1,4 @@
-# Copyright (C) 2012,13 Paul Marrington (paul@marrington.net), see uSDLC2/GPL for license
+# Copyright (C) 2012,13 paul@marrington.net, see GPL for license
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
 mkdirs = require('dirs').mkdirsSync
 newer = require 'newer'; steps = require 'steps'
