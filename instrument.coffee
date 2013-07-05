@@ -33,6 +33,8 @@ class Instrument
     div.innerText = text
     @container[0].appendChild(div)
     return div
+  html: (className, html) ->
+    @div(className, '').innerHTML = html
   timer: (minutes, seconds) ->
     div = _div.cloneNode()
     div.className = 'timer'
@@ -107,6 +109,8 @@ window.instrument = ->
   instrument = new Instrument()
 
   url = "/server/http/gwt.coffee#{window.location.search}"
+  instrument.html('again',
+    "<a href='#{window.location.href}'>again</a>")
   request = new XMLHttpRequest()
   previous_length = 0
   request.onreadystatechange = ->

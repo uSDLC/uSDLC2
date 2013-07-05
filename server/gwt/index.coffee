@@ -3,6 +3,7 @@ EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
 script_extractor = require 'script_extractor'; Rules = require 'common/rules'
+require 'common/strings'
 
 require.extensions['.gwt.coffee'] = require.extensions['.coffee']
 
@@ -50,28 +51,45 @@ class GWT extends EventEmitter
       ->
         @asynchronous()
         gwt.timer = timer pre: '# ', post: ''
-        sections = (gwt.options.sections ? '')+'|.*/uSDLC_Instrumentation.*'
-        re = new RegExp(sections)
+        re = new RegExp(gwt.options.sections ? '')
         scripts = (script for script in scripts when re.test script)
+        processed_scripts = {}            
         do read_script = =>
-          if not scripts.length
-            gwt.section(); return @next()
+          if not scripts.length then gwt.section(); return @next()
           gwt.section script = scripts.shift()
-          if path.extname(script) is '.gwt'
-            reader = line_reader.for_file script, (statement) =>
-              if statement?.length and statement[0] isnt '#'
-                gwt.add (gwt) -> gwt.test_statement statement
-            reader.on 'end', read_script
-          else
-            script = path.resolve dirs.base(), script
-            actor = require(script)
-            if typeof actor is 'function'
-              switch actor.length
-                when 0 then gwt.add actor # direct actor
-                when 1 then actor gwt, read_script # asynchronous
-                else actor gwt; read_script() # synchronouus
-            else
-              read_script()
+          ext_name = path.extname(script)
+          switch ext_name
+            when '.gwt'
+              reader = line_reader.for_file script, (statement) =>
+                if statement?.length and statement[0] isnt '#'
+                  gwt.add (gwt) -> gwt.test_statement statement
+              reader.on 'end', read_script
+            when '.coffee'
+              parents = []; base = script.split('.')[0]
+              if script.ends_with('.gwt.coffee')
+                ext_name = '.gwt.coffee'
+                while base.length and base isnt '.'
+                  parents.push(base)
+                  base = path.dirname(base)
+                parents.pop() if parents[scripts.length - 1] is 'gen'
+                parents.pop() if parents[scripts.length - 1] is 'usdlc2'
+              else
+                parents = [base]
+                
+              do next = ->
+                return read_script() if not parents.length
+                script = parents.pop() + ext_name
+                return next() if processed_scripts[script]
+                processed_scripts[script] = script
+                try
+                  actor = require(path.resolve dirs.base(), script)
+                  if typeof actor is 'function'
+                    switch actor.length
+                      when 0 then gwt.add(actor) # direct actor
+                      when 1 then actor(gwt, next); return # asynchronous
+                      else actor(gwt) # synchronouus
+                catch err
+                next()
       # 4: run the tests
       -> gwt.go()
       )

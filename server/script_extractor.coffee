@@ -19,7 +19,6 @@ module.exports = (options, next) ->
       headings[depth] += "<#{name} #{attributes.join(' ')}>"
     else if name[0] is 'h' and not isNaN(depth = +name[1])
       in_heading = true
-      # depth = 0 if attributes.id is 'page_title'
       headings[headings.length = --depth] = ''
     else if (name is 'pre' or name is 'textarea')
       for attr in attributes

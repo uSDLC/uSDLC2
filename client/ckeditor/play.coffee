@@ -26,7 +26,7 @@ module.exports = (exchange) ->
                   sections: sections
                 dlg = usdlc.instrument_window = @dialog
                   name:   "Instrument"
-                  title:  "Instrument '#{section}'"
+                  title:  "Instrument '#{section.title}'"
                   url:    url
                   fill:   (dlg) -> dlg.iframe.attr('src', url)
                   after:  @next
