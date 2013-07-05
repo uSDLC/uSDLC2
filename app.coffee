@@ -12,7 +12,7 @@ steps(
         localStorage.url = "#{window.location.pathname}##{window.location.hash}"
       usdlc.document = $('div#document')
       $('div#base_filler').height($(window).height() - 64)
-      usdlc.sources = -> $('textarea[source]')
+      usdlc.sources = -> $('textarea[source]', usdlc.document)
       usdlc.base = $('head base')
       usdlc.edit_page localStorage.url, ->
 
@@ -92,7 +92,6 @@ usdlc.edit_page = (page, next = ->) ->
         usdlc.document.append('<br>') if last_tag isnt 'BR'
         load_ace @next  # so we can set source edit fields
     ->  # we have just loaded, so editor is not really dirty
-        usdlc.ace.edit_all()
         usdlc.page_editor.resetDirty()
         if hash?.length > 1
           setTimeout ( -> usdlc.goto_section(hash[1..])), 500
@@ -101,6 +100,16 @@ usdlc.edit_page = (page, next = ->) ->
         usdlc.document.blur()
         next()
   )
+  
+usdlc.source = (header) ->
+  el = header.nextUntil('h1,h2,h3,h4,h5,h6', 'textarea[source]')
+  if not el.length
+    el = $('<textarea>').attr
+      source:   'true'
+      type:     'gwt.coffee'
+      readonly: 'readonly'
+    el.insertAfter(header)
+  return el  
 
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

@@ -52,5 +52,28 @@ module.exports = (exchange) ->
           window.location.hash = hash = @innerHTML
           localStorage.url = localStorage.url.split('#')[0] + "##{hash}"
           done = true
+          
+    usdlc.section_path = ->
+      caret = usdlc.page_editor.getSelection().getRanges()[0].startContainer
+      for parent in caret.getParents(true)
+        break if parent.getAttribute?('id') is 'document'
+        owner = parent
+      start = $(owner.$)
+      if not start.is('h1,h2,h3,h4,h5,h6')
+        start = start.prevAll('h1,h2,h3,h4,h5,h6').first()
+      level = +start.prop("tagName")[1] ? 1
+      section_path = [title: section = start.text(), element:start, level:level]
+      start.prevAll('h1,h2,h3,h4,h5,h6').each ->
+        parent = $(this)
+        if (parent_level = +parent.prop("tagName")[1]) < level
+          level = parent_level
+          return section_path.unshift
+            title: parent.text()
+            element: parent
+            level: level
+        else
+          return false  # found root
+      return section_path
+      
     window.onscroll = ->
       scroll_timer = setTimeout(set_hash, 500) if not scroll_timer

@@ -1,13 +1,17 @@
 // Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 
+textarea[source] {
+  display: none;
+}
+
 div#document {
   margin-top: 60px;
-  width: 700px;
+  width:      700px;
 }
 
 .error {
-  color: red;
-  font-weight: bolder;
+  color:        red;
+  font-weight:  bolder;
 }
 
 div.dialog iframe {
@@ -87,4 +91,10 @@ a.cke_editor_tab_selected:hover {
 div.section_list {
   width: 300px;
   height: 400px;
+}
+
+div.ui-helper-reset {
+  h2:before, h3:before, h4:before, h5:before, h6:before {
+    content:''
+  }
 }
