@@ -1,17 +1,20 @@
 // Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 
-textarea[source] {
-  display: none;
-}
-
-div#document {
-  margin-top: 60px;
-  width:      700px;
-}
-
 .error {
   color:        red;
   font-weight:  bolder;
+}
+
+span.messages, span.messages b {
+  top: -5px;
+  position: relative;
+  padding-left: 1em;
+  font-size: 90%;
+  color: #AAA;
+  font-style: italic;
+}
+span.messages b {
+  color: red;
 }
 
 div.dialog iframe {

@@ -7,8 +7,12 @@ roaster.ckeditor.toolbar(
 )
 roaster.ckeditor.toolbar 'ace', 'Ace', 'ace_configuration'
 # Open a full page html editor ready to load with current document
+
 usdlc.page_editor = roaster.ckeditor.open 'document',
-  {}
+  resize_dir: 'both'
+  resize_minWidth: 300
+  removeButtons: 'Save,NewPage'
+  magicline_color: 'blue'
   # filebrowserBrowseUrl: '/file_browser.coffee'
   # filebrowserImageBrowseLinkUrl: '/image_browser.coffee'
   # filebrowserImageBrowseUrl: '/image_browser.coffee'
@@ -17,15 +21,11 @@ usdlc.page_editor = roaster.ckeditor.open 'document',
 module.exports.initialise = (next) ->
   # Do things only available once the editor is up and loaded
   usdlc.page_editor.onInstanceReady.push ->
+    usdlc.page_editor.resize(600, $(window).height() - 20)
     # 'New Page' button opens index page on curent project
     usdlc.page_editor.getCommand('newpage').exec = (editor) ->
       usdlc.edit_page 'Index'
       return true
-    # usdlc.page_editor.getCommand('preview').exec = (editor) ->
-    #   window.open localStorage.url
-    # usdlc.page_editor.getCommand('save').exec = (editor) ->
-    #   usdlc.save_page()
-    # usdlc.page_editor.commands.save.enable()
     next()
 
 usdlc.richCombo = (options) ->

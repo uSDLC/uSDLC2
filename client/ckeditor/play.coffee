@@ -3,10 +3,15 @@ dirs = require 'dirs'
 
 module.exports = (exchange) ->
   exchange.respond.client ->
+    init = (dlg) ->
+      dlg.append(dlg.iframe = $('<iframe/>'))
+      dlg.iframe.height(dlg.height() - 10)
     dialog_options =
-      width:            600
-      position:         { my: "right top+60", at: "right top", of: window }
-      init:             (dlg) -> dlg.append(dlg.iframe = $('<iframe/>'))
+      width:      600
+      position:   { my: "right top+20", at: "right top", of: window }
+      fix_height_to_window: 130
+      init:       init
+      
 
     CKEDITOR.plugins.add 'play',
       icons: 'play',
@@ -15,6 +20,11 @@ module.exports = (exchange) ->
           doc = localStorage.url.split('#')[0].split('/').slice(-1)[0]
           sp = (section.title for section in usdlc.section_path())
           sections = ".*/#{sp.join('/')}([/\\.].*)*$".replace(/\s/g, '_')
+
+          onResize = (dlg) ->
+            usdlc.instrument_window.iframe.height(
+              usdlc.instrument_window.height() - 10)
+              
           steps(
             ->  # any error should be shown in red
                 @on 'error', -> @abort()
@@ -30,10 +40,8 @@ module.exports = (exchange) ->
                   url:    url
                   fill:   (dlg) -> dlg.iframe.attr('src', url)
                   after:  @next
+                  resizeStop: (dlg) -> onResize(dlg)
                   dialog_options
-                dlg.resize_to_fit = ->
-                  dlg.iframe.height(
-                    dlg.iframe.get(0).contentWindow.document.body.scrollHeight)
           )
         editor.ui.addButton 'play',
           label: 'Play instrumentation in this section'

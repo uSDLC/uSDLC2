@@ -2,10 +2,10 @@
 module.exports = (exchange) ->
   exchange.respond.client ->
     dialog_options =
-      width:    600
-      position: { my: "right bottom", at: "right bottom", of: window }
-      init:     (dlg) -> dlg.append(dlg.content = $('<div/>'))
-      fix_height_to_window: 100
+      width:      600
+      position:   { my: "right top+60", at: "right-5 top", of: window }
+      init:       (dlg) -> dlg.append(dlg.content = $('<div/>'))
+      fix_height_to_window: 130
 
     CKEDITOR.plugins.add 'gwt_coffee',
       icons: 'gwt_coffee',
@@ -15,7 +15,10 @@ module.exports = (exchange) ->
           # fill dialog with an accordion - one for each ace source on path
           fill = (dlg) ->
             # remove previous contents
-            editor.destroy() for editor in dlg.editors if dlg.editors
+            if dlg.editors
+              editor.destroy() for editor in dlg.editors
+              dlg.content.accordion('destroy')
+              dlg.content.empty()
             # add new content now
             dlg.editors = []
             for section, index in section_path
@@ -35,15 +38,18 @@ module.exports = (exchange) ->
               activate:     (event, ui) -> instantiate ui.newPanel
               create:       (event, ui) -> instantiate ui.panel
               
+          onResize = (dlg) -> usdlc.gwt_coffee_dlg.content.accordion('refresh')
+              
           steps(
             ->  # any error should be shown in red
                 @on 'error', (error) -> console.log(error); @abort()
             ->  @requires 'querystring', '/client/dialog.coffee'
             ->  # now we have querystring and window, use them
-                dlg = usdlc.instrument_window = @dialog
+                dlg = usdlc.gwt_coffee_dlg = @dialog
                   name:   "Instrumentation"
                   title:  "Instrumentation"
                   fill:   fill
+                  resizeStop: (dlg) -> onResize(dlg)
                   dialog_options
           )
         editor.ui.addButton 'gwt_coffee',

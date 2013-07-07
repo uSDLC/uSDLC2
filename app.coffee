@@ -5,33 +5,28 @@ window.usdlc = {}
 roaster.message = (msg) -> console.log msg
 
 steps(
-  ->  @package "jquery,ckeditor"
+  ->  @package "jquery,jqueryui,ckeditor"
   ->  @requires "/client/ckeditor/ckeditor.coffee"
   ->  # Go to page specified or return to the last page and location
       if window.location.search is '?edit'
         localStorage.url = "#{window.location.pathname}##{window.location.hash}"
-      usdlc.document = $('div#document')
       $('div#base_filler').height($(window).height() - 64)
       usdlc.sources = -> $('textarea[source]', usdlc.document)
-      usdlc.base = $('head base')
       usdlc.edit_page localStorage.url, ->
 
-      actor = null; dirty = false
-      save_page = ->
-        dirty = false;
-        usdlc.save_page()
-      user_action = ->
+      actor = null
+      usdlc.save_timer = ->
         clearTimeout(actor) if actor
         roaster.message ""
-        actor = setTimeout(save_page, 2000)
-      $(document.body).keyup(user_action)
-      usdlc.page_editor.on 'blur', save_page
+        actor = setTimeout(usdlc.save_page, 2000)
+      usdlc.page_editor.on 'key', usdlc.save_timer
+      usdlc.page_editor.on 'blur', usdlc.save_page
 )
 
-load_ace = (next) ->
-  load_ace = (next) -> next() # only called once
+usdlc.load_ace = (next) ->
+  usdlc.load_ace = (next) -> next() # only called once
   steps(
-    ->  @package "jqueryui,coffee-script,ace"
+    ->  @package "coffee-script,ace"
     ->  @requires "/client/ace/ace.coffee"
     ->  next()
   )
@@ -39,21 +34,11 @@ load_ace = (next) ->
 localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
 
-clean_html = ->
-  changed = usdlc.document.clone()
-  changed.find('.ace_editor').remove()
-  changed.find('[type]').removeAttr('style')
-  changed.find('textarea[source]').removeAttr('contenteditable')
-  changed = changed.html().replace /&\w+?;/g, (match) ->
-    switch match
-      when '&gt;' then return '>'
-      when '&lt;' then return '<'
-      when '&amp;' then return '&'
-      else return match
+clean_html = -> return usdlc.page_editor.getData()
 
 usdlc.save_page = ->
   original = localStorage.page_html
-  changed = clean_html()
+  changed =  clean_html()
   roaster.message ''
   return unless changed isnt original
   save_url = "/server/http/save.coffee?name=#{localStorage.url}"
@@ -82,27 +67,25 @@ usdlc.edit_page = (page, next = ->) ->
   localStorage.url = localStorage["#{localStorage.project}_url"] = page
   [pathname,hash] = page.split('#')
   hash = "##{hash}" if hash
-  usdlc.base.attr 'href', "/#{localStorage.project}/"
   steps(
     ->  @data pathname
     ->  # parse html into dom
-        localStorage.page_html = @[localStorage.document = @key]
-        usdlc.document.html @[@key]
-        last_tag = usdlc.document.children().last().prop('tagName')
-        usdlc.document.append('<br>') if last_tag isnt 'BR'
-        load_ace @next  # so we can set source edit fields
-    ->  # we have just loaded, so editor is not really dirty
+        html = localStorage.page_html = @[localStorage.document = @key]
+        usdlc.page_editor.config.baseHref = "/#{localStorage.project}/"
+        usdlc.page_editor.setData html, @next
+    ->  # prepare for user interaction
+        usdlc.document = $(usdlc.page_editor.document.$.body)
         usdlc.page_editor.resetDirty()
         if hash?.length > 1
-          setTimeout ( -> usdlc.goto_section(hash[1..])), 500
+          setTimeout (-> usdlc.goto_section(hash[1..])), 500
         $('title').html "#{@key} - uSDLC2"
-        history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
-        usdlc.document.blur()
+        usdlc.load_ace ->
+        # history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         next()
   )
   
 usdlc.source = (header) ->
-  el = header.nextUntil('h1,h2,h3,h4,h5,h6', 'textarea[source]')
+  el = header.nextUntil('h1,h2,h3,h4,h5,h6').find('textarea[source]')
   if not el.length
     el = $('<textarea>').attr
       source:   'true'

@@ -103,7 +103,7 @@ class Instrument
     try action[0].apply(@, action[1]) catch err
       console.log action.toString()
       console.log err.stack if err.stack
-    window.parent.usdlc.instrument_window.resize_to_fit()
+    window.scrollTo(0,document.body.scrollHeight)
 
 window.instrument = ->
   instrument = new Instrument()

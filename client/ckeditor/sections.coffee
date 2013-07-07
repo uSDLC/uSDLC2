@@ -9,12 +9,11 @@ module.exports = (exchange) ->
       document.body.scrollTop -= 60
       [pathname,hash] = localStorage.url.split('#')
       localStorage.url = "#{pathname}##{hash = heading.innerText}"
-      history.pushState from, '', "#{pathname}?edit##{hash ? ''}"
-      usdlc.document.blur()
+      # history.pushState from, '', "#{pathname}?edit##{hash ? ''}"
 
     outline = ->
       listeners = []
-      $('h1,h2,h3,h4,h5,h6').each ->
+      $('h1,h2,h3,h4,h5,h6', usdlc.document).each ->
         heading = CKEDITOR.dom.element.get @
         listeners.push heading.on 'click', ->
           usdlc.document.children().show()
@@ -32,20 +31,21 @@ module.exports = (exchange) ->
           label: 'Document Sections',
           command: 'sections',
           toolbar: 'uSDLC'
+          
+    headers = -> usdlc.document.find('h1,h2,h3,h4,h5,h6')
 
     usdlc.goto_section = (name) ->
       sectionElements = {}
-      $('h1,h2,h3,h4,h5,h6').each -> sectionElements[@innerHTML] = @
+      headers().each -> sectionElements[@innerHTML] = @
       return if not name or not sectionElements[name]
       goto_section sectionElements[name]
 
-    usdlc.current_section = ->
-      # window.location.hash[1..] if window.location.hash.length > 1
     scroll_timer = null
+    
     set_hash = ->
       scroll_timer = null
-      top = document.body.scrollTop; done = false
-      $('h1,h2,h3,h4,h5,h6').each ->
+      top = usdlc.page_editor.document.$.body.scrollTop; done = false
+      headers().each ->
         return if done
         section_top = $(@).offset().top
         if section_top > top
@@ -55,12 +55,13 @@ module.exports = (exchange) ->
           
     usdlc.section_path = ->
       caret = usdlc.page_editor.getSelection().getRanges()[0].startContainer
-      for parent in caret.getParents(true)
-        break if parent.getAttribute?('id') is 'document'
-        owner = parent
-      start = $(owner.$)
+      # last parent before <body> is top of line
+      start = caret.getParents(true)[-3..-3]
+      return [] if not start.length #pointing to body (no elements)
+      start = $(start[0].$)
       if not start.is('h1,h2,h3,h4,h5,h6')
         start = start.prevAll('h1,h2,h3,h4,h5,h6').first()
+      return [] if not start.length # In text above first header
       level = +start.prop("tagName")[1] ? 1
       section_path = [title: section = start.text(), element:start, level:level]
       start.prevAll('h1,h2,h3,h4,h5,h6').each ->
@@ -75,5 +76,9 @@ module.exports = (exchange) ->
           return false  # found root
       return section_path
       
-    window.onscroll = ->
+    setter = -> usdlc.page_editor.document?.$.onscroll = ->
       scroll_timer = setTimeout(set_hash, 500) if not scroll_timer
+    usdlc.page_editor.on 'dataReady', setter
+    # switching to html and back loses setter. Tried on mode, but
+    # doc element no longer has a defaultView (window) in iframe
+    # usdlc.page_editor.on 'mode', setter

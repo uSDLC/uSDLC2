@@ -11,12 +11,14 @@ module.exports.initialise = (next) ->
       ace.require('ace/ext/settings_menu').init(editor)
       editor.on 'change', ->
         source.text(editor.getValue())
+        usdlc.save_timer()
       editor.on 'focus', ->
         usdlc.ace.active = true
         usdlc.ace.editor = editor
         last_tab = roaster.ckeditor.show_tab 'Ace'
       editor.on 'blur', ->
         usdlc.ace.active = false
+        usdlc.save_page()
         roaster.ckeditor.show_tab last_tab
       return editor
 
