@@ -46,5 +46,5 @@ module.exports = (exchange) ->
         editor.ui.addButton 'play',
           label: 'Play instrumentation in this section'
           command: 'play'
-          toolbar: 'uSDLC'
+          toolbar: 'uSDLC,6'
 

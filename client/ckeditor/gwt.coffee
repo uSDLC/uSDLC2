@@ -10,4 +10,4 @@ module.exports = (exchange) ->
         editor.ui.addButton 'gwt',
           label: 'Given / When / Then ...'
           command: 'gwt'
-          toolbar: 'uSDLC'
+          toolbar: 'uSDLC,4'

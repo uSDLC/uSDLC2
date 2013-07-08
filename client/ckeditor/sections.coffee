@@ -30,7 +30,7 @@ module.exports = (exchange) ->
         editor.ui.addButton 'sections',
           label: 'Document Sections',
           command: 'sections',
-          toolbar: 'uSDLC'
+          toolbar: 'uSDLC,3'
           
     headers = -> usdlc.document.find('h1,h2,h3,h4,h5,h6')
 

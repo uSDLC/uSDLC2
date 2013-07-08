@@ -55,4 +55,4 @@ module.exports = (exchange) ->
         editor.ui.addButton 'gwt_coffee',
           label: 'Coffeescript GWT Instrumentation'
           command: 'gwt_coffee'
-          toolbar: 'uSDLC'
+          toolbar: 'uSDLC,5'
