@@ -23,6 +23,10 @@ module.exports.initialise = (next) ->
       return editor
 
     config: (editor, type) ->
+      ace.config.loadModule 'ace/ext/language_tools', ->
+        editor.setOptions
+          enableBasicAutocompletion: true
+          enableSnippets: true
       editor.setTheme("ace/theme/twilight")
       type = type.split('.').slice(-1)[0]
       editor.getSession().setMode("ace/mode/#{type}")
