@@ -3,7 +3,7 @@
 # load ckeditor plugins
 roaster.ckeditor.toolbar(
   'ckeditor', 'uSDLC', 'projects', 'documents', 'sections',
-  'gwt', 'gwt_coffee', 'play'
+  'gwt', 'gwt_coffee', 'play', 'windows'
 )
 roaster.ckeditor.toolbar 'ace', 'Ace', 'ace_configuration'
 # Open a full page html editor ready to load with current document
