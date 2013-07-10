@@ -6,7 +6,7 @@
 <body class="scayt-enabled">
 <h1 style="">Instrumentation</h1>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee">test</textarea></p>
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
 
 <h2 style="">Given, When, Then</h2>
 
@@ -35,9 +35,19 @@ gwt.rules(
 <pre style="display: block;" type="gwt">
 Given a number between 1 and 10
 When we multiply the number by 2
+Then the result is an even number
+</pre>
+
+<p>More than one GWT block can reside in each section. They are concatenated for the purposes of instrumentation.</p>
+
+<pre style="width: 454.75px;" type="gwt">
+Given a number between 1 and 10
+When we multiply the number by 2
 Then the result is an even number</pre>
 
 <h3 style="">Built-in Rules</h3>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
 
 <h4 style="">Given a Shell, Fork or Spawn</h4>
 
@@ -57,7 +67,9 @@ Then the response includes &#39;ecking Output Co&#39;</pre>
 
 <h5 style="">Checking Output by Regular Expression</h5>
 
-<p style="display: block;">For mor complicated checks&nbsp;nothing beats regular expressions. They are, however, less readable.</p>
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<p style="display: block;">For more complicated checks&nbsp;nothing beats regular expressions. They are, however, less readable.</p>
 
 <pre style="display: block;" type="gwt">
 Given a number between 1 and 10

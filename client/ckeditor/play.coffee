@@ -36,7 +36,7 @@ module.exports = (exchange) ->
                   sections: sections
                 dlg = usdlc.instrument_window = @dialog
                   name:   "Instrument"
-                  title:  "Instrument '#{section.title}'"
+                  title:  "Play: #{section.title}"
                   url:    url
                   fill:   (dlg) -> dlg.iframe.attr('src', url)
                   after:  @next
@@ -48,3 +48,12 @@ module.exports = (exchange) ->
           command: 'play'
           toolbar: 'uSDLC,6'
 
+        usdlc.page_editor.addMenuGroup('uSDLC')
+        editor.addMenuItem 'play',
+          label:    'Play Instrumentation (Alt-P)'
+          command:  'play'
+          group:    'uSDLC'
+          order:    3
+        editor.contextMenu.addListener (element, selection) ->
+          return play: CKEDITOR.TRISTATE_OFF
+        editor.setKeystroke(CKEDITOR.ALT + 80, 'play')

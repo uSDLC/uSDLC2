@@ -116,7 +116,7 @@ class GWT extends EventEmitter
       @section_skip -= 1 if @section_skip
       @statement_skip = 0 if not @section_skip
       name = /([^\/]+)\.[\w\.]+$/.exec(name)?[1].replace(/_/g, ' ')
-      console.log "#1 Section: #{name}" if name
+      console.log "#1 Section: #{name}" if name if not name.ends_with('.gwt')
       do func = =>
         return @next() unless @after_sections.length
         section = @after_sections.shift()

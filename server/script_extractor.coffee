@@ -1,20 +1,23 @@
 # Copyright (C) 2012,13 paul@marrington.net, see GPL for license
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
-mkdirs = require('dirs').mkdirsSync
+dirs = require('dirs')
 newer = require 'newer'; steps = require 'steps'
 
-module.exports = (options, next) ->
-  options.runner_file =
-    path.join options.project, "gen/usdlc2/#{options.document}.list"
+decode = null
 
-  return next() if newer(options.runner_file, options.document_path)
+module.exports = (options, extraction_complete) ->
+  gen = path.join options.project, "gen/usdlc2"
+  options.runner_file = path.join gen, "#{options.document}.list"
+  input_path = path.join options.project, "usdlc2/#{options.document}.html"
 
+  return extraction_complete() if newer(options.runner_file, options.document_path)
+  
   script_content = null; script_name = ''
   depth = 0; in_heading = false; headings = []
 
   sax = new Sax()
 
-  sax.on 'opening_tag', (name, attributes...) ->
+  sax.on 'opening_tag', (name, attributes..., next) ->
     if in_heading
       headings[depth] += "<#{name} #{attributes.join(' ')}>"
     else if name[0] is 'h' and not isNaN(depth = +name[1])
@@ -26,29 +29,39 @@ module.exports = (options, next) ->
           script_content = []
           script_name = "#{path.join headings...}.#{attr[6..-2]}"
           script_name = script_name.replace(/(\s+|(&nbsp;)+)/g, '_')
-          script_name = path.join options.project, 'gen/usdlc2', script_name
+          script_name = path.join gen, script_name
           break
+    next()
 
   sax.on 'text', (text) ->
     headings[depth] += text if in_heading
     script_content.push(text) if script_content?
+    
+  added_to_runner = {}
+  add_to_runner = (script_name, next) ->
+    return next() if added_to_runner[script_name]
+    added_to_runner[script_name] = script_name
+    fs.appendFile options.runner_file, "#{script_name}\n", next
 
-  sax.on 'closing_tag', (name) ->
+  sax.on 'closing_tag', (name, next) ->
     in_heading = false if name[0] is 'h'
     headings[depth] += "</#{name}>" if in_heading
-    if (name is 'pre' or name is 'textarea') and script_content?
-      console.log "#: Build #{script_name}"
-      mkdirs path.dirname script_name
-      fs.appendFile options.runner_file, "#{script_name}\n"
-      steps(
-        ->  @requires 'ent'
-        ->  @content = @ent.decode script_content.join '\n'
-        ->  script_content = null
-        ->  fs.writeFile script_name, @content, @next
-      )
+    return next() if not (name in ['pre','textarea']) or not script_content?
+    console.log "#: Build #{script_name}"
+    content = decode script_content.join '\n'
+    script_content = null
+    steps(
+      ->  dirs.mkdirs path.dirname(script_name), @next
+      ->  fs.appendFile script_name, content, @next
+      ->  add_to_runner(script_name, @next)
+      ->  next()
+    )
 
-  sax.on 'finish', next
+  sax.on 'finish', extraction_complete
 
-  fs.unlink options.runner_file, ->
-    input_path = path.join options.project, "usdlc2/#{options.document}.html"
-    fs.createReadStream(input_path).pipe(sax)
+  steps(
+    ->  @requires 'ent'
+    ->  decode = @ent.decode
+    ->  dirs.rmdirs gen, @next
+    ->  @pipe fs.createReadStream(input_path), sax
+  )

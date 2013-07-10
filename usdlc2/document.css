@@ -72,6 +72,6 @@ textarea[type="gwt.coffee"] {
   border: 1px inset #9f9;
   background-color: #fafffa;
 }
-textarea[source][data-cke-editable] {
+body.cke_editable textarea[source] {
   display: none;
 }

@@ -37,6 +37,7 @@ module.exports = (exchange) ->
               heightStyle:  'fill'
               activate:     (event, ui) -> instantiate ui.newPanel
               create:       (event, ui) -> instantiate ui.panel
+            dlg.dialog 'option', 'title', "Edit: #{section.title}"
               
           onResize = (dlg) -> usdlc.gwt_coffee_dlg.content.accordion('refresh')
               
@@ -47,7 +48,7 @@ module.exports = (exchange) ->
             ->  # now we have querystring and window, use them
                 dlg = usdlc.gwt_coffee_dlg = @dialog
                   name:   "Instrumentation"
-                  title:  "Instrumentation"
+                  title:  "Edit"
                   fill:   fill
                   resizeStop: (dlg) -> onResize(dlg)
                   dialog_options
@@ -56,3 +57,12 @@ module.exports = (exchange) ->
           label: 'Coffeescript GWT Instrumentation'
           command: 'gwt_coffee'
           toolbar: 'uSDLC,5'
+        usdlc.page_editor.addMenuGroup('uSDLC')
+        editor.addMenuItem 'gwt_coffee',
+          label:    'Edit Instrumentation (Alt-D)'
+          command:  'gwt_coffee'
+          group:    'uSDLC'
+          order:    2
+        editor.contextMenu.addListener (element, selection) ->
+          return gwt_coffee: CKEDITOR.TRISTATE_OFF
+        editor.setKeystroke(CKEDITOR.ALT + 68, 'gwt_coffee')

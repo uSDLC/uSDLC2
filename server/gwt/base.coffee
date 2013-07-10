@@ -2,7 +2,6 @@
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
 line_reader = require 'line_reader'; steps = require 'steps'
-script_extractor = require 'script_extractor'
 
 module.exports =
   # called if test passes

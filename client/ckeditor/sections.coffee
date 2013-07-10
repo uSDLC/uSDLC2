@@ -72,8 +72,6 @@ module.exports = (exchange) ->
             title: parent.text()
             element: parent
             level: level
-        else
-          return false  # found root
       return section_path
       
     setter = -> usdlc.page_editor.document?.$.onscroll = ->
