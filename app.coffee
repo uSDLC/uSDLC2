@@ -4,6 +4,8 @@ window.usdlc = {}
 
 roaster.message = (msg) -> console.log msg
 
+save_actions = {}
+
 steps(
   ->  @package "jquery,jqueryui,ckeditor"
   ->  @requires "/client/ckeditor/ckeditor.coffee"
@@ -15,19 +17,20 @@ steps(
       usdlc.edit_page localStorage.url, ->
 
       actor = null
-      usdlc.save_timer = ->
+      usdlc.save_timer = (id, save_action) ->
         clearTimeout(actor) if actor
         roaster.message ""
+        save_actions[id] = save_action if id
         actor = setTimeout(usdlc.save_page, 2000)
-      usdlc.page_editor.on 'key', usdlc.save_timer
+      usdlc.page_editor.on 'key', -> usdlc.save_timer()
       usdlc.page_editor.on 'blur', usdlc.save_page
 )
 
 usdlc.load_ace = (next) ->
   usdlc.load_ace = (next) -> next() # only called once
   steps(
-    ->  @package "coffee-script,ace"
-    ->  @requires "/client/ace/ace.coffee"
+    ->  @package "coffee-script,ace,codemirror"
+    ->  @requires "/client/ace/ace.coffee","/client/codemirror/codemirror.coffee"
     ->  next()
   )
 
@@ -37,6 +40,9 @@ localStorage.project ?= 'uSDLC2'
 clean_html = -> return usdlc.page_editor.getData()
 
 usdlc.save_page = ->
+  for id, save_action of save_actions
+    delete save_actions[id]
+    save_action()
   original = localStorage.page_html
   changed =  clean_html()
   roaster.message ''
@@ -83,7 +89,7 @@ usdlc.edit_page = (page, next = ->) ->
         # history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
         next()
   )
-  
+
 usdlc.source = (header) ->
   el = header.nextUntil('h1,h2,h3,h4,h5,h6').find('textarea[source]')
   if not el.length
@@ -92,7 +98,7 @@ usdlc.source = (header) ->
       type:     'gwt.coffee'
       readonly: 'readonly'
     el.insertAfter(header)
-  return el  
+  return el
 
 # restore the state if the user presses the back button
 window.onpopstate = (event) -> usdlc.edit_page(event.state) if event.state

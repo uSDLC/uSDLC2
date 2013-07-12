@@ -28,7 +28,7 @@ module.exports = (exchange) ->
                 panel.data('source', source)
             instantiate = (panel) ->
               if not editor = panel.data('editor')
-                editor = usdlc.ace.edit(panel, panel.data('source'))
+                editor = usdlc.source_editor.edit(panel, panel.data('source'))
                 dlg.editors.push editor
                 panel.data('editor', editor)
               editor.focus()
@@ -38,9 +38,9 @@ module.exports = (exchange) ->
               activate:     (event, ui) -> instantiate ui.newPanel
               create:       (event, ui) -> instantiate ui.panel
             dlg.dialog 'option', 'title', "Edit: #{section.title}"
-              
+
           onResize = (dlg) -> usdlc.gwt_coffee_dlg.content.accordion('refresh')
-              
+
           steps(
             ->  # any error should be shown in red
                 @on 'error', (error) -> console.log(error); @abort()

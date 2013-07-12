@@ -4,6 +4,8 @@ path = require 'path'
 
 module.exports = (exchange) ->
   project = dirs.projects[exchange.request.url.query.project]
+  include = exchange.request.url.query.include
+  exclude = exchange.request.url.query.exclude
   list = {}
 
   read_dir = (from, list, dir_read) ->

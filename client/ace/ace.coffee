@@ -3,7 +3,7 @@
 last_tab = null
 
 module.exports.initialise = (next) ->
-  usdlc.ace =
+  usdlc.source_editor0 =
     edit: (element, source) ->
       editor = ace.edit(element.get(0))
       usdlc.ace.config editor, source.attr('type')
