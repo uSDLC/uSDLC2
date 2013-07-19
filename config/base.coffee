@@ -4,10 +4,6 @@ dirs = require "dirs"; files = require "files"
 module.exports = (environment) ->
   require(dirs.node('/config/base'))(environment)
   environment.projects = dirs.projects
-  environment.mode_map =
-    coffee:       'coffeescript'
-    'gwt.coffee': 'coffeescript'
-    js:           'javascript'
 
 # add a http request processor to capture project/document pages
 global.http_processors.unshift (exchange, next_processor) ->

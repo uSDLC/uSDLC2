@@ -5,18 +5,18 @@ module.exports = (exchange) ->
       width:      600
       position:   { my: "right top+60", at: "right-5 top", of: window }
       init:       (dlg) -> dlg.append(dlg.content = $('<div/>'))
-      fix_height_to_window: 130
+      fix_height_to_window: 65
 
     CKEDITOR.plugins.add 'gwt_coffee',
       icons: 'gwt_coffee',
       init: (editor) ->
         editor.addCommand 'gwt_coffee', exec: (editor) ->
           section_path = usdlc.section_path()
-          # fill dialog with an accordion - one for each ace source on path
+          # fill dialog with an section - one for each source on path
           fill = (dlg) ->
             # remove previous contents
             if dlg.editors
-              editor.destroy() for editor in dlg.editors
+              # editor.destroy() for editor in dlg.editors
               dlg.content.accordion('destroy')
               dlg.content.empty()
             # add new content now

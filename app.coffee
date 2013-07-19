@@ -10,11 +10,11 @@ steps(
   ->  @package "jquery,jqueryui,ckeditor"
   ->  @requires "/client/ckeditor/ckeditor.coffee"
   ->  # Go to page specified or return to the last page and location
-      if window.location.search is '?edit'
-        localStorage.url = "#{window.location.pathname}##{window.location.hash}"
+      if window.location.search is '?edit' and window.location.pathname.length > 2
+        localStorage.url = "#{window.location.pathname}#{window.location.hash}"
       $('div#base_filler').height($(window).height() - 64)
       usdlc.sources = -> $('textarea[source]', usdlc.document)
-      usdlc.edit_page localStorage.url, ->
+      usdlc.edit_page localStorage.url
 
       actor = null
       usdlc.save_timer = (id, save_action) ->
@@ -26,11 +26,11 @@ steps(
       usdlc.page_editor.on 'blur', usdlc.save_page
 )
 
-usdlc.load_ace = (next) ->
-  usdlc.load_ace = (next) -> next() # only called once
+usdlc.load_source_editor = (next) ->
+  usdlc.load_source_editor = (next) -> next() # only called once
   steps(
-    ->  @package "coffee-script,ace,codemirror"
-    ->  @requires "/client/ace/ace.coffee","/client/codemirror/codemirror.coffee"
+    ->  @package "coffee-script,codemirror"
+    ->  @requires "/client/codemirror/codemirror.coffee", "/app.less"
     ->  next()
   )
 
@@ -85,13 +85,14 @@ usdlc.edit_page = (page, next = ->) ->
         if hash?.length > 1
           setTimeout (-> usdlc.goto_section(hash[1..])), 500
         $('title').html "#{@key} - uSDLC2"
-        usdlc.load_ace ->
-        # history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
-        next()
+        history.pushState from, '', "#{pathname}?edit#{hash ? ''}"
+        usdlc.load_source_editor next
   )
 
 usdlc.source = (header) ->
-  el = header.nextUntil('h1,h2,h3,h4,h5,h6').find('textarea[source]')
+  possibles = header.nextUntil('h1,h2,h3,h4,h5,h6')
+  el = possibles.find('textarea[source]')
+  el = possibles.filter('textarea[source]') if not el.length
   if not el.length
     el = $('<textarea>').attr
       source:   'true'

@@ -12,7 +12,6 @@ module.exports = (exchange) ->
     process_file = (file, next) ->
       return next() if file[0] is '.'
       file_path = path.join(from, file)
-      console.log "process_file", file_path
       fs.lstat file_path,  (error, stats) ->
         return next(error) if error
         if stats.isDirectory()
@@ -23,7 +22,6 @@ module.exports = (exchange) ->
     steps(
       # ->  @on 'error', (err) -> @abort()
       ->  fs.readdir from, @next (@error, @files) ->
-      ->  console.log "FILES",@files
       ->  @list @files..., process_file
       ->  dir_read()
     )

@@ -9,7 +9,7 @@ module.exports = (exchange) ->
       document.body.scrollTop -= 60
       [pathname,hash] = localStorage.url.split('#')
       localStorage.url = "#{pathname}##{hash = heading.innerText}"
-      # history.pushState from, '', "#{pathname}?edit##{hash ? ''}"
+      history.pushState from, '', "#{pathname}?edit##{hash ? ''}"
 
     outline = ->
       listeners = []
@@ -49,7 +49,7 @@ module.exports = (exchange) ->
         return if done
         section_top = $(@).offset().top
         if section_top > top
-          window.location.hash = hash = @innerHTML
+          window.location.hash = hash = @innerText
           localStorage.url = localStorage.url.split('#')[0] + "##{hash}"
           done = true
           

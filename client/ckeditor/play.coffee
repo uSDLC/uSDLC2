@@ -57,3 +57,9 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return play: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 80, 'play')
+        
+    roaster.replay = ->
+      return if not usdlc.instrument_window
+      usdlc.instrument_window.dialog 'moveToTop'
+      iframe = usdlc.instrument_window.dialog.iframe
+      iframe.src = iframe.src

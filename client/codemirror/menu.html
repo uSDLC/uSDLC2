@@ -1,0 +1,140 @@
+<ul class='contextmenu'>
+  <li><a action=''>Edit</a>
+    <ul>
+      <li><a action='redo'>Redo</a></li>
+      <li><a action='undo'>Undo</a></li>
+      <li>----</li>
+      <li><a action='toggleOverwrite'>Insert/Overwrite</a></li>
+      <li><a action='toggleComment'>Comment/Uncomment</a></li>
+      <li><a action=''>Delete</a>
+        <ul>
+          <li><a action='deleteLine'>Line</a></li>
+          <li><a action='killLine'>Line Right</a></li>
+          <li><a action='delLineLeft'>Line Left</a></li>
+          <li>----</li>
+          <li><a action='delWordBefore'>Word Left</a></li>
+          <li><a action='delWordAfter'>Word Right</a></li>
+          <li>----</li>
+          <li><a action='delGroupBefore'>Group Before</a></li>
+          <li><a action='delGroupAfter'>Group After</a></li>
+          <li>----</li>
+          <li><a action='delCharBefore'>Character Left</a></li>
+          <li><a action='delCharAfter'>Character&nbsp;Right</a></li>
+        </ul>
+      </li>
+      <li><a action='indentLess'>Indent Left</a></li>
+      <li><a action='indentMore'>Indent Right</a></li>
+      <li>----</li>
+      <li><a action='moveLinesUp'>Move Lines Up</a></li>
+      <li><a action='moveLinesDown'>Move Lines Down</a></li>
+      <li><a action='transposeChars'>Transpose Characters</a></li>
+      <li>----</li>
+      <li><a action='merge_local'>Merge Local Changes</a></li>
+      <li><a action='merge_remote'>Merge&nbsp;Remote&nbsp;Changes</a></li>
+    </ul>
+  </li>
+  <li><a action=''>Go</a>
+    <ul>
+      <li><a action='goDocStart'>Document&nbsp;Start</a></li>
+      <li><a action='goDocEnd'>Document End</a></li>
+      <li>----</li>
+      <li><a action='goColumnLeft'>Column Left</a></li>
+      <li><a action='goColumnRight'>Column Right</a></li>
+      <li>----</li>
+      <li><a action='goGroupLeft'>Group Left</a></li>
+      <li><a action='goGroupRight'>Group Right</a></li>
+      <li>----</li>
+      <li><a action='goWordLeft'>Word Left</a></li>
+      <li><a action='goWordRight'>Word Right</a></li>
+      <li>----</li>
+      <li><a action='goPageUp'>Page Up</a></li>
+      <li><a action='goPageDown'>Page Down</a></li>
+    </ul>
+  </li>
+  <li><a action=''>Search</a>
+    <ul>
+      <li><a action='find'>Find...</a></li>
+      <li><a action='findNext'>Find Next</a></li>
+      <li><a action='findPrev'>Find&nbsp;Previous</a></li>
+      <li><a action='clearSearch'>Clear Search</a></li>
+      <li>----</li>
+      <li><a action='replace'>Replace</a></li>
+      <li><a action='replaceAll'>Replace All</a></li>
+      <li>----</li>
+      <li><a action='toMatchingTag'>Matching Tag</a></li>
+    </ul>
+  </li>
+  <li><a action=''>View</a>
+    <ul>
+      <li><a action='play_current'>Instrument</a></li>
+      <li><a action='view_source'>View&nbsp;Source</a></li>
+      <li><a action=''>Theme</a>
+        <ul>
+          <li><a action=''>Dark</a>
+            <ul>
+            <li><a action='set_option' args='theme,ambiance'>Ambience</a></li>
+            <li><a action='set_option' args='theme=ambiance-mobile'>Ambience&nbsp;(mobile)</a></li>
+            <li><a action='set_option' args='theme,blackboard'>Blackboard</a></li>
+            <li><a action='set_option' args='theme,cobalt'>Cobalt</a></li>
+            <li><a action='set_option' args='theme,erlang-dark'>Erlang Dark</a></li>
+            <li><a action='set_option' args='theme,lesser-dark'>Lesser Dark</a></li>
+            <li><a action='set_option' args='theme,midnight'>Midnight</a></li>
+            <li><a action='set_option' args='theme,night'>Night</a></li>
+            <li><a action='set_option' args='theme,rubyblue'>Ruby Blue</a></li>
+            <li><a action='set_option' args='theme,twilight'>Twilight</a></li>
+            <li><a action='set_option' args='theme,vibrant-ink'>Vibrant Ink</a></li>
+            <li><a action='set_option' args='theme,xq-dark'>XQ Dark</a></li>
+            <li><a action='set_option' args='theme,monokai'>Monokai</a></li>
+          </ul>
+          </li>
+          <li><a action=''>Light</a>
+            <ul>
+            <li><a action='set_option' args='theme,default'>Default</a></li>
+            <li><a action='set_option' args='theme,eclipse'>Eclipse</a></li>
+            <li><a action='set_option' args='theme,elegant'>Elegant</a></li>
+            <li><a action='set_option' args='theme,neat'>Neat</a></li>
+            <li><a action='set_option' args='theme,solarized'>Solarized</a></li>
+            <li><a action='set_option' args='theme,xq-light'>XQ Light</a></li>
+          </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a action=''>Settings</a>
+    <ul>
+      <li><a action=''>Keyboard</a>
+        <ul>
+        <li><a action='set_mode' args='default'>Code&nbsp;Mirror</a></li>
+        <li><a action='set_mode' args='emacs'>Emacs</a></li>
+        <li><a action='set_mode' args='vim'>Vi</a></li>
+      </ul>
+      </li>
+      <li>----</li>
+      <li><a action='toggle_option' args='smartIndent'>Auto-indent</a></li>
+      <li><a action=''>Indent</a>
+        <ul>
+          <li><a action='set_option' args='indentUnit,2'>2</a></li>
+          <li><a action='set_option' args='indentUnit,4'>4</a></li>
+        </ul>
+      </li>
+      <li><a action='toggle_option' args='autoCloseBrackets'>Close Brackets</a></li>
+      <li><a action='toggle_option' args='matchBrackets'>Match Brackets</a></li>
+      <li><a action='toggle_option' args='matchTags'>Match Tags</a></li>
+      <li>----</li>
+      <li><a action=''>Scroll Margin</a>
+        <ul>
+          <li><a action='set_option' args='cursorScrollMargin,0'>0</a></li>
+          <li><a action='set_option' args='cursorScrollMargin,2'>2</a></li>
+          <li><a action='set_option' args='cursorScrollMargin,4'>4</a></li>
+        </ul>
+      </li>
+      <li><a action='toggle_option' args='continueComments'>Comment&nbsp;Continuation</a></li>
+      <li><a action='toggle_option' args='showTrailingSpace'>Show Trailing Spaces</a></li>
+      <li><a action='toggle_auto_complete'>Toggle Autocomplete</a></li>
+      <li><a action='toggle_option' args='dragDrop'>Toggle Drag and Drop</a></li>
+      <li><a action='toggle_option' args='lineNumbers'>Toggle Line Numbers</a></li>
+      <li><a action='toggle_option' args='lineWrapping'>Toggle Line Wrap</a></li>
+    </ul>
+  </li>
+</ul>
