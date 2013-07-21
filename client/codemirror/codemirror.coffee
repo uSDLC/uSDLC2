@@ -15,9 +15,24 @@ module.exports.initialise = (next) ->
     fold_at_cursor: (cm) -> cm.foldCode(cm.getCursor())
     play_current: (cm) -> roaster.replay()
     toggle_auto_complete: (cm) -> alert "Under Construction"
-    merge_local: (cm) -> alert "Under Construction"
-    merge_remote:  (cm) -> alert "Under Construction"
-    view_source: (cm) -> alert "Under Construction"
+    view_source: (cm) ->
+      if cm.somethingSelected()
+        coffeescript = cm.doc.getSelection()
+      else
+        coffeescript = cm.doc.getValue()
+      try
+        javascript = CoffeeScript.compile(coffeescript, bare:true)
+      catch e
+        javascript = "#{e}\n#{JSON.stringify(e.location)}"
+      steps(
+        ->  @requires '/client/codemirror/editor.coffee'
+        ->  
+            @editor
+              name:     'Javascript'
+              title:    'Javascript'
+              position: { my: "left top+60", at: "left+10 top", of: window }
+              source:   { attr: (-> 'javascript'), text: (-> javascript) }
+      )
     toggle_option: (cm, name) ->
       CodeMirror.commands.set_option(cm, name, not cm.getOption(name))
     set_option: (cm, name, value) ->

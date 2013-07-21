@@ -6,31 +6,34 @@ roaster.message = (msg) -> console.log msg
 
 save_actions = {}
 
-steps(
-  ->  @package "jquery,jqueryui,ckeditor"
-  ->  @requires "/client/ckeditor/ckeditor.coffee"
-  ->  # Go to page specified or return to the last page and location
-      if window.location.search is '?edit' and window.location.pathname.length > 2
-        localStorage.url = "#{window.location.pathname}#{window.location.hash}"
-      $('div#base_filler').height($(window).height() - 64)
-      usdlc.sources = -> $('textarea[source]', usdlc.document)
-      usdlc.edit_page localStorage.url
+roaster.ready ->
+  steps(
+    ->  @requires "/app.less"
+    ->  @package "jquery,jqueryui,ckeditor"
+    ->  @requires "/client/ckeditor/ckeditor.coffee"
+    ->  # Go to page specified or return to the last page and location
+        if window.location.search is '?edit' and window.location.pathname.length > 2
+          localStorage.url = "#{window.location.pathname}#{window.location.hash}"
+        $('div#base_filler').height($(window).height() - 64)
+        usdlc.sources = -> $('textarea[source]', usdlc.document)
+        usdlc.edit_page localStorage.url
 
-      actor = null
-      usdlc.save_timer = (id, save_action) ->
-        clearTimeout(actor) if actor
-        roaster.message ""
-        save_actions[id] = save_action if id
-        actor = setTimeout(usdlc.save_page, 2000)
-      usdlc.page_editor.on 'key', -> usdlc.save_timer()
-      usdlc.page_editor.on 'blur', usdlc.save_page
-)
+        actor = null
+        usdlc.save_timer = (id, save_action) ->
+          clearTimeout(actor) if actor
+          roaster.message ""
+          save_actions[id] = save_action if id
+          actor = setTimeout(usdlc.save_page, 2000)
+        usdlc.page_editor.on 'key', -> usdlc.save_timer()
+        usdlc.page_editor.on 'blur', usdlc.save_page
+  )
 
 usdlc.load_source_editor = (next) ->
   usdlc.load_source_editor = (next) -> next() # only called once
   steps(
     ->  @package "coffee-script,codemirror"
-    ->  @requires "/client/codemirror/codemirror.coffee", "/app.less"
+    ->  @requires "/client/codemirror/codemirror.coffee"
+    ->  @requires "/client/codemirror/editor.coffee"
     ->  next()
   )
 

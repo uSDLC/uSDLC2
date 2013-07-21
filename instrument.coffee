@@ -16,6 +16,9 @@ patterns = [
 _div = document.createElement('DIV')
 _br = document.createElement('BR')
 
+document.onkeydown = (event) ->
+  window.location.href =  window.location.href if event.keyCode is 80 # P
+
 toggle_hidden = (element, class_name) ->
   if element.className is 'hidden'
     element.className = class_name
@@ -107,7 +110,6 @@ class Instrument
 
 window.instrument = ->
   instrument = new Instrument()
-
   url = "/server/http/gwt.coffee#{window.location.search}"
   instrument.html('again',
     "<a href='#{window.location.href}'>again</a>")

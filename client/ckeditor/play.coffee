@@ -12,7 +12,6 @@ module.exports = (exchange) ->
       fix_height_to_window: 130
       init:       init
       
-
     CKEDITOR.plugins.add 'play',
       icons: 'play',
       init: (editor) ->
@@ -61,5 +60,7 @@ module.exports = (exchange) ->
     roaster.replay = ->
       return if not usdlc.instrument_window
       usdlc.instrument_window.dialog 'moveToTop'
-      iframe = usdlc.instrument_window.dialog.iframe
-      iframe.src = iframe.src
+      iframe = usdlc.instrument_window.iframe
+      iframe.attr('src', iframe.attr('src'))
+      iframe.focus()
+        
