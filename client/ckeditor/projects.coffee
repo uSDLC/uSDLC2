@@ -6,7 +6,8 @@ module.exports = (exchange) ->
       label: 'Projects'
       toolbar: 'uSDLC,1'
       items: (next) ->
-        next (key for key, value of roaster.environment.projects).sort()
+        projects = roaster.environment.projects
+        next (key.replace(/_/g, ' ') for key, value of projects).sort()
       selected: -> localStorage.project.replace /_/g, ' '
       select: (value) ->
         if value is 'create'

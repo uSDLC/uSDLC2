@@ -1,5 +1,9 @@
 // Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 
+.hidden {
+  display:  none;
+}
+
 .error {
   color:        red;
   font-weight:  bolder;
@@ -142,4 +146,25 @@ div.ui-helper-reset {
 }
 .CodeMirror-hints {
   z-index: 201;
+}
+.ui-autocomplete-category {
+  font-size: 14px;
+  font-weight: bold;
+  padding: .2em .4em;
+  margin: .8em 0 .2em;
+  line-height: 1.5;
+}
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    font-size: 12px;
+    z-index: 1000;
+}
+.ui-menu-item, .ui-widget input {
+  font-size: 12px;
+}
+.codemirror-hints {
+  z-index: 1100 !important;
 }

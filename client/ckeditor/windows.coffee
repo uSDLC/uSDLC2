@@ -4,7 +4,7 @@ module.exports = (exchange) ->
     usdlc.richCombo
       name: 'windows'
       label: 'Windows'
-      toolbar: 'uSDLC,7'
+      toolbar: 'uSDLC,8'
       items: (next) ->
         dlgs = roaster.dialogs
         next ("#{key}|#{dlg.dialog('option', 'title')}" for key, dlg of dlgs)
@@ -13,4 +13,6 @@ module.exports = (exchange) ->
         if value is 'create'
           alert("Under Construction")
         else
-          roaster.dialogs[value].dialog 'moveToTop'
+          dlg = roaster.dialogs[value.replace(/\s/g, '_')]
+          dlg.dialog 'open'
+          dlg.dialog 'moveToTop'

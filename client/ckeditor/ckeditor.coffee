@@ -1,11 +1,11 @@
-# Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
+# Copyright (C) 2013 paul@marrington.net, see /GPL for license
 
 # load ckeditor plugins
 roaster.ckeditor.toolbar(
   'ckeditor', 'uSDLC', 'projects', 'documents', 'sections',
-  'gwt', 'gwt_coffee', 'play', 'windows'
+  'gwt', 'gwt_coffee', 'source_editor', 'play', 'terminal', 'windows'
 )
-# Open a full page html editor ready to load with current document
+# Open a full page html editor ready forh current document
 
 usdlc.page_editor = roaster.ckeditor.open 'document',
   resize_dir: 'both'
@@ -21,10 +21,6 @@ module.exports.initialise = (next) ->
   # Do things only available once the editor is up and loaded
   usdlc.page_editor.onInstanceReady.push ->
     usdlc.page_editor.resize(600, $(window).height() - 20)
-    # 'New Page' button opens index page on curent project
-    usdlc.page_editor.getCommand('newpage').exec = (editor) ->
-      usdlc.edit_page 'Index'
-      return true
     next()
 
 usdlc.richCombo = (options) ->
@@ -35,7 +31,8 @@ usdlc.richCombo = (options) ->
       build_list = (next) ->
         options.items (items) =>
           # remove old if pre-built
-          $(@_.panel?._.iframe.$).contents().find('ul').remove()
+          contents = $(@_.panel?._.iframe.$).contents()
+          contents.find('ul').remove()
           @_.items = {}
           @_.list?._.items = {}
           # load items (again)
@@ -44,7 +41,8 @@ usdlc.richCombo = (options) ->
             html ?= name
             name = name.replace(/_/g, ' ')
             @add(name, html, tooltip)
-          @add 'create', '<i><b>New...</b></i>', 'New...' if not options.no_create
+          if not options.no_create
+            @add 'create', '<i><b>New...</b></i>', 'New...'
           @_.committed = 0
           @commit()
           next()
@@ -76,8 +74,10 @@ usdlc.richCombo = (options) ->
           editor.on 'selectionChange', selectionChange, @
         onOpen: ->
           panel = $('.cke_combopanel')
-          panel.removeClass(usdlc.lastListClass) if usdlc.lastListClass
+          if usdlc.lastListClass
+            panel.removeClass(usdlc.lastListClass)
           usdlc.lastListClass = options.className
-          panel.addClass(options.className) if options.className
+          if options.className
+            panel.addClass(options.className)
       )
   )

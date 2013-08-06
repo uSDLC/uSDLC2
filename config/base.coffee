@@ -3,7 +3,7 @@ dirs = require "dirs"; files = require "files"
 
 module.exports = (environment) ->
   require(dirs.node('/config/base'))(environment)
-  environment.projects = dirs.projects
+  environment.projects = environment.config.projects = dirs.projects
 
 # add a http request processor to capture project/document pages
 global.http_processors.unshift (exchange, next_processor) ->

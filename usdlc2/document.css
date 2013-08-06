@@ -75,3 +75,22 @@ textarea[type="gwt.coffee"] {
 body.cke_editable textarea[source] {
   display: none;
 }
+div.metadata {
+  font-style: italic;
+  color: #ccc;
+  width: 75%;
+  text-align: right;
+  padding-left: 0.5em;
+  font-size: smaller;
+  text-indent: -3em;
+  margin-left: 6em;
+}
+div.metadata a {padding-left: 0.5em;}
+/* unvisited link */
+div.metadata a:link    {color:rgba(0, 92, 255, 0.52);}
+/* visited link */
+div.metadata a:visited {color:rgba(0, 92, 255, 0.44);}
+/* mouse over link */
+div.metadata a:hover   {color:rgba(0, 214, 255, 0.81);}
+/* selected link */
+div.metadata a:active  {color:rgba(0, 214, 255, 0.81);}

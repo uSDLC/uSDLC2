@@ -9,9 +9,10 @@ module.exports = (options, next = ->) ->
   steps(
     ->  @on 'error', (error) -> console.log(error); @abort()
     ->  @requires '/client/dialog.coffee'
-    ->  
+    ->
       @dlg = @dialog
-        fill: (dlg) -> 
+        name: options.name
+        fill: (dlg) ->
           dlg.content.empty()
           dlg.editor = usdlc.source_editor.edit(dlg.content, options.source)
         dialog_options, options

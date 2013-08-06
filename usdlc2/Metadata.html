@@ -1,0 +1,89 @@
+<html>
+<head>
+	<title></title>
+	<link href="document.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="scayt-enabled">
+<h1 style="">Instrumentation</h1>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<h2 style="">Given, When, Then</h2>
+
+<p><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee">server = gwt.server()
+
+gwt.rules(
+  /a number between (\d+) and (\d+)/, (start, end) -&gt;
+    @number = +start + Math.floor(Math.random() * (+end - +start))
+    @test(@number &lt; 10, @number)
+    
+  /multiply the number by (\d+)/, (multiplicand) -&gt;
+    @number *= multiplicand
+    @pass(@number)
+
+  /the result is an even number/, -&gt; @test not (@number % 2), @number
+)</textarea></p>
+
+<p style="display: block;"><em><strong>uSDLC</strong></em> will process any set of natural language&nbsp;statements in a GWT block. New blocks can be created with the target icon on the uSDLC tab.</p>
+
+<h3 style="">A Basic Example</h3>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee">if One_One = 23
+  One_two = 25
+  One a</textarea></p>
+
+<p style="display: block;">Instrumentation&nbsp;consists of a GWT block (below) and the instrumentation bridge code. You can view the code at any time by right-clicking on the GWT block and selecting &quot;<em>Bridge</em>&quot;. Bridge code is broken up into a block for each&nbsp;heading leading&nbsp;to the current section. In this way&nbsp;common code is available between sections.</p>
+
+<pre style="display: block;" type="gwt">
+Given a number between 1 and 10
+When we multiply the number by 2
+Then the result is an even number
+</pre>
+
+<p>More than one GWT block can reside in each section. They are concatenated for the purposes of instrumentation.</p>
+
+<pre style="width: 454.75px;" type="gwt">
+Given a number between 1 and 10
+When we multiply the number by 2
+Then the result is an even number</pre>
+
+<h3 style="">Built-in Rules</h3>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<h4 style="">Given a Shell, Fork or Spawn</h4>
+
+<h4 style="">Checking Output Content</h4>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<h5 style="">Checking Output by Substring</h5>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<p style="display: block;">Instrumentation captures output from actions and running sub-systems. Sometimes this is the best way to measure a response. For simplicity you can scan the output for a substring.</p>
+
+<pre style="display: block;" type="gwt">
+Given a number between 1 and 10
+Then the response includes &#39;ecking Output Co&#39;</pre>
+
+<h5 style="">Checking Output by Regular Expression</h5>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<p style="display: block;">For more complicated checks&nbsp;nothing beats regular expressions. They are, however, less readable.</p>
+
+<pre style="display: block;" type="gwt">
+Given a number between 1 and 10
+Then response matches /.*ok 1 - \d/</pre>
+
+<h3 style="">Child Process Output</h3>
+
+<pre style="display: block;" type="gwt">
+Given a shell
+When we execute &#39;echo uSDLC child output test&#39;
+Then the response includes &#39;uSDLC child output test&#39;</pre>
+
+<p style="display: block;">&nbsp;</p>
+</body>
+</html>

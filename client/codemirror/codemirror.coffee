@@ -1,9 +1,15 @@
-# Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
+# Copyright (C) 2013 paul@marrington.net, see /GPL for license
 roaster.environment.mode_map =
-  coffee:       'coffeescript'
+  c: 'clike', cpp: 'clike', h: 'clike', cs: 'clike'
+  java: 'clike'
+  clj: 'clojure', coffee: 'coffeescript'
+  cl: 'commonlisp', lsp: 'commonlisp', el: 'commonlisp'
+  lhs: 'haskell', gs: 'haskell', hs: 'haskell'
+  html: 'htmlmixed', htm: 'htmlmixed'
+  js: 'javascript', json: 'javascript', ls: 'livescript'
+  pas: 'pascal', py: 'python', sh: 'shell', bas: 'vbscript'
   'gwt.coffee': 'coffeescript'
-  js:           'javascript'
-  json:         'application/json'
+
 instance_index = 0
 cm = null; context_menu = null; selected = ->
 spaces = '                '
@@ -14,6 +20,11 @@ module.exports.initialise = (next) ->
   _.extend CodeMirror.commands,
     fold_at_cursor: (cm) -> cm.foldCode(cm.getCursor())
     play_current: (cm) -> roaster.replay()
+    file_manager: (cm) ->
+      steps(
+        ->  @requires '/client/file_manager.coffee'
+        ->  @file_manager()
+      )
     toggle_auto_complete: (cm) -> alert "Under Construction"
     view_source: (cm) ->
       if cm.somethingSelected()
@@ -21,33 +32,38 @@ module.exports.initialise = (next) ->
       else
         coffeescript = cm.doc.getValue()
       try
-        javascript = CoffeeScript.compile(coffeescript, bare:true)
+        javascript =
+          CoffeeScript.compile(coffeescript, bare:true)
       catch e
         javascript = "#{e}\n#{JSON.stringify(e.location)}"
       steps(
         ->  @requires '/client/codemirror/editor.coffee'
-        ->  
-            @editor
-              name:     'Javascript'
-              title:    'Javascript'
-              position: { my: "left top+60", at: "left+10 top", of: window }
-              source:   { attr: (-> 'javascript'), text: (-> javascript) }
+        ->
+          @editor
+            name:     'Javascript'
+            title:    'Javascript'
+            position:
+              my: "left top+60", at: "left+10 top", of: window
+            source:
+              attr: (-> 'javascript'), text: (-> javascript)
       )
     toggle_option: (cm, name) ->
-      CodeMirror.commands.set_option(cm, name, not cm.getOption(name))
+      value = not cm.getOption(name)
+      CodeMirror.commands.set_option(cm, name, value)
     set_option: (cm, name, value) ->
       cm.setOption(name, value)
       opt = _.clone cm.options
       delete opt.value
-      localStorage['CodeMirrorOptions'] = JSON.stringify opt
+      localStorage['CodeMirrorOptions'] = JSON.stringify(opt)
     set_mode: (cm, mode) ->
-      cm.setOption('keyMap', mode)
+      CodeMirror.commands.set_option(cm, 'keyMap', mode)
       prepare_menu(cm)
     auto_complete: (cm) ->
-      CodeMirror.showHint(cm, CodeMirror.hint.anyword, completeSingle: false)
+      CodeMirror.showHint(
+        cm, CodeMirror.hint.anyword, completeSingle: false)
     defaultTab: (cm) ->
       if cm.somethingSelected()
-        cm.indentSelection("add");
+        cm.indentSelection("add")
       else
         tab = cm.getOption("indentUnit") + 1
         cm.replaceSelection(spaces[0..tab], "end", "+input")
@@ -57,7 +73,7 @@ module.exports.initialise = (next) ->
   else
     options =
       lineNumbers:    true
-      foldGutter:     true
+      foldGutter:     false
       gutters:        ["CodeMirror-lint-markers", "CodeMirror-foldgutter"]
       lint:           true
       matchBrackets:  true
@@ -78,6 +94,7 @@ module.exports.initialise = (next) ->
     'Ctrl-Shift-F':'clearSearch'
     'Alt-{':      'toMatchingTag'
     'Alt-S':      'view_source'
+    'Alt-V':      'file_manager'
 
   prepare_menu = (cm) ->
     key_map = {}
@@ -88,7 +105,8 @@ module.exports.initialise = (next) ->
       if typeof map.fallthrough is 'string'
         one_map(CodeMirror.keyMap[map.fallthrough])
       else if map.fallthrough
-        one_map(CodeMirror.keyMap[map]) for map in map.fallthrough
+        for map in map.fallthrough
+          one_map(CodeMirror.keyMap[map])
     one_map cm.options.extraKeys
     one_map CodeMirror.keyMap[cm.options.keyMap]
 
@@ -104,20 +122,27 @@ module.exports.initialise = (next) ->
     edit: (element, source) ->
       mode = source.attr('type')
       mode = roaster.environment.mode_map[mode] ? mode
-      editor = CodeMirror element.get(0), _.extend {}, options,
-        mode:           mode
-        value:          source.text()
-        extraKeys:      extra_keys
+      editor = CodeMirror element.get(0),
+        _.extend {}, options,
+          # mode:     mode
+          value:     source.text()
+          extraKeys: extra_keys
+          lint:      mode in ['javascript', 'coffeescript']
+      editor.setOption 'mode', mode
       CodeMirror.autoLoadMode(editor, mode)
       editor.id = "codemirror_#{++instance_index}"
       update = -> source.text(editor.getValue())
+      allow_autocomplete = false
       editor.on 'change', ->
         usdlc.save_timer editor.id, update
         return if cm.somethingSelected()
         cursor = cm.doc.getCursor()
         line = cm.doc.getLine(cursor.line)
-        if cursor.ch and line[cursor.ch - 1].match(/^[0-9a-zA-Z_]$/)
+        alnum = /^[0-9a-zA-Z_]$/
+        if cursor.ch and line[cursor.ch - 1].match(alnum) and allow_autocomplete
           CodeMirror.commands.auto_complete(editor)
+      editor.on 'keydown', (event) -> allow_autocomplete = false
+      editor.on 'keypress', (event) -> allow_autocomplete = true
       editor.on 'focus', -> cm = editor
       editor.on 'blur', -> update(); usdlc.save_page()
       (element = $(editor.getWrapperElement())).contextmenu
@@ -126,14 +151,16 @@ module.exports.initialise = (next) ->
           cmd = a.attr('action')
           return if not cmd?.length
           args = a.attr('args')?.split(',') ? []
-          selected = -> CodeMirror.commands[cmd]?(editor, args...)
+          selected = ->
+            CodeMirror.commands[cmd]?(editor, args...)
           return true
         close: (event) ->
           editor.focus()
           selected()
           selected = ->
       prepare_menu(editor)
-      $(":input, a").attr("tabindex", "-1") # so tab stays in editor
+      # so tab stays in editor
+      $(":input, a").attr("tabindex", "-1")
       return editor
   steps(
     ->  @data '/client/codemirror/menu.html'
