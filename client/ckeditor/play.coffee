@@ -4,7 +4,7 @@ dirs = require 'dirs'
 module.exports = (exchange) ->
   exchange.respond.client ->
     usdlc.play = ->
-      doc = localStorage.url.split('#')[0]
+      doc = usdlc.url.split('#')[0]
       doc = doc.split('/').slice(-1)[0]
       sp = (section.title for section in usdlc.section_path())
       sections = ".*/#{sp.join('/')}([/\\.].*)*$"
@@ -20,7 +20,7 @@ module.exports = (exchange) ->
         ->  # now we have querystring and window, use them
           projects = roaster.environment.projects
           url = "/instrument.html?" + @querystring.stringify
-            project:  projects[localStorage.project].base
+            project:  projects[usdlc.project].base
             document: doc
             sections: sections
           dlg = usdlc.instrument_window = @dialog

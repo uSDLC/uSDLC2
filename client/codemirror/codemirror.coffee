@@ -1,21 +1,24 @@
 # Copyright (C) 2013 paul@marrington.net, see /GPL for license
 roaster.environment.mode_map =
   c: 'clike', cpp: 'clike', h: 'clike', cs: 'clike'
-  java: 'clike'
+  java: 'clike', sh: 'shell'
   clj: 'clojure', coffee: 'coffeescript'
   cl: 'commonlisp', lsp: 'commonlisp', el: 'commonlisp'
   lhs: 'haskell', gs: 'haskell', hs: 'haskell'
   html: 'htmlmixed', htm: 'htmlmixed'
   js: 'javascript', json: 'javascript', ls: 'livescript'
-  pas: 'pascal', py: 'python', sh: 'shell', bas: 'vbscript'
+  pas: 'pascal', py: 'python', 'sh': 'shell', bas: 'vbscript'
   'gwt.coffee': 'coffeescript'
+  
+alnum = /^[0-9a-zA-Z_]$/
 
 instance_index = 0
 cm = null; context_menu = null; selected = ->
 spaces = '                '
 
 module.exports.initialise = (next) ->
-  CodeMirror.modeURL = '/ext/codemirror/codemirror/mode/%N/%N.js'
+  CodeMirror.modeURL =
+    '/ext/codemirror/codemirror/mode/%N/%N.js'
 
   _.extend CodeMirror.commands,
     fold_at_cursor: (cm) -> cm.foldCode(cm.getCursor())
@@ -59,8 +62,14 @@ module.exports.initialise = (next) ->
       CodeMirror.commands.set_option(cm, 'keyMap', mode)
       prepare_menu(cm)
     auto_complete: (cm) ->
-      CodeMirror.showHint(
-        cm, CodeMirror.hint.anyword, completeSingle: false)
+      anyword = CodeMirror.hint.anyword
+      notOnly = -> # don't show if an exact match
+        result = anyword.apply null, arguments
+        list = result.list
+        result.list = [] if list.length is 1 and
+          list[0].length is (result.to.ch - result.from.ch)
+        return result
+      CodeMirror.showHint(cm, notOnly, completeSingle: false)
     defaultTab: (cm) ->
       if cm.somethingSelected()
         cm.indentSelection("add")
@@ -74,7 +83,8 @@ module.exports.initialise = (next) ->
     options =
       lineNumbers:    true
       foldGutter:     false
-      gutters:        ["CodeMirror-lint-markers", "CodeMirror-foldgutter"]
+      gutters:        ["CodeMirror-lint-markers",
+                       "CodeMirror-foldgutter"]
       lint:           true
       matchBrackets:  true
       autoCloseBrackets:true
@@ -138,11 +148,14 @@ module.exports.initialise = (next) ->
         return if cm.somethingSelected()
         cursor = cm.doc.getCursor()
         line = cm.doc.getLine(cursor.line)
-        alnum = /^[0-9a-zA-Z_]$/
-        if cursor.ch and line[cursor.ch - 1].match(alnum) and allow_autocomplete
+        if cursor.ch and allow_autocomplete and
+        line[cursor.ch - 1].match(alnum)
           CodeMirror.commands.auto_complete(editor)
-      editor.on 'keydown', (event) -> allow_autocomplete = false
-      editor.on 'keypress', (event) -> allow_autocomplete = true
+      editor.on 'keydown', (cm, event) ->
+        allow_autocomplete = false
+      editor.on 'keypress', (cm, event) ->
+        ch = String.fromCharCode(event.which ? event.keyCode)
+        allow_autocomplete = true if ch.match(alnum)
       editor.on 'focus', -> cm = editor
       editor.on 'blur', -> update(); usdlc.save_page()
       (element = $(editor.getWrapperElement())).contextmenu

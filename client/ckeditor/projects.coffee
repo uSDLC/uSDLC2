@@ -8,11 +8,11 @@ module.exports = (exchange) ->
       items: (next) ->
         projects = roaster.environment.projects
         next (key.replace(/_/g, ' ') for key, value of projects).sort()
-      selected: -> localStorage.project.replace /_/g, ' '
+      selected: -> usdlc.project.replace /_/g, ' '
       select: (value) ->
         if value is 'create'
           alert("Under Construction")
         else
-          localStorage.project = value.replace(/\s/g, '_')
-          page = localStorage["#{localStorage.project}_url"] ? 'Index'
+          usdlc.setProject value.replace(/\s/g, '_')
+          page = usdlc.projectStorage('url') ? 'Index'
           usdlc.edit_page page

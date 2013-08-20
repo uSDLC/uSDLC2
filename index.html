@@ -1,12 +1,36 @@
 <html>
 <head>
-<!-- # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license -->
+<!-- # Copyright (C) 2013 paul@marrington.net,
+     see GPL for license -->
 <base href='/'>
 <title>uSDLC2</title>
-<script type="text/javascript" src="/client/roaster.coffee?domain=client,library">
+<script type="text/javascript"
+  src="/client/roaster.coffee?domain=client,library">
 </script>
 </head>
 <body>
   <textarea id='document'></textarea>
+  <div style="display:none;"><form class='tree_filer'>
+    <div class="search_by">
+        <input type="radio"
+          name="search_type" id='search_by_name'
+          checked="checked"/><label
+          for="search_by_name">Name</label>
+        <input type="radio" name="search_type"
+          id='search_by_grep'/><label
+          for="search_by_grep">Grep</label>
+    </div>
+    <div class="input">
+      <input type="text" style='width:99%' autocomplete='true'
+        placeholder='pattern...'/>
+    </div>
+    <div class='tree'></div>
+    <div class="clusions">
+      <label>Include:</label>
+      <input type="text" placeholder='pattern...'/><br/>
+      <label>Exclude:</label>
+      <input type="text" placeholder='pattern...'/><br/>
+    </div>
+  </form></div>
 </body>
 <html>

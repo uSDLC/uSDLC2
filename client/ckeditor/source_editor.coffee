@@ -7,12 +7,14 @@ module.exports = (exchange) ->
         editor.addCommand 'source_editor', exec: (editor) ->
           a = $(usdlc.get_caret().$).parentsUntil('.Ref', 'a')
           steps(
-            ->  @requires '/client/file_manager.coffee'
+            ->  @requires '/client/autocomplete_filer.coffee'
+            ->  @requires '/client/tree_filer.coffee'
             ->
               if a.length
                 eval(a.attr('href'))
               else
-                @file_manager()
+                @autocomplete_filer()
+                @tree_filer()
           )
         editor.ui.addButton 'source_editor',
           label: 'Source Editor'
@@ -26,7 +28,9 @@ module.exports = (exchange) ->
           order:    3
         editor.contextMenu.addListener (element, selection) ->
           return source_editor: CKEDITOR.TRISTATE_OFF
-        editor.setKeystroke(CKEDITOR.ALT + 86, 'source_editor')
+        altV = CKEDITOR.ALT + 86
+        editor.setKeystroke(altV, 'source_editor')
+        editor.config.blockedKeystrokes.push altV
         editor.on 'contentDom', ->
           editor.editable().on 'mousedown', (event) ->
             return if not event.data.$.shiftKey

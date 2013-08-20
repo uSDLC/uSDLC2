@@ -6,9 +6,35 @@
 <body class="scayt-enabled">
 <h1 style="">Developer Tools</h1>
 
+<h2>Navigation</h2>
+
+<p>Any file in the project may be selected either from a list or by choosing a previously edited file in a section reference.</p>
+
+<div class="metadata Ref">Ref: <span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'./app.coffee',category:'.'})">app.coffee</a></span></div>
+
+<h3>Source Editor Selection Panel</h3>
+
+<p>The uSDLC tab, context menu and Alt-V hot-key will all bring up a project source editor selection panel (unless the cursor is on a section link reference). From this panel you can choose a file by:</p>
+
+<ul>
+	<li>Selecting from the file system tree</li>
+	<li>Typing in part of the name</li>
+	<li>Search for file contents (grep)</li>
+</ul>
+
+<h4>Select by Name</h4>
+
+<h4>Select by Content</h4>
+
+<h4>Exclusion Filter</h4>
+
+<h3>Section Link Reference</h3>
+
+<p>Whenever the cursor is over a link then the source editor selection controls will all bypass the tree view to edit the file in question.</p>
+
 <h2>Console</h2>
 
-<p>For project interaction where uSDLC does not provide a function, use the built-in terminal accessible from the uSDLC tab.</p>
+<p>For project interaction where uSDLC does not provide a function, use the built-in terminal accessible from the uSDLC tab. This console links to your system shell, but not all commands are available. Because the link is not a real terminal, programs like Vi and ssh do not work.</p>
 
 <div class="metadata Ref">Ref: <span class="terminal"><a href="javascript:usdlc.edit_source({value:'terminal.coffee',path:'client/ckeditor/terminal.coffee',category:'ckeditor'})">terminal.coffee</a></span><span class="shell"><a href="javascript:usdlc.edit_source({value:'shell.coffee',path:'server/http/shell.coffee',category:'http'})">shell.coffee</a></span></div>
 </body>

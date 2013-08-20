@@ -9,11 +9,10 @@ module.exports = (exchange) ->
       from = "#{window.location.pathname}?edit##{hash}"
       heading.scrollIntoView()
       document.body.scrollTop -= 60
-      [pathname,hash] = localStorage.url.split('#')
+      [pathname,hash] = usdlc.url.split('#')
       hash = heading.innerText
-      localStorage.url = "#{pathname}##{hash}"
-      history.pushState from, '',
-        "#{pathname}?edit##{hash ? ''}"
+      usdlc.url = "#{pathname}##{hash}"
+      # history.replaceState null, null, "#{pathname}?edit##{hash ? ''}"
 
     outline = ->
       listeners = []
@@ -55,8 +54,8 @@ module.exports = (exchange) ->
         section_top = $(@).offset().top
         if section_top > top
           window.location.hash = hash = @innerText
-          no_hash = localStorage.url.split('#')[0]
-          localStorage.url = "#{no_hash}##{hash}"
+          no_hash = usdlc.url.split('#')[0]
+          usdlc.url = "#{no_hash}##{hash}"
           done = true
     usdlc.get_caret = ->
       selection = usdlc.page_editor.getSelection()

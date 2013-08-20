@@ -1,13 +1,16 @@
-# Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
-path = require 'path'; fs = require 'fs'; _ = require 'underscore'
+# Copyright (C) 2013 paul@marrington.net, see GPL for license
+path = require 'path'; fs = require 'fs'
+_ = require 'underscore'
 
 module.exports = (exchange) ->
   # request to server
   if project = exchange.request.url.query.project
-    usdlc2_path = path.join exchange.environment.projects[project].base, 'usdlc2'
+    projects = exchange.environment.projects
+    usdlc2_path = path.join projects[project].base, 'usdlc2'
     fs.readdir usdlc2_path, (err, documents) ->
       exchange.respond.json (path.basename(name, '.html') \
-        for name in documents when path.extname(name) is '.html').sort()
+        for name in documents \
+          when path.extname(name) is '.html').sort()
     return
   # code run on client
   exchange.respond.client ->
@@ -16,14 +19,14 @@ module.exports = (exchange) ->
       label: 'Documents'
       toolbar: 'uSDLC,2'
       items: (next) ->
-        url = "/client/ckeditor/documents.coffee?project=#{localStorage.project}"
+        url = "/client/ckeditor/documents.coffee"+
+              "?project=#{usdlc.project}"
         steps(
           ->  @json url
           ->  next @documents.sort()
         )
-      selected: -> localStorage.document.replace /_/g, ' '
+      selected: ->
+        usdlc.projectStorage('document').replace /_/g, ' '
       select: (value) ->
-        if value is 'create'
-          alert("Under Construction")
-        else
-          usdlc.edit_page value.replace(/\s/g, '_')
+        value = 'Index' if value is 'create'
+        usdlc.edit_page value.replace(/\s/g, '_')
