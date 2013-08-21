@@ -10,7 +10,7 @@ dialog_options =
   fix_height_to_window: 10
   
 module.exports = ->
-  form = null
+  form = tree = search_by = cludes = search_for = nodes = null
   
   load_packages = -> @package "dtree"
   
@@ -18,11 +18,8 @@ module.exports = ->
     "/client/edit_source.coffee"
     '/client/dialog.coffee')
     
-  tree_container = null
-  
   load_file_list = ->
     path = "/server/http/files.coffee"
-    cludes = form.find('div.clusions input')
     exclude = cludes[1].value
     include = cludes[0].value
     selector = "exclude=#{exclude}&include=#{include}"
@@ -48,15 +45,41 @@ module.exports = ->
       dtree.add(id, parent, item.name, path)
       branch(id, child) for child in item.children ? []
     branch(-1, name: usdlc.project, children: @files)
-    tree_container.html(dtree.toString())
+    tree.html(dtree.toString())
+    nodes = tree.find('div.dTreeNode a')
+    
+  is_leaf = (node) ->
+    return not node.parent().next().hasClass('clip')
+    
+  move = (dir) ->
+    selected = tree.find('div.dTreeNode a.nodeSel')
+    if not selected.length
+      next = if dir is -1 then nodes.length else 0
+    else
+      nodes.each (index) ->
+        if selected.is(@) then next = index; return false
+        return true
+    while (next += dir) >= 0 and next < nodes.length
+      node = $(nodes[next])
+      if node.is(':visible') and is_leaf(node)
+        selected.removeClass('nodeSel').addClass('node')
+        node.removeClass('node').addClass('nodeSel')
+        return
     
   open_dialog = ->
     @dlg = @dialog
       name: 'Source...'
       init: (dlg) =>
         dlg.append form = $('form.tree_filer')
-        form.find('div.search_by').buttonset()
-        tree_container = form.find('div.tree')
+        search_for = form.find('div.input input')
+        search_by = form.find('div.search_by').buttonset()
+        tree = form.find('div.tree')
+        cludes = form.find('div.clusions input')
+        form.keydown (event) ->
+          switch event.which
+            when 13 then select_from_tree()
+            when 38 then move(-1)
+            when 40 then move(1)
       fill: (dlg) =>
         steps(
           load_file_list
