@@ -1,8 +1,9 @@
-# Copyright (C) 2012,13 paul@marrington.net, see GPL for license
+# Copyright (C) 2012,13 paul@marrington.net, see GPL license
 
 # This script expects a base directory, query string, hash
-# It will run Setup.coffee from the base directory, then process each statement.
-# Everything is anynchronous and output goes to stdout / stderr.
+# It will run Setup.coffee from the base directory,
+# then process each statement. Everything is anynchronous and
+# output goes to stdout / stderr.
 path = require 'path'; gwt = require 'gwt'; os = require 'system'
 Stream = require('stream').Stream
 
@@ -24,20 +25,26 @@ help = -> console.log(
   document=<document> sections=[section-path]...")
 
 module.exports = (args...) ->
-  return os.help("./go gwt", default_options) if not args.length
-  # This script expects a base directory followed by statement script names.
+  if not args.length
+    return os.help("./go gwt", default_options)
+  # This script expects a base directory
+  # followed by statement script names.
   options = os.command_line()
   options[key] ?= value for key, value of default_options
 
-  process.chdir options.project if options.project
+  process.chdir options.project.base if options.project
   # if we are formed from uSDLC2, send stdout/stderr back via messages
   stdout = process.stdout.write; stderr = process.stderr.write
-  process.stdout.write = if options.forked then forked_writer else shelled_writer
+  if options.forked
+    process.stdout.write = forked_writer
+  else
+    process.stdout.write = shelled_writer
   console.log "#: ./go gwt '#{args[0..-2].join("' '")}'"
   # Load rules and start processing
   gwt = gwt.load(options)
   gwt.on_exit ->
-    process.stdout.write = stdout; process.stderr.write = stderr
+    process.stdout.write = stdout
+    process.stderr.write = stderr
     process.exit(gwt.error_code)
   # so we don't exit until all is done
   process.stdin.resume()
