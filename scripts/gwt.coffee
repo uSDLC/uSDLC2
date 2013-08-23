@@ -4,8 +4,8 @@
 # It will run Setup.coffee from the base directory,
 # then process each statement. Everything is anynchronous and
 # output goes to stdout / stderr.
-path = require 'path'; gwt = require 'gwt'; os = require 'system'
-Stream = require('stream').Stream
+path = require 'path'; gwt = require 'gwt'
+os = require 'system'; Stream = require('stream').Stream
 
 default_options =
   project: '../uSDLC2'
@@ -32,8 +32,9 @@ module.exports = (args...) ->
   options = os.command_line()
   options[key] ?= value for key, value of default_options
 
-  process.chdir options.project.base if options.project
-  # if we are formed from uSDLC2, send stdout/stderr back via messages
+  process.chdir options.project if options.project
+  # if we are formed from uSDLC2, send stdout/stderr back
+  # via messages
   stdout = process.stdout.write; stderr = process.stderr.write
   if options.forked
     process.stdout.write = forked_writer
