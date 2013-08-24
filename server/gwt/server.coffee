@@ -1,13 +1,15 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
-_ = require 'underscore'; processes = require 'processes'; gwt = require 'gwt'
-url = require 'url'; dirs = require 'dirs'; internet = require 'internet'
-util = require 'util'; send = require 'send'; strings = require 'common/strings'
+_ = require 'underscore'; processes = require 'processes'
+gwt = require 'gwt'; url = require 'url'
+dirs = require 'dirs'; Internet = require 'internet'
+util = require 'util'; send = require 'send'
+strings = require 'common/strings'
 
 class Server
   constructor: (@name, options) ->
     _.extend @, options
     # helper to get to internet for the server
-    @net = internet(options.url)
+    @net = new Internet(options.url)
     @start_command ?= module.exports.start_command
     @stop_url ?= module.exports.stop_url
   # start the active or named server
