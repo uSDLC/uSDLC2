@@ -95,8 +95,8 @@ module.exports = (exchange) ->
             level:   level
       return section_path
     # look for an element in the current section
-    usdlc.section_element = (selector, builder) ->
-      header = current_section()
+    usdlc.section_element = (header, selector, builder) ->
+      header ?= current_section()
       possibles = header.nextUntil(headings)
       el = possibles.find(selector)
       el = possibles.filter(selector) if not el.length

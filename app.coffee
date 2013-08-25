@@ -159,7 +159,7 @@ new_document = """<html><head>
 </head><body></body></html>"""
 
 usdlc.source = (header) ->
-  return usdlc.section_element 'textarea[source]', ->
+  return usdlc.section_element header, 'textarea[source]', ->
     return $('<textarea>').attr
       source:   'true'
       type:     'gwt.coffee'

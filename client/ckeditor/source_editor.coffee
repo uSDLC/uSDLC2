@@ -7,13 +7,13 @@ module.exports = (exchange) ->
         editor.addCommand 'source_editor', exec: (editor) ->
           a = $(usdlc.get_caret().$).parentsUntil('.Ref', 'a')
           steps(
-            ->  @requires '/client/autocomplete_filer.coffee'
+            #->  @requires '/client/autocomplete_filer.coffee'
             ->  @requires '/client/tree_filer.coffee'
             ->
               if a.length
                 eval(a.attr('href'))
               else
-                @autocomplete_filer()
+                #@autocomplete_filer()
                 @tree_filer()
           )
         editor.ui.addButton 'source_editor',

@@ -5,7 +5,7 @@ class Metadata
     @options.label ?= @options.name
     @options.class ?= @options.name
   fetch: (group_name, item_name, builder) ->
-    el = usdlc.section_element "div.#{group_name}", ->
+    el = usdlc.section_element null, "div.#{group_name}", ->
       return $('<div>').addClass("metadata #{group_name}").
           html("#{group_name}: ")
     name = item_name.split('.')[0]
@@ -18,7 +18,8 @@ class Metadata
 class Links extends Metadata
   update: (options) ->
     @fetch @options.name, options.name, (item) ->
-      item.html "<a href=\"#{options.url}\">#{options.name}</a>"
+      item.html "<a href=\"#{options.url}\">"+
+        "#{options.name}</a>"
   
 types = { Links }
 instances = {}
