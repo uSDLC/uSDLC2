@@ -1,6 +1,10 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
+    link_eval_requirements = ->
+      @requires '/client/ckeditor/source_editor.coffee',
+        '/client/ckeditor/gwt_coffee.coffee'
+    
     CKEDITOR.plugins.add 'source_editor',
       icons: 'source_editor'
       init: (editor) ->
@@ -36,10 +40,12 @@ module.exports = (exchange) ->
             return if not event.data.$.shiftKey
             return if not (a = $(event.data.$.target)).is('a')
             href = a.attr('href')
+          
             if /^javascript:/.test(href)
+              eval_href = -> eval(href)
               steps(
-                ->  @requires '/client/file_manager.coffee'
-                ->  eval(href)
+                link_eval_requirements
+                eval_href
               )
             else if /^\w+(\/\w+)?$/.test(href)
               usdlc.edit_page(href)
