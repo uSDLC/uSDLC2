@@ -6,14 +6,14 @@ gwt.rules(
 )
 
 class Process
-  constructor: (@exec_type) ->
+  constructor: (@exec_type = 'shell') ->
     @process = processes()
   execute: (cmd) ->
     switch @exec_type
       when 'shell'
         @process.cmd cmd, (error) -> gwt.check_for_error(error)
       else
-        gwt.fail("No exec type #{@exec_type} for '#{cmd}")
+        gwt.fail("Invalid exec type #{@exec_type} for '#{cmd}")
     return @
 
 module.exports = (type) -> new Process(type)

@@ -1,11 +1,13 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 EventEmitter = require('events').EventEmitter
-path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
-line_reader = require 'line_reader'; steps = require 'steps'
-script_extractor = require 'script_extractor'; Rules = require 'common/rules'
+path = require 'path'; timer = require 'common/timer'
+dirs = require 'dirs'; line_reader = require 'line_reader'
+steps = require 'steps'; Rules = require 'common/rules'
+script_extractor = require 'script_extractor'
 require 'common/strings'
 
-require.extensions['.gwt.coffee'] = require.extensions['.coffee']
+require.extensions['.gwt.coffee'] =
+  require.extensions['.coffee']
 
 class GWT extends EventEmitter
   constructor: (@options) ->
@@ -13,24 +15,30 @@ class GWT extends EventEmitter
     # initialise important variables
     @options.document_path = path.join(
       @options.project, "usdlc2/#{@options.document}.html")
-    @options.script_path = path.join @options.project, @options.script_path
-    scripts = []; @actions = []; @tests = 0; @ruler = new Rules(@)
+    @options.script_path =
+      path.join(@options.project, @options.script_path)
+    scripts = []; @actions = []; @tests = 0
+    @ruler = new Rules(@)
     @statement_skip = @section_skip = 0; @failures = 0
     @cleanups = []; @skipped = 0
     @after_sections = []; @paused_timeout = null
     @extensions = {}
     # first we take control of stdout and stderr
-    @stdout = process.stdout.write; @stderr = process.stderr.write
+    @stdout = process.stdout.write
+    @stderr = process.stderr.write
     @cleanups.push ->
-      process.stdout.write = @stdout; process.stderr.write = @stderr
+      process.stdout.write = @stdout
+      process.stderr.write = @stderr
     @output_array = []
     process.stdout.write = => @gwt_out arguments...
     process.stderr.write = => @gwt_err arguments...
     # all about skipping
     @skip = (msg) -> @pass "# SKIP #{msg}", @skipped++
-    # gwt.skip.statements(1) # skip one or more statements in the current script
+    # gwt.skip.statements(1) # skip one or more statements
+    # in the current script
     @skip.statements = (count = 1) => @statement_skip = count
-    # gwt.skip.script() # skip the currently running script (eg. Given, When, Then)
+    # gwt.skip.script() # skip the currently running
+    # script (eg. Given, When, Then)
     @skip.section = (msg) => @skip.sections 1, msg
     # gwt.skip.sections(1) # skip the current section
     @skip.sections = (count, msg) =>
@@ -44,23 +52,26 @@ class GWT extends EventEmitter
       ->  script_extractor gwt.options, @next
       # 2: read a list of available scripts
       ->
-        reader = line_reader.for_file gwt.options.runner_file, (line) =>
+        runner_file = gwt.options.runner_file
+        reader = line_reader.for_file runner_file, (line) =>
           scripts.push line
         reader.on 'end', @next
-      # 3: load tests - either gwt or explicitly in coffee-script
+      # 3: load tests - either gwt or explicitly in coffee
       ->
         @asynchronous()
         gwt.timer = timer pre: '# ', post: ''
         re = new RegExp(gwt.options.sections ? '')
-        scripts = (script for script in scripts when re.test script)
-        processed_scripts = {}            
+        scripts = (scr for scr in scripts when re.test scr)
+        processed_scripts = {}
         do read_script = =>
-          if not scripts.length then gwt.section(); return @next()
+          if not scripts.length
+            gwt.section(); return @next()
           gwt.section script = scripts.shift()
           ext_name = path.extname(script)
           switch ext_name
             when '.gwt'
-              reader = line_reader.for_file script, (statement) =>
+              reader = line_reader.for_file script,
+              (statement) =>
                 if statement?.length and statement[0] isnt '#'
                   gwt.add (gwt) -> gwt.test_statement statement
               reader.on 'end', read_script
@@ -71,8 +82,10 @@ class GWT extends EventEmitter
                 while base.length and base isnt '.'
                   parents.push(base)
                   base = path.dirname(base)
-                parents.pop() if parents[scripts.length - 1] is 'gen'
-                parents.pop() if parents[scripts.length - 1] is 'usdlc2'
+                if parents[scripts.length - 1] is 'gen'
+                  parents.pop()
+                if parents[scripts.length - 1] is 'usdlc2'
+                  parents.pop()
               else
                 parents = [base]
                 
@@ -82,11 +95,12 @@ class GWT extends EventEmitter
                 return next() if processed_scripts[script]
                 processed_scripts[script] = script
                 try
-                  actor = require(path.resolve dirs.base(), script)
+                  actor =
+                    require(path.resolve dirs.base(), script)
                   if typeof actor is 'function'
                     switch actor.length
-                      when 0 then gwt.add(actor) # direct actor
-                      when 1 then actor(gwt, next); return # asynchronous
+                      when 0 then gwt.add(actor) # direct
+                      when 1 then actor(gwt, next); return
                       else actor(gwt) # synchronouus
                 catch err
                 next()
@@ -112,11 +126,13 @@ class GWT extends EventEmitter
   # call to separate sections
   section: (name) ->
     @actions.push (gwt) =>
-      return @next() if @actions.length is 1  # no actions for this section
+      return @next() if @actions.length is 1
       @section_skip -= 1 if @section_skip
       @statement_skip = 0 if not @section_skip
-      name = /([^\/]+)\.[\w\.]+$/.exec(name)?[1].replace(/_/g, ' ')
-      console.log "#1 Section: #{name}" if name if not name.ends_with('.gwt')
+      name = /([^\/]+)\.[\w\.]+$/.
+        exec(name)?[1].replace(/_/g, ' ')
+      if name and not name.ends_with('.gwt')
+        console.log "#1 Section: #{name}"
       do func = =>
         return @next() unless @after_sections.length
         section = @after_sections.shift()
@@ -156,10 +172,11 @@ class GWT extends EventEmitter
   next_next: ->
     clearTimeout @paused_timeout
     @paused_timeout = setTimeout ( =>
+      max_time = @options.maximum_step_time
       @fail """
-             gwt did not resume in #{@options.maximum_step_time} seconds
-               increase gwt.maximum_step_time in seconds if needed"""),
-                                 @options.maximum_step_time * 1000
+        gwt did not resume in #{max_time} seconds
+        increase gwt.maximum_step_time in seconds if needed""",
+        @options.maximum_step_time * 1000)
     try
       action = @actions.shift()
       return action(gwt) if @actions.length
@@ -170,18 +187,21 @@ class GWT extends EventEmitter
     clearTimeout @paused_timeout
     passes = @tests - @failures - @skipped
     percent = Math.floor(passes * 100 / @tests)
-    console.log "Failed #{@failures}/#{@tests}, #{@skipped} skipped, #{percent}% okay"
+    console.log "Failed #{@failures}/#{@tests}, "+
+      "#{@skipped} skipped, #{percent}% okay"
     @timer.total()
     @exit()
-  # extend gwt with methods of interest to the current test suite
+  # extend gwt with methods of interest to the current tests
   extend: (modules...) ->
     for extension in modules
       extension = extension.replace /\s/g, '_'
       if extension[0] is '/'
-        extension = path.resolve path.join @options.script_path, extension
+        extension = path.join @options.script_path, extension
+        extension = path.resolve extension
       if not @extensions[extension]
         @extensions[extension] = require extension
-        GWT.prototype[name] = func for name, func of @extensions[extension]
+        for name, func of @extensions[extension]
+          GWT.prototype[name] = func
     return @
   # all done ... clean up
   exit: ->

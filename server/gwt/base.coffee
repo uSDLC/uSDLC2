@@ -1,7 +1,8 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 EventEmitter = require('events').EventEmitter
-path = require 'path'; timer = require 'common/timer'; dirs = require 'dirs'
-line_reader = require 'line_reader'; steps = require 'steps'
+path = require 'path'; timer = require 'common/timer'
+dirs = require 'dirs'; line_reader = require 'line_reader'
+steps = require 'steps'
 
 module.exports =
   # called if test passes
@@ -35,9 +36,12 @@ module.exports =
   # call if test is not valid in the current setting
   skip: (msg = '') -> @pass "# SKIP #{msg}"
   # require a file from the project under test
-  require: (name) -> return require path.join @options.project, name
+  require: (name) ->
+    return require path.join @options.project, name
   # what to do when gwt has finished (close servers, etc)
   on_exit: (func) -> @cleanups.unshift func
   # check all output for included text
-  includes_text: (included) -> return @output().indexOf(included) != -1
-  matches_text: (re) -> return (new RegExp(re)).test(@output())
+  includes_text: (included) ->
+    return @output().indexOf(included) != -1
+  matches_text: (re) ->
+    return (new RegExp(re)).test(@output())

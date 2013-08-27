@@ -1,25 +1,20 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
-    link_eval_requirements = ->
-      @requires '/client/ckeditor/source_editor.coffee',
-        '/client/ckeditor/gwt_coffee.coffee'
     
     CKEDITOR.plugins.add 'source_editor',
       icons: 'source_editor'
       init: (editor) ->
         editor.addCommand 'source_editor', exec: (editor) ->
           a = $(usdlc.get_caret().$).parentsUntil('.Ref', 'a')
-          steps(
-            #->  @requires '/client/autocomplete_filer.coffee'
-            ->  @requires '/client/tree_filer.coffee'
-            ->
-              if a.length
-                eval(a.attr('href'))
-              else
-                #@autocomplete_filer()
-                @tree_filer()
-          )
+          queue = steps().queue
+          queue -> @requires '/client/tree_filer.coffee'
+          queue ->
+            if a.length
+              eval(a.attr('href'))
+            else
+              @tree_filer()
+              
         editor.ui.addButton 'source_editor',
           label: 'Source Editor'
           command: 'source_editor'
@@ -42,11 +37,11 @@ module.exports = (exchange) ->
             href = a.attr('href')
           
             if /^javascript:/.test(href)
-              eval_href = -> eval(href)
-              steps(
-                link_eval_requirements
-                eval_href
-              )
+              queue = steps().queue
+              queue -> @requires(
+                '/client/edit_source.coffee'
+                '/client/ckeditor/gwt_coffee.coffee')
+              queue -> eval(href)
             else if /^\w+(\/\w+)?$/.test(href)
               usdlc.edit_page(href)
             else

@@ -11,7 +11,7 @@ dialog_options =
   
 module.exports = ->
   form = tree = search_by = cludes = search_for = nodes = null
-  last_search = ''; dtree = null
+  last_search = ''; dtree = branches = null
   
   load_packages = -> @package "dtree"
   
@@ -43,7 +43,8 @@ module.exports = ->
       branch(id, child) for child in item.children ? []
     branch(-1, name: usdlc.project, children: @files)
     tree.html(dtree.toString())
-    nodes = tree.find('div.dTreeNode a')
+    nodes = tree.find('div.dTreeNode a[id]')
+    branches = tree.find('div.dTreeNode')
     
   move = (dir) ->
     selected = tree.find('div.dTreeNode a.nodeSel')
@@ -65,19 +66,21 @@ module.exports = ->
     eval(selected.attr('href'))
   
   filter_tree = (text) ->
+    re = new RegExp(text, 'i')
+    first = true
+    usdlc.dtree.closeAll()
+    branches.addClass('hidden')
     nodes.each (index) ->
       div = (node = $(@)).parent()
-      parents = div.parents('div.dTreeNode')
-      if matches text, node.text()
+      parents = div.parents('div.clip').prev()
+      if re.test(node.text())
         div.removeClass('hidden')
         parents.removeClass('hidden')
-      else
-        div.addClass('hidden')
-        parents.each (index) ->
-          children = (parent = $(@)).children('div.dTreeNode')
-          if not children.is(':visible')
-            parent.addClass('hidden')
-    
+        id = node.attr('id').match(/\d+/)[0]
+        usdlc.dtree.openTo(id, first)
+        first = false
+      return true
+  
   open_dialog = ->
     @dlg = @dialog
       name: 'Source...'
