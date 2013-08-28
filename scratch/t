@@ -1,8 +1,0 @@
-#!/bin/bash
-#~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Processing/Audio/.*
-#~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Processing/Audio/Retrieve_MP3.*Full_Audio.*
-#~/dev/uSDLC/uSDLC2/go gwt project=~/dev/AFP/FrenzyServer document=Design sections=.*/Data_Collection/Sending_a_File.*
-
-#http://localhost:9009/server/http/gwt.coffee?project=.&document=Instrumentation&sections=.*/A%20Basic%20Example.*
-
-./go gwt 'project=../../AFP/FrenzyServer' 'document=Design' 'sections=.*/UI_Interactions/Live_Status_Updates/Standard_Expected_Behaviour([/\.].*)*$'

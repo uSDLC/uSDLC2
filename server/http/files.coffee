@@ -1,11 +1,14 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 fs = require 'fs'; dirs = require 'dirs'
 steps = require 'steps'; path = require 'path'
+files = require 'files'
 
 module.exports = (exchange) ->
   project = exchange.request.url.query.project
   project = dirs.projects[project].base
   type = exchange.request.url.query.type
+  search = exchange.request.url.query.search
+  re = new RegExp(exchange.request.url.query.re, 'm')
   list = []
 
   include = exchange.request.url.query.include
@@ -23,15 +26,29 @@ module.exports = (exchange) ->
     excluded = (file_path) -> exclude.test(file_path)
   else
     excluded = (file_path) -> false
+  
+  if search is 'grep'
+    grep = (file, next) ->
+      files.is_dir file, (error, is_dir) ->
+        return next(true) if is_dir
+        console.log 'GREP',file
+        fs.readFile file, (err, contents) ->
+          return next(false) if err
+          return next(re.test(contents))
+  else
+    grep = (file, next) -> next(true)
 
   read_dir = (from, dir_read, processor) ->
     process_file = (file, next) ->
       file_path = path.join(from, file)
       return next() if file[0] is '.' or excluded(file_path)
-      fs.lstat file_path,  (error, stats) ->
-        return next(error) if error
-        processor file, file_path, stats, next
+      grep file_path, (found) ->
+        return next() if not found
+        fs.lstat file_path,  (error, stats) ->
+          return next(error) if error
+          processor file, file_path, stats, next
     steps(
+      ->  @long_operation()
       ->  fs.readdir from, @next (@error, @files) ->
       ->  @list @files..., process_file
       ->  dir_read()
@@ -70,19 +87,6 @@ module.exports = (exchange) ->
         html_item "<li>", file_path, file, "</li>\n"
         next()
 
-  grep_list = (project_dir, pattern) ->
-    pattern = new regExp pattern
-    grep = (from, list) ->
-      read_dir from, send_json,
-      (file, file_path, stats, next) ->
-        if stats.isDirectory()
-          grep file_path, list[file] = {}, next
-        else # ordinary file
-          # TODO: only add if pattern in file
-          list[file] = file_path
-          next()
-    grep(project_dir, list)
-
   autocomplete_list = (from, list, dir_read) ->
     read_dir from, dir_read,
     (file, file_path, stats, next) ->
@@ -101,8 +105,5 @@ module.exports = (exchange) ->
       autocomplete_list project, list, send_json
     when 'html'
       html_list project, send_html
-    when 'grep'
-      pattern = exchange.request.url.query.pattern
-      grep_list project, inclue, exclude, pattern
     else # 'json'
       json_list project, list, send_json
