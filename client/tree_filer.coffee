@@ -81,6 +81,7 @@ module.exports = ->
         return
   
   select_from_tree = ->
+    return if search_type() is 'grep' and not usdlc.grep
     selected = tree.find('div.dTreeNode a.nodeSel')
     eval(selected.attr('href'))
   
@@ -117,7 +118,9 @@ module.exports = ->
           return if (search = search_for.val()) is last_search
           filter_tree(last_search = search)
         search_for.change ->
-          fill_tree() if search_type() is 'grep'
+          if search_type() is 'grep'
+            usdlc.grep = search_for.val()
+            fill_tree()
         last_search = search_for.val()
         search_by = form.find('div.search_by').buttonset()
         $('#search_by_name').click ->

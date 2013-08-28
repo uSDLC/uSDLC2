@@ -174,6 +174,14 @@ module.exports.initialise = (next) ->
       prepare_menu(editor)
       # so tab stays in editor
       $(":input, a").attr("tabindex", "-1")
+      if usdlc.grep # highlight search term from grep
+        re = new RegExp(usdlc.grep)
+        cursor = editor.getSearchCursor(re, null, false)
+        if cursor.findNext()
+          scroller = ->
+            editor.scrollIntoView(cursor.from(), 100)
+          setTimeout scroller, 1000
+          editor.setSelection(cursor.from(), cursor.to())
       return editor
   steps(
     ->  @data '/client/codemirror/menu.html'
