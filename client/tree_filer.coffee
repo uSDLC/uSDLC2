@@ -29,7 +29,6 @@ module.exports = ->
     selector = "exclude=#{exclude}&include=#{include}"
     search = "search=#{search_type()}&re=#{search_for.val()}"
     args = "project=#{usdlc.project}&type=json"
-    
     @json "#{path}?#{args}&#{selector}&#{search}"
     
   update_icon_path = (dtree) ->
@@ -63,6 +62,7 @@ module.exports = ->
     tree.html(dtree.toString())
     nodes = tree.find('div.dTreeNode a[id]')
     branches = tree.find('div.dTreeNode')
+    usdlc.dtree.openAll() if search_type() is 'grep'
     branches.first().click -> usdlc.dtree.closeAll()
     
   move = (dir) ->
