@@ -25,6 +25,8 @@
         placeholder='pattern...'/>
     </div>
     <div class='tree'></div>
+    <input type='checkbox', id='filter_tree' checked='checked'>
+    <label>Enable Filter</label>
     <div class="clusions">
       <label>Include:</label>
       <input type="text" placeholder='pattern...'/><br/>
@@ -32,11 +34,13 @@
       <input type="text" placeholder='pattern...'/><br/>
     </div>
   </form>
-  <ul class='tree_menu'>
-    <li><a action='delete'>Delete</a></li>
-    <li><a action='edit'>Edit</a></li>
-    <li><a action='move'>Move</a></li>
-  </ul>
   </div>
+  <ul id='tree_menu'
+  class='ui-helper-hidden' style="display:none">
+    <li><a href='delete'>Delete</a></li>
+    <li><a href='edit'>Edit</a></li>
+    <li><a href='move'>Move...</a></li>
+    <li><a href='new'>New...</a></li>
+  </ul>
 </body>
 <html>

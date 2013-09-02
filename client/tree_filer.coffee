@@ -9,9 +9,16 @@ dialog_options =
   closeOnEscape: false
   fix_height_to_window: 10
   
+form = tree = search_by = cludes = search_for = nodes = null
+last_search = ''; dtree = branches = null
+  
 module.exports = ->
-  form = tree = search_by = cludes = search_for = nodes = null
-  last_search = ''; dtree = branches = null
+  tree_actions =
+    edit: (data) -> usdlc.edit_source(data)
+    'delete': (data) ->
+    move: (data) ->
+    'new': (data) ->
+  usdlc.tree_action = tree_actions.edit
   
   load_packages = -> @package "dtree"
   
@@ -24,8 +31,11 @@ module.exports = ->
     
   load_file_list = ->
     path = "/server/http/files.coffee"
-    exclude = cludes[1].val()
-    include = cludes[0].val()
+    if form.find('#filter_tree:checked').length
+      exclude = cludes[1].val()
+      include = cludes[0].val()
+    else
+      include = exclude = ''
     selector = "exclude=#{exclude}&include=#{include}"
     search = "search=#{search_type()}&re=#{search_for.val()}"
     args = "project=#{usdlc.project}&type=json"
@@ -47,13 +57,14 @@ module.exports = ->
     update_icon_path(dtree)
     dtree.config.inOrder = true
     dtree.config.folderLinks = false
+    dtree.config.useCookies = false
     
     next_id = 0
     branch = (parent, item) ->
       id = ++next_id
       item_data = "{value:'#{item.name}'," +
         "path:'#{item.path}',category:'#{item.category}'}"
-      path = "javascript:usdlc.edit_source(#{item_data})"
+      path = "javascript:usdlc.tree_action(#{item_data})"
       # don't show empty branches
       if not empty_branch(item)
         dtree.add(id, parent, item.name, path)
@@ -64,6 +75,14 @@ module.exports = ->
     branches = tree.find('div.dTreeNode')
     usdlc.dtree.openAll() if search_type() is 'grep'
     branches.first().click -> usdlc.dtree.closeAll()
+    $('form.tree_filer').find('a,input').attr('tabindex', '-1')
+    tree.contextmenu
+      menu: '#tree_menu'
+      delegate: '.dTreeNode'
+      select: (event, ui) ->
+        usdlc.tree_action = tree_actions[ui.cmd]
+        ui.target.context.click()
+        usdlc.tree_action = tree_actions.edit
     
   move = (dir) ->
     selected = tree.find('div.dTreeNode a.nodeSel')
@@ -127,6 +146,7 @@ module.exports = ->
           search_for.val('')
           fill_tree()
         tree = form.find('div.tree')
+        form.find('#filter_tree').change -> fill_tree()
         cludes = form.find('div.clusions input')
         cludes = ($(input) for input in cludes)
         cludes[0].val usdlc.projectStorage('include') ? ''

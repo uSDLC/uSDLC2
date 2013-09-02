@@ -47,66 +47,64 @@ class GWT extends EventEmitter
     # gwt.skip.all() # terminate test run
     @skip.all = => @statement_skip = @section_skip = Infinity
 
-    steps(
-      # 1: extract scripts from documentation (if newer)
-      ->  script_extractor gwt.options, @next
-      # 2: read a list of available scripts
-      ->
-        runner_file = gwt.options.runner_file
-        reader = line_reader.for_file runner_file, (line) =>
-          scripts.push line
-        reader.on 'end', @next
-      # 3: load tests - either gwt or explicitly in coffee
-      ->
-        @asynchronous()
-        gwt.timer = timer pre: '# ', post: ''
-        re = new RegExp(gwt.options.sections ? '')
-        scripts = (scr for scr in scripts when re.test scr)
-        processed_scripts = {}
-        do read_script = =>
-          if not scripts.length
-            gwt.section(); return @next()
-          gwt.section script = scripts.shift()
-          ext_name = path.extname(script)
-          switch ext_name
-            when '.gwt'
-              reader = line_reader.for_file script,
-              (statement) =>
-                if statement?.length and statement[0] isnt '#'
-                  gwt.add (gwt) -> gwt.test_statement statement
-              reader.on 'end', read_script
-            when '.coffee'
-              parents = []; base = script.split('.')[0]
-              if script.ends_with('.gwt.coffee')
-                ext_name = '.gwt.coffee'
-                while base.length and base isnt '.'
-                  parents.push(base)
-                  base = path.dirname(base)
-                if parents[scripts.length - 1] is 'gen'
-                  parents.pop()
-                if parents[scripts.length - 1] is 'usdlc2'
-                  parents.pop()
-              else
-                parents = [base]
-                
-              do next = ->
-                return read_script() if not parents.length
-                script = parents.pop() + ext_name
-                return next() if processed_scripts[script]
-                processed_scripts[script] = script
-                try
-                  actor =
-                    require(path.resolve dirs.base(), script)
-                  if typeof actor is 'function'
-                    switch actor.length
-                      when 0 then gwt.add(actor) # direct
-                      when 1 then actor(gwt, next); return
-                      else actor(gwt) # synchronouus
-                catch err
-                next()
-      # 4: run the tests
-      -> gwt.go()
-      )
+    step = steps()
+    # 1: extract scripts from documentation (if newer)
+    step -> script_extractor gwt.options, @next
+    # 2: read a list of available scripts
+    step ->
+      runner_file = gwt.options.runner_file
+      reader = line_reader.for_file runner_file, (line) =>
+        scripts.push line
+      reader.on 'end', @next
+    # 3: load tests - either gwt or explicitly in coffee
+    step ->
+      @asynchronous()
+      gwt.timer = timer pre: '# ', post: ''
+      re = new RegExp(gwt.options.sections ? '')
+      scripts = (scr for scr in scripts when re.test scr)
+      processed_scripts = {}
+      do read_script = =>
+        if not scripts.length
+          gwt.section(); return @next()
+        gwt.section script = scripts.shift()
+        ext_name = path.extname(script)
+        switch ext_name
+          when '.gwt'
+            reader = line_reader.for_file script,
+            (statement) =>
+              if statement?.length and statement[0] isnt '#'
+                gwt.add (gwt) -> gwt.test_statement statement
+            reader.on 'end', read_script
+          when '.coffee'
+            parents = []
+            dot = script.indexOf('.', script.lastIndexOf('/'))
+            base = if dot > 0 then script[0..dot - 1] else '.'
+            if script.ends_with('.gwt.coffee')
+              ext_name = '.gwt.coffee'
+              while base.length > 10 and
+              base[-10..] isnt 'gen/usdlc2'
+                parents.push(base)
+                base = path.dirname(base)
+            else
+              parents = [base]
+              
+            do next = ->
+              return read_script() if not parents.length
+              script = parents.pop() + ext_name
+              return next() if processed_scripts[script]
+              processed_scripts[script] = script
+              try
+                actor =
+                  require(path.resolve dirs.base(), script)
+                if typeof actor is 'function'
+                  switch actor.length
+                    when 0 then gwt.add(actor) # direct
+                    when 1 then actor(gwt, next); return
+                    else actor(gwt) # synchronouus
+              catch err
+              next()
+    # 4: run the tests
+    step -> gwt.go()
   # done with load as it has already created an instance
   load: -> @
   gwt_out: (string, encoding, fd) ->
@@ -148,7 +146,7 @@ class GWT extends EventEmitter
       @fail """
              Unknown statement, add:
                gwt.rules(
-                 /#{statement.replace(/\//g, '.')}/, () =>
+                 /#{statement.replace(/\//g, '.')}/, () ->
                    @todo 'implement'
                )"""
   # called by instrumentation scripts to set up rules for gwt
@@ -171,12 +169,12 @@ class GWT extends EventEmitter
       @exit()
   next_next: ->
     clearTimeout @paused_timeout
-    @paused_timeout = setTimeout ( =>
-      max_time = @options.maximum_step_time
+    max_time = @options.maximum_step_time
+    overtime = =>
       @fail """
         gwt did not resume in #{max_time} seconds
-        increase gwt.maximum_step_time in seconds if needed""",
-        @options.maximum_step_time * 1000)
+        increase gwt.maximum_step_time (seconds) if needed"""
+    @paused_timeout = setTimeout(overtime, max_time * 1000)
     try
       action = @actions.shift()
       return action(gwt) if @actions.length
@@ -211,7 +209,7 @@ class GWT extends EventEmitter
       steps(cleanup, next_cleanup)
 
   server: -> @server = require 'gwt/server'
-  process: (type) -> return require('gwt/processes')(type)
+  process: (type) -> require('gwt/processes')(type)
 
 module.exports =
   load: (@options) ->

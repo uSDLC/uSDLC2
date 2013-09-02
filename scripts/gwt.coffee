@@ -21,7 +21,7 @@ shelled_writer = (string, encoding, fd) ->
 writer = shelled_writer
 
 help = -> console.log(
-  "usage: ./go gwt project=<project-path>
+  "usage: ./go.sh gwt project=<project-path>
   document=<document> sections=[section-path]...")
 
 module.exports = (args...) ->
@@ -40,7 +40,8 @@ module.exports = (args...) ->
     process.stdout.write = forked_writer
   else
     process.stdout.write = shelled_writer
-  console.log "#: ./go gwt '#{args[0..-2].join("' '")}'"
+  arg_string = args[0..-2].join("' '")
+  console.log "#: ./go.sh gwt '#{arg_string}'"
   # Load rules and start processing
   gwt = gwt.load(options)
   gwt.on_exit ->

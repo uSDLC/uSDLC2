@@ -1,4 +1,4 @@
-# Copyright (C) 2012,13 paul@marrington.net, see GPL for license
+# Copyright (C) 2012,13 paul@marrington.net, see /GPL license
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
 dirs = require('dirs')
 newer = require 'newer'; steps = require 'steps'
@@ -10,7 +10,8 @@ module.exports = (options, extraction_complete) ->
   options.runner_file = path.join gen, "#{options.document}.list"
   input_path = path.join options.project, "usdlc2/#{options.document}.html"
 
-  return extraction_complete() if newer(options.runner_file, options.document_path)
+  if newer(options.runner_file, options.document_path)
+    return extraction_complete()
   
   script_content = null; script_name = ''
   depth = 0; in_heading = false; headings = []

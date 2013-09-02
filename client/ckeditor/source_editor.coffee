@@ -14,7 +14,8 @@ module.exports = (exchange) ->
               eval(a.attr('href'))
             else
               @tree_filer()
-              
+          return false
+
         editor.ui.addButton 'source_editor',
           label: 'Source Editor'
           command: 'source_editor'
@@ -29,7 +30,6 @@ module.exports = (exchange) ->
           return source_editor: CKEDITOR.TRISTATE_OFF
         altV = CKEDITOR.ALT + 86
         editor.setKeystroke(altV, 'source_editor')
-        editor.config.blockedKeystrokes.push altV
         editor.on 'contentDom', ->
           editor.editable().on 'mousedown', (event) ->
             return if not event.data.$.shiftKey

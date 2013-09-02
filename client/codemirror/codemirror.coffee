@@ -18,15 +18,15 @@ spaces = '                '
 
 module.exports.initialise = (next) ->
   CodeMirror.modeURL =
-    '/ext/codemirror/codemirror/mode/%N/%N.js'
+    '/ext/codemirror/CodeMirror-master/mode/%N/%N.js'
 
   _.extend CodeMirror.commands,
     fold_at_cursor: (cm) -> cm.foldCode(cm.getCursor())
     play_current: (cm) -> roaster.replay()
     file_manager: (cm) ->
       steps(
-        ->  @requires '/client/file_manager.coffee'
-        ->  @file_manager()
+        ->  @requires '/client/tree_filer.coffee'
+        ->  @tree_filer()
       )
     toggle_auto_complete: (cm) -> alert "Under Construction"
     view_source: (cm) ->
