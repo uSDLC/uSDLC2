@@ -14,7 +14,7 @@ module.exports = (exchange) ->
               eval(a.attr('href'))
             else
               @tree_filer()
-          return false
+          return true
 
         editor.ui.addButton 'source_editor',
           label: 'Source Editor'

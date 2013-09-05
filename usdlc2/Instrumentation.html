@@ -88,6 +88,16 @@ Given a shell
 When we execute &#39;echo uSDLC child output test&#39;
 Then the response includes &#39;uSDLC child output test&#39;</pre>
 
-<p style="display: block;">&nbsp;</p>
+<h2>The Bridge</h2>
+
+<p>The bridge is code that connects rules to the operational system and other external resources. It is recorded within the document and extracted to be run. Any&nbsp;GWT block can access bridge code from it&#39;s section and all connected parent sections.</p>
+
+<h3>The&nbsp;<em>gwt</em>&nbsp;Object</h3>
+
+<h3>Rules</h3>
+
+<h3>Steps</h3>
+
+<p>A rule is complete when it is marked pass or fail. Each rule has an asynchronous step processor attached. Each step will complete and allow the next to start when @pass() is called. If there are no more steps, @pass() will complete the rule as usual. If @fail is called all further steps are skipped and the rule fails.</p>
 </body>
 </html>

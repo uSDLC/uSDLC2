@@ -142,6 +142,9 @@ class GWT extends EventEmitter
   test_statement: (statement) ->
     return @skip('', @statement_skip--) if @statement_skip
     @title statement
+    @step = steps()
+    @async = @step.async
+    @pass_messages = []
     if not @ruler.run(statement)
       @fail """
              Unknown statement, add:
@@ -208,6 +211,7 @@ class GWT extends EventEmitter
       cleanup = @cleanups.shift()
       steps(cleanup, next_cleanup)
 
+  files: -> gwt.extend 'gwt/files'
   server: -> @server = require 'gwt/server'
   process: (type) -> require('gwt/processes')(type)
 

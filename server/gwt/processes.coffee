@@ -8,7 +8,7 @@ gwt.rules(
 class Process
   constructor: (@exec_type = 'shell') ->
     @process = processes()
-  execute: (cmd) ->
+  execute: (cmd) -> @async ->
     switch @exec_type
       when 'shell'
         @process.cmd cmd, (error) -> gwt.check_for_error(error)

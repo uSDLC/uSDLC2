@@ -1,4 +1,4 @@
-# Copyright (C) 2013 paul@marrington.net, see GPL for license
+# Copyright (C) 2013 paul@marrington.net, see /GPL for license
 
 dialog_options =
   width:      'auto'
@@ -163,6 +163,10 @@ module.exports = ->
             when 13 then select_from_tree()
             when 38 then move(-1)
             when 40 then move(1)
+        set_focus = -> search_for.focus()
+        dlg.on "dialogfocus", set_focus
+        dlg.on "dialogcreate", set_focus
+        search_for.focus -> search_for.select()
       fill: fill_tree
       dialog_options
       

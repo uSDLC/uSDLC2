@@ -2,14 +2,19 @@
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'
 dirs = require 'dirs'; line_reader = require 'line_reader'
-steps = require 'steps'
 
 module.exports =
   # called if test passes
   pass: (msg = '') ->
-    msg = msg.toString()
-    msg = " - #{msg}" if msg.length
-    console.log "ok #{++@count}#{msg}"; @next()
+    # pass can't really pass if there is more to do
+    @pass_messages.push msg.toString()
+    if @step.empty()
+      msg = @pass_messages.join(' - ')
+      msg = " - #{msg}" if msg.length
+      console.log "ok #{++@count}#{msg}"
+      @next()
+    else
+      @step.next()
   # called if test fails
   fail: (msg) ->
     @failures++
@@ -18,6 +23,7 @@ module.exports =
     console.log "not ok #{++@count}#{msg}"
     console.log msg.stack if msg?.stack
     @skip.section('fail')
+    @step.abort()
     @next()
   # test and show message on failure
   test: (test, msg = '') ->
@@ -25,6 +31,7 @@ module.exports =
   # pass err and fail if it exists
   check_for_error: (err, msg = '') ->
     if err then @fail err else @pass msg
+    return err
   # test and provide a message if not as expected
   expect: (value, to_be) ->
     if value is to_be
