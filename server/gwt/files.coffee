@@ -4,19 +4,20 @@ dirs = require 'dirs'
 
 module.exports =
   copy: (from..., to) -> @queue ->
-    console.log "COPY cwd",process.cwd()
     files.is_dir to, (error, is_dir) =>
       return @fail(error) if error
       if is_dir
         do copy_one = =>
           return @pass() if not from.length
-          name = path.basename(from)
-          files.copy from, "#{to}/#{name}", (error) =>
+          target = from.shift()
+          name = path.basename(target)
+          files.copy target, "#{to}/#{name}", (error) =>
             return @fail(error) if error
             copy_one()
       else
-        return @fail("One from for #{to}") if from.length
-        files.copy from, to, (error) =>
+        if from.length > 1
+          return @fail("usage: copy(from_file, to_file)")
+        files.copy fromi[0], to, (error) =>
           @check_for_error(error)
         
   rmdirs: (dir) -> @queue ->
