@@ -47,7 +47,7 @@ class GWT extends EventEmitter
     # gwt.skip.all() # terminate test run
     @skip.all = => @statement_skip = @section_skip = Infinity
 
-    step = steps()
+    step = steps().queue
     # 1: extract scripts from documentation (if newer)
     step -> script_extractor gwt.options, @next
     # 2: read a list of available scripts
@@ -142,8 +142,12 @@ class GWT extends EventEmitter
   test_statement: (statement) ->
     return @skip('', @statement_skip--) if @statement_skip
     @title statement
-    @step = steps()
-    @async = @step.async
+    @steps = steps(@)
+    @steps.all_asynchronous = true
+    @queue = (self..., step) =>
+      @steps.queue =>
+        gwt.self = self[0] ? gwt
+        step.apply(gwt)
     @pass_messages = []
     if not @ruler.run(statement)
       @fail """
@@ -153,9 +157,12 @@ class GWT extends EventEmitter
                    @todo 'implement'
                )"""
   # called by instrumentation scripts to set up rules for gwt
-  rules: (patterns...) -> @ruler.add(patterns...); return @
+  rules: (patterns...) ->
+    @ruler.add(patterns...)
   # display a test line title
   title: (text) -> console.log "#2    #{text}"
+  # run code level tests
+  code_tests: (code...) -> c.apply(@) for c in code
 
   # go to next script without marking pass or failure
   go: -> @next()
@@ -195,15 +202,16 @@ class GWT extends EventEmitter
   # extend gwt with methods of interest to the current tests
   extend: (modules...) ->
     for extension in modules
-      extension = extension.replace /\s/g, '_'
-      if extension[0] is '/'
-        extension = path.join @options.script_path, extension
-        extension = path.resolve extension
-      if not @extensions[extension]
-        @extensions[extension] = require extension
-        for name, func of @extensions[extension]
+      if extension instanceof Object
+        for name, func of extension
           GWT.prototype[name] = func
-    return @
+      else # a list of modules containing extensions
+        extension = extension.replace /\s/g, '_'
+        if extension[0] is '/'
+          extension = path.join @options.script_path, extension
+          extension = path.resolve extension
+        if not @extensions[extension]
+          @extend(@extensions[extension] = require extension)
   # all done ... clean up
   exit: ->
     do next_cleanup = =>

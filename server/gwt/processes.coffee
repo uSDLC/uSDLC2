@@ -8,12 +8,14 @@ gwt.rules(
 class Process
   constructor: (@exec_type = 'shell') ->
     @process = processes()
-  execute: (cmd) -> @async ->
-    switch @exec_type
+  execute: (cmd) -> gwt.queue @, ->
+    switch @self.exec_type
       when 'shell'
-        @process.cmd cmd, (error) -> gwt.check_for_error(error)
+        @self.process.cmd cmd, (error) =>
+          @check_for_error(error)
       else
-        gwt.fail("Invalid exec type #{@exec_type} for '#{cmd}")
+        @fail(
+          "Invalid exec type #{@self.exec_type} for '#{cmd}")
     return @
 
 module.exports = (type) -> new Process(type)
