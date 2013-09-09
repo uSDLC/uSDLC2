@@ -20,6 +20,9 @@ module.exports =
         files.copy from[0], to, (error) =>
           @check_for_error(error)
         
+  mkdirs: (dir) -> @queue ->
+    dirs.mkdirs dir, (error) => @check_for_error(error)
+    
   rmdirs: (dir) -> @queue ->
     dirs.rmdirs dir, (error) => @check_for_error(error)
     
