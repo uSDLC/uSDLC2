@@ -5,7 +5,6 @@ dirs = require 'dirs'; fs = require 'fs'
 module.exports =
   copy: (from..., to) -> @queue ->
     files.is_dir to, (error, is_dir) =>
-      return @fail(error) if error
       if is_dir
         do copy_one = =>
           return @pass() if not from.length
