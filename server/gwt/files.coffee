@@ -17,7 +17,7 @@ module.exports =
       else
         if from.length > 1
           return @fail("usage: copy(from_file, to_file)")
-        files.copy fromi[0], to, (error) =>
+        files.copy from[0], to, (error) =>
           @check_for_error(error)
         
   rmdirs: (dir) -> @queue ->

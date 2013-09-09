@@ -102,14 +102,14 @@ Then the response includes &#39;uSDLC child output test&#39;</pre>
 
 <h3>Asynchronous Support</h3>
 
-<p>A rule is complete when it is marked pass or fail. Each rule has a queue for&nbsp;&nbsp;asynchronous operations. Each queue entry&nbsp;will complete and allow the next to start when @pass() is called. If there are no more steps, @pass() will complete the rule as usual. If @fail is called all further steps are skipped and the rule fails.</p>
+<p>A rule is complete when it is marked pass or fail.&ccedil; Each rule has a queue for&nbsp;&nbsp;asynchronous operations. Each queue entry&nbsp;will complete and allow the next to start when @pass() is called. If there are no more steps, @pass() will complete the rule as usual. If @fail is called all further steps are skipped and the rule fails.</p>
 
 <pre type="gwt">
 A rule with steps
 A rule that would fail mid-step if we permitted it
 </pre>
 
-<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'drivers/gwt.coffee',category:'drivers'})">gwt.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'drivers/gwt.coffee',category:'drivers'})">gwt.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span></div>
 
 <p><textarea readonly="readonly" source="true" type="gwt.coffee">count = 0
 
