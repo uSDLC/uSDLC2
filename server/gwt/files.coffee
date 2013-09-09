@@ -1,6 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 files = require 'files', path = require 'path'
-dirs = require 'dirs'
+dirs = require 'dirs'; fs = require 'fs'
 
 module.exports =
   copy: (from..., to) -> @queue ->
@@ -22,3 +22,7 @@ module.exports =
         
   rmdirs: (dir) -> @queue ->
     dirs.rmdirs dir, (error) => @check_for_error(error)
+    
+  rename: (old_path, new_path) -> @queue ->
+    fs.rename old_path, new_path, (error) =>
+      @check_for_error(error)
