@@ -146,6 +146,7 @@ class GWT extends EventEmitter
     @steps.all_asynchronous = true
     @queue = (self..., step) =>
       @steps.queue =>
+        @steps.long_operation(gwt.maximum_step_time)
         gwt.self = self[0] ? gwt
         step.apply(gwt)
     @pass_messages = []
