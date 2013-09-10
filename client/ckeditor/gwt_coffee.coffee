@@ -2,6 +2,7 @@
 module.exports = (exchange) ->
   exchange.respond.client ->
     usdlc.bridge_editor = ->
+      usdlc.page_editor.metadata.add_bridge_and_play_ref()
       section_path = usdlc.section_path()
       # fill dialog for each source on path
       fill = (dlg) ->

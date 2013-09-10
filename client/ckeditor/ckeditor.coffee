@@ -23,6 +23,10 @@ module.exports.initialise = (next) ->
   usdlc.page_editor.onInstanceReady.push ->
     usdlc.page_editor.resize(600, $(window).height() - 20)
     next()
+  steps(
+    ->  @requires '/client/ckeditor/metadata.coffee'
+    ->  usdlc.page_editor.metadata = @metadata
+  )
 
 usdlc.richCombo = (options) ->
   options = _.clone(options)

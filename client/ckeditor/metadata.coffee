@@ -30,3 +30,11 @@ module.exports =
   define: (options) -> # name, label, css, type
     instance = new types[options.type](options)
     return (options) -> instance.update(options)
+  add_bridge_and_play_ref: ->
+    ref = @define name: 'Ref', type: 'Links'
+    ref
+      name: 'Bridge'
+      url: "javascript:usdlc.bridge_editor()"
+    ref
+      name: 'Play'
+      url: "javascript:usdlc.play()"
