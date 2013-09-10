@@ -146,7 +146,7 @@ class GWT extends EventEmitter
     @steps.all_asynchronous = true
     @queue = (self..., step) =>
       @steps.queue =>
-        @steps.long_operation(gwt.maximum_step_time)
+        @steps.long_operation(gwt.options.maximum_step_time)
         gwt.self = self[0] ? gwt
         step.apply(gwt)
     @pass_messages = []
@@ -184,7 +184,8 @@ class GWT extends EventEmitter
     overtime = =>
       @fail """
         gwt did not resume in #{max_time} seconds
-        increase gwt.maximum_step_time (seconds) if needed"""
+        increase gwt.options.maximum_step_time (seconds)
+        if needed"""
     @paused_timeout = setTimeout(overtime, max_time * 1000)
     try
       action = @actions.shift()
