@@ -21,8 +21,7 @@ class Links extends Metadata
       item.html "<a href=\"#{options.url}\">"+
         "#{options.name}</a>"
   
-types = { Links }
-instances = {}
+types = { Links }; instances = {}; ref = null
 
 module.exports =
   initialise: (next) ->
