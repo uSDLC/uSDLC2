@@ -36,7 +36,7 @@ module.exports = (exchange) ->
           "Edit: #{section.title}"
 
       onResize = (dlg) ->
-        usdlc.gwt_coffee_dlg.content.accordion('refresh')
+        usdlc.bridge_dlg.content.accordion('refresh')
 
       steps(
         ->  # any error should be shown in red
@@ -45,7 +45,7 @@ module.exports = (exchange) ->
         ->
           @requires 'querystring', '/client/dialog.coffee'
         ->  # now we have querystring and window, use them
-          dlg = usdlc.gwt_coffee_dlg = @dialog
+          dlg = usdlc.bridge_dlg = @dialog
             name:   "Instrumentation"
             title:  "Edit"
             fill:   fill
@@ -61,21 +61,21 @@ module.exports = (exchange) ->
       fix_height_to_window: 65
       closeOnEscape: false
 
-    CKEDITOR.plugins.add 'gwt_coffee',
-      icons: 'gwt_coffee',
+    CKEDITOR.plugins.add 'bridge',
+      icons: 'bridge',
       init: (editor) ->
-        editor.addCommand 'gwt_coffee',
+        editor.addCommand 'bridge',
           exec: usdlc.bridge_editor
-        editor.ui.addButton 'gwt_coffee',
+        editor.ui.addButton 'bridge',
           label: 'Coffeescript GWT Instrumentation'
-          command: 'gwt_coffee'
+          command: 'bridge'
           toolbar: 'uSDLC,5'
         usdlc.page_editor.addMenuGroup('uSDLC')
-        editor.addMenuItem 'gwt_coffee',
+        editor.addMenuItem 'bridge',
           label:    'Edit Instrumentation (Alt-D)'
-          command:  'gwt_coffee'
+          command:  'bridge'
           group:    'uSDLC'
           order:    2
         editor.contextMenu.addListener (element, selection) ->
-          return gwt_coffee: CKEDITOR.TRISTATE_OFF
-        editor.setKeystroke(CKEDITOR.ALT + 68, 'gwt_coffee')
+          return bridge: CKEDITOR.TRISTATE_OFF
+        editor.setKeystroke(CKEDITOR.ALT + 68, 'bridge')

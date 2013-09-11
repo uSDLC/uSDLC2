@@ -51,6 +51,14 @@ usdlc.projectStorage = (key, values...) ->
   key = "#{usdlc.project}_#{key}"
   localStorage[key] = values[0] if values.length
   return localStorage[key]
+  
+usdlc.listStorage = (key, values...) ->
+  return localStorage[key]?.split('///') if not values
+  dict = {}; list = []
+  for value in values
+    list.push(value) if not dict[value]
+    dict[value] = true
+  localStorage[key] = values.join('///')
 
 usdlc.setProject = (project) ->
   usdlc.project = localStorage.project = project
