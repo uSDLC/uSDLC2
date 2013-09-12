@@ -11,5 +11,7 @@ module.exports = -> steps.queue ->
   @requires "/client/autocomplete.coffee",
     "/client/edit_source.coffee", ->
   @json "#{path}?#{args}&#{selector}", ->
-    @autocomplete 'File...', @files, '', (filename) ->
-      @edit_source filename
+    @autocomplete
+      title: 'File...'
+      source: @files
+      (filename) -> @edit_source filename
