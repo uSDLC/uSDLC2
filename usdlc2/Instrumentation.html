@@ -26,6 +26,8 @@ gwt.rules(
 
 <p style="display: block;"><em><strong>uSDLC</strong></em> will process any set of natural language&nbsp;statements in a GWT block. New blocks can be created with the target icon on the uSDLC tab - given a type of <em>gwt</em>.</p>
 
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span></div>
+
 <h3 style="">A Basic Example</h3>
 
 <p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
@@ -45,7 +47,7 @@ Given a number between 1 and 10
 When we multiply the number by 2
 Then the result is an even number</pre>
 
-<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="document"><a href="javascript:usdlc.edit_source({value:'document.css',path:'usdlc2/document.css',category:'usdlc2'})">document.css</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span></div>
 
 <h3 style="">Built-in Rules</h3>
 
@@ -79,7 +81,7 @@ Then the response includes &#39;ecking Output Co&#39;</pre>
 Given a number between 1 and 10
 Then response matches /.*ok 1 - \d/</pre>
 
-<div class="metadata Ref">Ref: <span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'client/ckeditor/gwt.coffee',category:'ckeditor'})">gwt.coffee</a></span><span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="metadata"><a href="javascript:usdlc.edit_source({value:'metadata.coffee',path:'client/ckeditor/metadata.coffee',category:'ckeditor'})">metadata.coffee</a></span><span class="rich_combo"><a href="javascript:usdlc.edit_source({value:'rich_combo.coffee',path:'client/ckeditor/rich_combo.coffee',category:'ckeditor'})">rich_combo.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="metadata"><a href="javascript:usdlc.edit_source({value:'metadata.coffee',path:'client/ckeditor/metadata.coffee',category:'ckeditor'})">metadata.coffee</a></span><span class="rich_combo"><a href="javascript:usdlc.edit_source({value:'rich_combo.coffee',path:'client/ckeditor/rich_combo.coffee',category:'ckeditor'})">rich_combo.coffee</a></span></div>
 
 <h3 style="">Child Process Output</h3>
 
@@ -92,7 +94,7 @@ Then the response includes &#39;uSDLC child output test&#39;</pre>
 
 <p>Given/When/Then is a specific example of a code segment.</p>
 
-<div class="metadata Ref">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span><span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span></div>
 
 <h2>The Bridge</h2>
 
@@ -100,7 +102,7 @@ Then the response includes &#39;uSDLC child output test&#39;</pre>
 
 <p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
 
-<div class="metadata Ref">Ref: <span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'client/ckeditor/gwt.coffee',category:'ckeditor'})">gwt.coffee</a></span><span class="gwt_coffee"><a href="javascript:usdlc.edit_source({value:'gwt_coffee.coffee',path:'client/ckeditor/gwt_coffee.coffee',category:'ckeditor'})">gwt_coffee.coffee</a></span><span class="metadata"><a href="javascript:usdlc.edit_source({value:'metadata.coffee',path:'client/ckeditor/metadata.coffee',category:'ckeditor'})">metadata.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="metadata"><a href="javascript:usdlc.edit_source({value:'metadata.coffee',path:'client/ckeditor/metadata.coffee',category:'ckeditor'})">metadata.coffee</a></span></div>
 
 <h3>The&nbsp;<em>gwt</em>&nbsp;Object</h3>
 
@@ -115,7 +117,7 @@ A rule with steps
 A rule that would fail mid-step if we permitted it
 </pre>
 
-<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'drivers/gwt.coffee',category:'drivers'})">gwt.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span></div>
 
 <p><textarea readonly="readonly" source="true" type="gwt.coffee">count = 0
 
