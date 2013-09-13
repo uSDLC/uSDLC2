@@ -29,7 +29,7 @@ roaster.ready ->
         roaster.message ""
         save_actions[id] = save_action if id
         actor = setTimeout(usdlc.save_page, 2000)
-      usdlc.page_editor.on 'key', -> usdlc.save_timer()
+      usdlc.page_editor.on 'change', -> usdlc.save_timer()
       usdlc.page_editor.on 'blur', usdlc.save_page
       roaster.ckeditor.show_tab 'uSDLC'
   )
@@ -103,7 +103,8 @@ usdlc.raw_save_page = (next) ->
   changed = clean_html()
   url = usdlc.url.split(/[#\?]/)[0]+".html"
   usdlc.save url, 'page_html', changed, ->
-    save_lockout--; next()
+    save_lockout--
+    next()
 
 usdlc.edit_page = (page, next = ->) ->
   save_lockout++

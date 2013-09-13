@@ -1,17 +1,14 @@
-# Copyright (C) 2013 paul@marrington.net, see GPL for license
+# Copyright (C) 2013 paul@marrington.net, see /GPL for license
 ref = null
 
 # item.value item.path item.category
-usdlc.edit_source = (item) ->
+usdlc.edit_source = (item) -> queue ->
   item.key = item.path.replace /[\.\/]/g, '_'
-  step = steps().queue
+  params = "filename=#{item.path}&seed=#{usdlc.seed++}"
   
-  step ->
-    @requires '/client/codemirror/editor.coffee'
-  step ->
-    params = "filename=#{item.path}&seed=#{usdlc.seed++}"
-    @data "/server/http/read.coffee?#{params}"
-  step ->
+  @requires '/client/codemirror/editor.coffee', ->
+  
+  @data "/server/http/read.coffee?#{params}", ->
     parts = item.value.split('.')
     attr = -> parts[parts.length - 1]
     text = (value) =>
@@ -33,11 +30,7 @@ usdlc.edit_source = (item) ->
     path = "javascript:usdlc.edit_source(#{item_data})"
     ref name: item.value, url: path
 
-module.exports.initialise = (next) ->
-  step = steps().queue
-  
-  step ->
-    @requires '/client/ckeditor/metadata.coffee'
-  step ->
+module.exports.initialise = (next) -> queue ->
+  @requires '/client/ckeditor/metadata.coffee', ->
     ref = @metadata.define name: 'Ref', type: 'Links'
     next()

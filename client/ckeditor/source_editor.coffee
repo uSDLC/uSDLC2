@@ -40,7 +40,7 @@ module.exports = (exchange) ->
               queue = steps().queue
               queue -> @requires(
                 '/client/edit_source.coffee'
-                '/client/ckeditor/gwt_coffee.coffee')
+                '/client/ckeditor/bridge.coffee')
               queue -> eval(href)
             else if /^\w+(\/\w+)?$/.test(href)
               usdlc.edit_page(href)

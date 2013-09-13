@@ -6,13 +6,9 @@ dialog_options =
   init: (dlg) -> dlg.append(dlg.content = $('<div/>'))
   # fix_height_to_window: 65
 
-module.exports = (options, next = ->) ->
-  step = steps().queue
-  
-  step ->
-    @on 'error', (error) -> console.log(error); @abort()
-    @requires '/client/dialog.coffee'
-  step ->
+module.exports = (options, next = ->) -> queue ->
+  @on 'error', (error) -> console.log(error); @abort()
+  @requires '/client/dialog.coffee', ->
     @dlg = @dialog
       name: options.name
       fill: (dlg) ->

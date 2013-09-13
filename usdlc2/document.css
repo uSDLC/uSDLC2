@@ -55,6 +55,11 @@ pre[type], textarea[type] {
   margin: 0 10px;
   padding: 0.5em 1em 1em 1em;
 }
+pre[type] {
+  border: 1px inset #cff;
+  background-color: #fffcff;
+  width: 85%;
+}
 pre[type=gwt] {
   border: 1px inset #cff;
   background-color: #fcffff;

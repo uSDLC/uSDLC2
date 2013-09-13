@@ -1,14 +1,22 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
+    # Code for editor that pops up for bridge code
     usdlc.bridge_editor = ->
-      usdlc.page_editor.metadata.add_bridge_and_play_ref()
+      dialog_options =
+        width:  600
+        position:
+          my: "right top+60", at: "right-5 top", of: window
+        init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
+        fix_height_to_window: 65
+        closeOnEscape: false
+  
       section_path = usdlc.section_path()
       # fill dialog for each source on path
       fill = (dlg) ->
         # remove previous contents
         if dlg.editors
-          # editor.destroy() for editor in dlg.editors
+          editor.destroy() for editor in dlg.editors
           dlg.content.accordion('destroy')
           dlg.content.empty()
         # add new content now
@@ -38,28 +46,17 @@ module.exports = (exchange) ->
       onResize = (dlg) ->
         usdlc.bridge_dlg.content.accordion('refresh')
 
-      steps(
-        ->  # any error should be shown in red
-          @on 'error', (error) ->
-            console.log(error); @abort()
-        ->
-          @requires 'querystring', '/client/dialog.coffee'
-        ->  # now we have querystring and window, use them
+      queue ->
+        @on 'error', (error) ->
+          console.log(error); @abort()
+        @requires 'querystring', '/client/dialog.coffee', ->
+          # now we have querystring and window, use them
           dlg = usdlc.bridge_dlg = @dialog
             name:   "Instrumentation"
-            title:  "Edit"
+            title:  "Bridge"
             fill:   fill
             resizeStop: (dlg) -> onResize(dlg)
             dialog_options
-      )
-
-    dialog_options =
-      width:  600
-      position:
-        my: "right top+60", at: "right-5 top", of: window
-      init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
-      fix_height_to_window: 65
-      closeOnEscape: false
 
     CKEDITOR.plugins.add 'bridge',
       icons: 'bridge',

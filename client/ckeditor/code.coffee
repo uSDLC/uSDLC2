@@ -2,7 +2,59 @@
 
 module.exports = (exchange) ->
   exchange.respond.client ->
-    queue = steps.queue; ref = null
+    # any editor not mentioned here will go to the code editor
+    usdlc.type_editors =
+      gwt: (wrapper) ->
+      txt: (wrapper) ->
+      
+    html_to_code = (html) ->
+      return html.
+        replace(/<br\/?>/g, '\n').
+        replace(/&nbsp;/g, ' ').
+        replace(/&lt;/g, '<').
+        replace(/<[^>]+>/g, '')
+    code_to_html = (code) ->
+      return code
+      div = $('<div>')
+      CodeMirror.runMode(code, 'coffeescript', div.get(0))
+      return div.html()
+    # Code for editor that pops up for bridge code
+    usdlc.embedded_code_editor = (wrapper) ->
+      dialog_options =
+        width:  600
+        position:
+          my: "right top+80", at: "right-5 top", of: window
+        init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
+        fix_height_to_window: 105
+        closeOnEscape: false
+  
+      # fill dialog with source
+      fill = (dlg) ->
+        dlg.content.empty()
+        src =
+          attr: (key) -> wrapper.getAttribute(key)
+          text: (value) ->
+            if value
+              wrapper.setHtml(code_to_html(value))
+            else
+              return html_to_code(wrapper.getHtml())
+        edit = usdlc.source_editor.edit
+        dlg.editor = edit(dlg.content, src)
+        dlg.editor.focus()
+
+      queue ->
+        @on 'error', (error) ->
+          console.log(error,error.stack); @abort()
+        @requires 'querystring', '/client/dialog.coffee', ->
+          # now we have querystring and window, use them
+          section = usdlc.section_for(wrapper.$).text()
+          dlg = usdlc.bridge_dlg = @dialog
+            name:   section
+            title:  section
+            fill:   fill
+            dialog_options
+            
+    ref = null
     steps(
       ->  @requires '/client/ckeditor/metadata.coffee'
       ->  ref = @metadata.define name: 'Ref', type: 'Links'
@@ -11,7 +63,8 @@ module.exports = (exchange) ->
       switch (type)
         when 'gwt'
           CKEDITOR.instances.document.insertHtml(
-            "<pre type='gwt'>Given \nWhen \nThen </pre>")
+            "<pre type='gwt'><b>"+
+            "Given</b> \n<b>When</b> \n<b>Then</b> </pre>")
           usdlc.page_editor.metadata.add_bridge_and_play_ref()
         else
           CKEDITOR.instances.document.insertHtml(
@@ -47,3 +100,10 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return gwt: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 71, 'code')
+        editor.on 'selectionChange', (evt) ->
+          for n in evt.data.path.elements
+            if n.getName() is 'pre' and n.hasAttribute('type')
+              if edit = usdlc.type_editors[type]
+                edit(n)
+              else
+                return usdlc.embedded_code_editor(n)

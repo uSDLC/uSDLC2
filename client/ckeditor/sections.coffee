@@ -60,6 +60,11 @@ module.exports = (exchange) ->
     usdlc.get_caret = ->
       selection = usdlc.page_editor.getSelection()
       return selection.getRanges()[0].startContainer
+    usdlc.section_for = (element) ->
+      element = $(element)
+      if not element.is(headings)
+        element = element.prevAll(headings).first()
+      return element
     current_section = ->
       caret = usdlc.get_caret()
       # last parent before <body> is top of line
@@ -68,10 +73,7 @@ module.exports = (exchange) ->
         start = caret.$
       else
         start = start[-3..-3][0].$
-      start = $(start)
-      if not start.is(headings)
-        start = start.prevAll(headings).first()
-      return start
+      return usdlc.section_for(start)
     # find the last element in a section
     end_section = (start) ->
       return start.nextUntil(headings).last()

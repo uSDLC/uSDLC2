@@ -130,7 +130,7 @@ module.exports.initialise = (next) ->
 
   usdlc.source_editor =
     edit: (element, source) ->
-      mode = source.attr('type')
+      mode = source.attr('type') ? 'text'
       mode = roaster.environment.mode_map[mode] ? mode
       editor = CodeMirror element.get(0),
         _.extend {}, options,
