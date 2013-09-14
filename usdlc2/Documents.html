@@ -12,6 +12,30 @@
 
 <h2>Editing</h2>
 
-<h2>Navigation&nbsp;</h2>
+<p>uSDLC uses <a href="http://ckeditor.com/">CKEditor</a> for documents, dividing up the provided functionality into tabs. All the standard WYSIWYG&nbsp;features are provided, along with uSDLC specific ones in the last tab. In short a uSDLC document is a HTML file that can be clearly displayed in a browser without running the application. Editors can manipulate data inserted or maintained by uSDLC as they can any other document element.</p>
+
+<h2>Navigation</h2>
+
+<h3>The Address Bar</h3>
+
+<p>The address bar can be used for all the navigation elements - Project, Document and Section.</p>
+
+<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;">http://localhost:9009/uSDLC2/Documents?edit#Navigation</div>
+
+<p>This example assumes a <a href="Installation">standard local install</a> of uSDLC2. It will open a page on uSDLC2.&nbsp;Each project is referenced by name as uSDLC2 can convert this to a path to the project. The HTML document comes next. If the document doesn&#39;t exist, it is created when it is given content.</p>
+
+<p>Each project remembers the last Document and Section displayed - and will return there on a reload if they are not on the command-line.</p>
+
+<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;">http://localhost:9009/uSDLC2?edit</div>
+
+<p>Normally you will only need to bookmark to the project level - which will return you to where you last left off.</p>
+
+<div class="metadata Ref">Ref: <span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span></div>
+
+<h3>Between Projects</h3>
+
+<h3>Between Documents</h3>
+
+<h3>Within a Document</h3>
 </body>
 </html>

@@ -6,43 +6,37 @@ usdlc.seed = (new Date()).getTime()
 roaster.message = (msg) -> console.log msg
 save_actions = {}
 
-roaster.ready ->
-  steps(
-    ->  @package "jquery,jqueryui,ckeditor"
-    ->  @requires "/client/ckeditor/ckeditor.coffee",
-                  "/app.less"
-    ->  # Go to page  or return to the last location
-      loc = window.location
-      if loc.search is '?edit' and loc.pathname.length > 2
-        usdlc.url =
+roaster.ready -> queue ->
+  @package "jquery,jqueryui,ckeditor", ->
+  @requires "/client/ckeditor/ckeditor.coffee", "/app.less", ->
+    # Go to page  or return to the last location
+    loc = window.location
+    if loc.search is '?edit' and loc.pathname.length > 2
+      usdlc.url =
         "#{window.location.pathname}#{window.location.hash}"
-      else
-        usdlc.url = localStorage.url
-      $('div#base_filler').height($(window).height() - 64)
-      usdlc.sources = ->
-        $('textarea[source]', usdlc.document)
-      usdlc.raw_edit_page usdlc.url
+    else
+      usdlc.url = localStorage.url
+    $('div#base_filler').height($(window).height() - 64)
+    usdlc.sources = ->
+      $('textarea[source]', usdlc.document)
+    usdlc.raw_edit_page usdlc.url
 
-      actor = null
-      usdlc.save_timer = (id, save_action) ->
-        clearTimeout(actor) if actor
-        roaster.message ""
-        save_actions[id] = save_action if id
-        actor = setTimeout(usdlc.save_page, 2000)
-      usdlc.page_editor.on 'change', -> usdlc.save_timer()
-      usdlc.page_editor.on 'blur', usdlc.save_page
-      roaster.ckeditor.show_tab 'uSDLC'
-  )
+    actor = null
+    usdlc.save_timer = (id, save_action) ->
+      clearTimeout(actor) if actor
+      roaster.message ""
+      save_actions[id] = save_action if id
+      actor = setTimeout(usdlc.save_page, 2000)
+    usdlc.page_editor.on 'change', -> usdlc.save_timer()
+    usdlc.page_editor.on 'blur', usdlc.save_page
+    roaster.ckeditor.show_tab 'uSDLC'
 
-usdlc.load_source_editor = (next) ->
+usdlc.load_source_editor = (next) -> queue ->
   # only called once
   usdlc.load_source_editor = (next) -> next()
-  steps(
-    ->  @package "coffee-script,codemirror,jquery_terminal"
-    ->  @requires "/client/codemirror/codemirror.coffee"
-    ->  @requires "/client/codemirror/editor.coffee"
-    ->  next()
-  )
+  @package "coffee-script,codemirror,jquery_terminal", ->
+  @requires "/client/codemirror/codemirror.coffee",
+    "/client/codemirror/editor.coffee", next
 
 localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
@@ -113,7 +107,7 @@ usdlc.edit_page = (page, next = ->) ->
 usdlc.raw_edit_page = (page, next = ->) ->
   # keep a copy of location information for back button
   from = "#{window.location.pathname}?"+
-         "edit##{window.location.hash}"
+         "edit#{window.location.hash}"
   # make page address is absolute
   if page[0] isnt '/'
     # adjust relative page by adding the current project
@@ -121,10 +115,12 @@ usdlc.raw_edit_page = (page, next = ->) ->
   else
     # or update project name if it has (possibly) changed
     parts = page[1..].split('/')
-    usdlc.setProject parts[0].split('#')[0]
+    first = parts[0].split('#')
+    usdlc.setProject first[0]
     if parts.length < 2
       page = usdlc.projectStorage('url')
       page ?= "#{usdlc.project}/Index"
+      page += '#'+first[1] if first.length > 1
 
   localStorage.url = usdlc.url = page
   usdlc.projectStorage 'url', page
