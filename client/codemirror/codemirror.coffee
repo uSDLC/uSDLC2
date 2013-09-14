@@ -112,7 +112,11 @@ module.exports.initialise = (next) ->
         for map in map.fallthrough
           one_map(CodeMirror.keyMap[map])
     one_map cm.options.extraKeys
-    one_map CodeMirror.keyMap[cm.options.keyMap]
+    core = CodeMirror.keyMap[cm.options.keyMap]
+    if not core.fallthrough
+      core.fallthrough =
+        CodeMirror.keyMap['default'].fallthrough
+    one_map core
 
     menu = context_menu.clone(true).appendTo('body')
     menu.find('a').each (index, element) ->
