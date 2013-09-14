@@ -77,7 +77,11 @@ usdlc.save = (file_name, original_id, changed, next) ->
       xhr = $.post save_url, @changes,
         @next (data, status, xhr) ->
       xhr.fail =>
-        roaster.message "<b>Save failed</b>"; @abort next
+        roaster.message "<b>Save failed</b>"
+        if confirm('Save failed\n'+
+        'Do you want to merge the changes?')
+          roaster.message '<b>Merging under construction</b>'
+        @abort next
     ->
       sessionStorage[original_id] = changed
       roaster.message 'Saved'
