@@ -4,7 +4,7 @@ path = require 'path'; timer = require 'common/timer'
 dirs = require 'dirs'; line_reader = require 'line_reader'
 steps = require 'steps'; Rules = require 'common/rules'
 script_extractor = require 'script_extractor'
-require 'common/strings'
+require 'common/strings'; queue = steps.queue
 
 require.extensions['.gwt.coffee'] =
   require.extensions['.coffee']
@@ -47,64 +47,68 @@ class GWT extends EventEmitter
     # gwt.skip.all() # terminate test run
     @skip.all = => @statement_skip = @section_skip = Infinity
 
-    step = steps().queue
-    # 1: extract scripts from documentation (if newer)
-    step -> script_extractor gwt.options, @next
-    # 2: read a list of available scripts
-    step ->
-      runner_file = gwt.options.runner_file
-      reader = line_reader.for_file runner_file, (line) =>
-        scripts.push line
-      reader.on 'end', @next
-    # 3: load tests - either gwt or explicitly in coffee
-    step ->
-      @asynchronous()
-      gwt.timer = timer pre: '# ', post: ''
-      re = new RegExp(gwt.options.sections ? '')
-      scripts = (scr for scr in scripts when re.test scr)
-      processed_scripts = {}
-      do read_script = =>
-        if not scripts.length
-          gwt.section(); return @next()
-        gwt.section script = scripts.shift()
-        ext_name = path.extname(script)
-        switch ext_name
-          when '.gwt'
-            reader = line_reader.for_file script,
-            (statement) =>
-              if statement?.length and statement[0] isnt '#'
-                gwt.add (gwt) -> gwt.test_statement statement
-            reader.on 'end', read_script
-          when '.coffee'
-            parents = []
-            dot = script.indexOf('.', script.lastIndexOf('/'))
-            base = if dot > 0 then script[0..dot - 1] else '.'
-            if script.ends_with('.gwt.coffee')
-              ext_name = '.gwt.coffee'
-              while base.length > 10 and
-              base[-10..] isnt 'gen/usdlc2'
-                parents.push(base)
-                base = path.dirname(base)
-            else
-              parents = [base]
-              
-            do next = ->
-              return read_script() if not parents.length
-              script = parents.pop() + ext_name
-              return next() if processed_scripts[script]
-              processed_scripts[script] = script
-              try
-                actor =
-                  require(path.resolve dirs.base(), script)
-                if typeof actor is 'function'
-                  switch actor.length
-                    when 0 then gwt.add(actor) # direct
-                    when 1 then actor(gwt, next); return
-                    else actor(gwt) # synchronouus
-              catch err
-              next()
-    # 4: run the tests
-    step -> gwt.go()
+    queue ->
+      # 1: extract scripts from documentation (if newer)
+      @queue (next) -> script_extractor gwt.options, next
+      # 2: read a list of available scripts
+      @queue (next) ->
+        runner_file = gwt.options.runner_file
+        try
+          reader = line_reader.for_file runner_file, (line) =>
+            scripts.push line
+          reader.on 'end', next
+        catch e
+          next()
+      # 3: load tests - either gwt or explicitly in coffee
+      @queue (next) ->
+        gwt.timer = timer pre: '# ', post: ''
+        re = new RegExp(gwt.options.sections ? '')
+        scripts = (scr for scr in scripts when re.test scr)
+        processed_scripts = {}
+        do read_script = =>
+          if not scripts.length
+            gwt.section(); return next()
+          gwt.section script = scripts.shift()
+          ext_name = path.extname(script)
+          switch ext_name
+            when '.gwt'
+              reader = line_reader.for_file script,
+              (statement) =>
+                statement = statement.trim()
+                if statement?.length and statement[0] isnt '#'
+                  gwt.add (gwt) ->
+                    gwt.test_statement statement
+              reader.on 'end', read_script
+            when '.coffee'
+              parents = []
+              dot = script.indexOf('.', script.lastIndexOf('/'))
+              base = if dot > 0 then script[0..dot - 1] else '.'
+              if script.ends_with('.gwt.coffee')
+                ext_name = '.gwt.coffee'
+                while base.length > 10 and
+                base[-10..] isnt 'gen/usdlc2'
+                  parents.push(base)
+                  base = path.dirname(base)
+              else
+                parents = [base]
+                
+              do process = ->
+                return read_script() if not parents.length
+                script = parents.pop() + ext_name
+                return process() if processed_scripts[script]
+                processed_scripts[script] = script
+                try
+                  actor =
+                    require(path.resolve dirs.base(), script)
+                  if typeof actor is 'function'
+                    switch actor.length
+                      when 0 then gwt.add(actor) # direct
+                      when 1 then actor(gwt, process); return
+                      else actor(gwt) # synchronous
+                catch err
+                process()
+      # 4: run the tests
+      @queue -> gwt.go()
   # done with load as it has already created an instance
   load: -> @
   gwt_out: (string, encoding, fd) ->
@@ -191,7 +195,6 @@ class GWT extends EventEmitter
       action = @actions.shift()
       return action(gwt) if @actions.length
     catch err
-      console.log action.toString()
       return @fail err
     # all done - clean up
     clearTimeout @paused_timeout
