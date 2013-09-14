@@ -23,11 +23,8 @@ module.exports.initialise = (next) ->
   _.extend CodeMirror.commands,
     fold_at_cursor: (cm) -> cm.foldCode(cm.getCursor())
     play_current: (cm) -> roaster.replay()
-    file_manager: (cm) ->
-      steps(
-        ->  @requires '/client/tree_filer.coffee'
-        ->  @tree_filer()
-      )
+    file_manager: (cm) -> queue ->
+      @requires '/client/tree_filer.coffee', -> @tree_filer()
     toggle_auto_complete: (cm) -> alert "Under Construction"
     view_source: (cm) ->
       if cm.somethingSelected()
@@ -39,17 +36,14 @@ module.exports.initialise = (next) ->
           CoffeeScript.compile(coffeescript, bare:true)
       catch e
         javascript = "#{e}\n#{JSON.stringify(e.location)}"
-      steps(
-        ->  @requires '/client/codemirror/editor.coffee'
-        ->
-          @editor
-            name:     'Javascript'
-            title:    'Javascript'
-            position:
-              my: "left top+60", at: "left+10 top", of: window
-            source:
-              attr: (-> 'javascript'), text: (-> javascript)
-      )
+      queue -> @requires '/client/codemirror/editor.coffee', ->
+        @editor
+          name:     'Javascript'
+          title:    'Javascript'
+          position:
+            my: "left top+60", at: "left+10 top", of: window
+          source:
+            attr: (-> 'javascript'), text: (-> javascript)
     toggle_option: (cm, name) ->
       value = not cm.getOption(name)
       CodeMirror.commands.set_option(cm, name, value)
@@ -135,6 +129,7 @@ module.exports.initialise = (next) ->
       editor = CodeMirror element.get(0),
         _.extend {}, options,
           # mode:     mode
+          autofocus: true
           value:     source.text()
           extraKeys: extra_keys
           lint:      mode in ['javascript', 'coffeescript']
@@ -182,9 +177,8 @@ module.exports.initialise = (next) ->
             editor.scrollIntoView(cursor.from(), 100)
           setTimeout scroller, 1000
           editor.setSelection(cursor.from(), cursor.to())
+      setTimeout (-> editor.focus()), 500
       return editor
-  steps(
-    ->  @data '/client/codemirror/menu.html'
-    ->  context_menu = $(@menu).appendTo('body')
-  )
+  queue -> @data '/client/codemirror/menu.html', ->
+    context_menu = $(@menu).appendTo('body')
   next()

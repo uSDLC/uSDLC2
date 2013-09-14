@@ -16,7 +16,6 @@ module.exports = (exchange) ->
       fill = (dlg) ->
         # remove previous contents
         if dlg.editors
-          editor.destroy() for editor in dlg.editors
           dlg.content.accordion('destroy')
           dlg.content.empty()
         # add new content now
@@ -48,7 +47,7 @@ module.exports = (exchange) ->
 
       queue ->
         @on 'error', (error) ->
-          console.log(error); @abort()
+          console.log(error, error.stack); @abort()
         @requires 'querystring', '/client/dialog.coffee', ->
           # now we have querystring and window, use them
           dlg = usdlc.bridge_dlg = @dialog

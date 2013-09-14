@@ -7,7 +7,9 @@ dialog_options =
   # fix_height_to_window: 65
 
 module.exports = (options, next = ->) -> queue ->
-  @on 'error', (error) -> console.log(error); @abort()
+  @on 'error', (error) ->
+    console.log(error, error.stack ? '')
+    @abort()
   @requires '/client/dialog.coffee', ->
     @dlg = @dialog
       name: options.name
