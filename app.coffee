@@ -148,7 +148,9 @@ usdlc.raw_edit_page = (page, next = ->) ->
     if hash?.length > 1
       setTimeout (-> usdlc.goto_section(hash[1..])), 500
     project = usdlc.project.replace(/_/g, ' ')
-    $('title').html "#{@key} - #{project}"
+    document = @key.replace(/_/g, ' ')
+    project = project.replace(/_/g, ' ')
+    $('title').html "#{document} - #{project}"
     usdlc.load_source_editor @next
 
   release_Lockout_and_continue = ->

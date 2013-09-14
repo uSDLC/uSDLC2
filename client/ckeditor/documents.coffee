@@ -18,13 +18,12 @@ module.exports = (exchange) ->
       name: 'documents'
       label: 'Documents'
       toolbar: 'uSDLC,2'
-      items: (next) ->
+      items: (next) -> queue ->
         url = "/client/ckeditor/documents.coffee"+
               "?project=#{usdlc.project}"
-        steps(
-          ->  @json url
-          ->  next @documents.sort()
-        )
+        @json url, ->
+          next (name.replace(/_/g, ' ')\
+            for name in @documents).sort()
       selected: ->
         usdlc.projectStorage('document').replace /_/g, ' '
       select: (value) ->
