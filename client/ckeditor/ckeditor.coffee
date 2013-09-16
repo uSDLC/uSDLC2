@@ -22,6 +22,10 @@ module.exports.initialise = (next) ->
   # Do things only available once the editor is up and loaded
   usdlc.page_editor.onInstanceReady.push ->
     usdlc.page_editor.resize(600, $(window).height() - 20)
+    usdlc.page_editor.on 'focus', ->
+      $('#cke_document').css
+        'z-index': roaster.zindex++
+        position: 'absolute'
     next()
   steps(
     ->  @requires '/client/ckeditor/metadata.coffee'
