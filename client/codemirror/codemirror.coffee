@@ -132,7 +132,7 @@ module.exports.initialise = (next) ->
       mode = roaster.environment.mode_map[mode] ? mode
       editor = CodeMirror element.get(0),
         _.extend {}, options,
-          # mode:     mode
+          mode:     mode
           autofocus: true
           value:     source.text()
           extraKeys: extra_keys
