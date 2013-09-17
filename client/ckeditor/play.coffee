@@ -45,21 +45,22 @@ module.exports = (exchange) ->
       fix_height_to_window: 130
       init:       init
 
+    order = roaster.ckeditor.tools.play
     CKEDITOR.plugins.add 'play',
       icons: 'play',
       init: (editor) ->
         editor.addCommand 'play', exec: usdlc.play
         editor.ui.addButton 'play',
-          label: 'Play instrumentation in this section'
+          label: 'Play Instrumentation (Alt-P)'
           command: 'play'
-          toolbar: 'uSDLC,7'
+          toolbar: "uSDLC,#{order[0]}"
 
         usdlc.page_editor.addMenuGroup('uSDLC')
         editor.addMenuItem 'play',
           label:    'Play Instrumentation (Alt-P)'
           command:  'play'
           group:    'uSDLC'
-          order:    4
+          order:    order[1]
         editor.contextMenu.addListener (element, selection) ->
           return play: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 80, 'play')

@@ -1,6 +1,7 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
+    order = roaster.ckeditor.tools.source_editor
     
     CKEDITOR.plugins.add 'source_editor',
       icons: 'source_editor'
@@ -17,15 +18,15 @@ module.exports = (exchange) ->
           return true
 
         editor.ui.addButton 'source_editor',
-          label: 'Source Editor'
+          label: 'Source Editor (Alt-V Shift-Click)'
           command: 'source_editor'
-          toolbar: 'uSDLC,6'
+          toolbar: "uSDLC,#{order[0]}"
         usdlc.page_editor.addMenuGroup('uSDLC')
         editor.addMenuItem 'source_editor',
           label:    'Source Editor (Alt-V Shift-Click)'
           command:  'source_editor'
           group:    'uSDLC'
-          order:    3
+          order:    order[1]
         editor.contextMenu.addListener (element, selection) ->
           return source_editor: CKEDITOR.TRISTATE_OFF
         altV = CKEDITOR.ALT + 86

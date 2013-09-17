@@ -4,15 +4,21 @@
 	<link href="document.css" rel="stylesheet" type="text/css" />
 </head>
 <body class="scayt-enabled">
-<h1>Documents</h1>
+<h1><a>Documents</a></h1>
 
 <p>uSDLC saves all documents as standard HTML files.</p>
 
-<div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span></div>
 
 <h2>Editing</h2>
 
 <p>uSDLC uses <a href="http://ckeditor.com/">CKEditor</a> for documents, dividing up the provided functionality into tabs. All the standard WYSIWYG&nbsp;features are provided, along with uSDLC specific ones in the last tab. In short a uSDLC document is a HTML file that can be clearly displayed in a browser without running the application. Editors can manipulate data inserted or maintained by uSDLC as they can any other document element.</p>
+
+<h3>Creating links between documents</h3>
+
+<p>CKEditor provides a general <a>link</a> for in the Insert tab. By choosing &#39;other&#39; for the link type you can use this to reference local documents by name. It is easier to use the Link action provided by uSDLC - on the uSDLC tab, the context menu or by typing alt-L. Highlight some text first then use the above methods to create a link. The document will have the same name as the link text - with spaces and other non-word characters converted to underscores. If the document exists it is opened, otherwise a new document is <a>created</a>.</p>
+
+<div class="metadata Ref">Ref: <span class="document_link"><a href="javascript:usdlc.edit_source({value:'document_link.coffee',path:'client/ckeditor/document_link.coffee',category:'ckeditor'})">document_link.coffee</a></span></div>
 
 <h2>Navigation</h2>
 
@@ -46,6 +52,8 @@
 
 <p>The address line can have the document added after the project - as above. Note that spaces are represented by underscores.</p>
 
+<p>Finally links can be created anywhere that reference other document.</p>
+
 <div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span></div>
 
 <h3>Within a Document</h3>
@@ -54,7 +62,7 @@
 
 <p>uSDLC needs to open windows for other components. Like any windowing system, selecting a window will bring it to the front.</p>
 
-<div class="metadata Ref">Ref: <span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span></div>
 
 <h2>Saving Documents</h2>
 

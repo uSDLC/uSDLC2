@@ -66,7 +66,8 @@ module.exports = (exchange) ->
             resizeStop: (dlg) -> on_resize(dlg)
             dialog_options
       )
-      
+    order = roaster.ckeditor.tools.terminal
+    
     CKEDITOR.plugins.add 'terminal',
       icons: 'terminal',
       init: (editor) ->
@@ -74,5 +75,5 @@ module.exports = (exchange) ->
         editor.ui.addButton 'terminal',
           label:    'Console (alt-T)'
           command:  'terminal'
-          toolbar:  'uSDLC,9'
+          toolbar:  "uSDLC,#{order[0]}"
         editor.setKeystroke(CKEDITOR.ALT + 84, 'terminal')

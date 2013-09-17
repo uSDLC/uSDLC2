@@ -26,6 +26,7 @@ module.exports = (exchange) ->
       usdlc.document.children().not(headings).hide()
       usdlc.document.addClass('outline')
 
+    order = roaster.ckeditor.tools.sections
     CKEDITOR.plugins.add "sections",
       icons: 'sections',
       init: (editor) ->
@@ -34,7 +35,7 @@ module.exports = (exchange) ->
         editor.ui.addButton 'sections',
           label: 'Document Sections',
           command: 'sections',
-          toolbar: 'uSDLC,3'
+          toolbar: "uSDLC,#{order[0]}"
 
     headers = -> usdlc.document.find(headings)
 

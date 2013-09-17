@@ -1,11 +1,20 @@
 # Copyright (C) 2013 paul@marrington.net, see /GPL for license
 
+# define plugs and order for button bar and context menu
+roaster.ckeditor.tools =
+  projects: [1]
+  documents: [2]
+  sections: [3]
+  windows: [4]
+  document_link: [5, 1]
+  code: [6, 2]
+  bridge: [7, 3]
+  source_editor: [8, 4]
+  play: [9, 5]
+  terminal: [10]
 # load ckeditor plugins
-roaster.ckeditor.toolbar(
-  'ckeditor', 'uSDLC', 'projects', 'documents', 'sections',
-  'code', 'bridge', 'source_editor', 'play', 'terminal',
-  'windows'
-)
+roaster.ckeditor.toolbar('ckeditor', 'uSDLC'
+  (key for key, value of roaster.ckeditor.tools)...)
 # Open a full page html editor ready forh current document
 
 usdlc.page_editor = roaster.ckeditor.open 'document',

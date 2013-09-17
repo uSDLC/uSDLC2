@@ -56,22 +56,23 @@ module.exports = (exchange) ->
             fill:   fill
             resizeStop: (dlg) -> onResize(dlg)
             dialog_options
-
+            
+    order = roaster.ckeditor.tools.bridge
     CKEDITOR.plugins.add 'bridge',
       icons: 'bridge',
       init: (editor) ->
         editor.addCommand 'bridge',
           exec: usdlc.bridge_editor
         editor.ui.addButton 'bridge',
-          label: 'Coffeescript GWT Instrumentation'
+          label: 'GWT Bridge Code (Alt-D)'
           command: 'bridge'
-          toolbar: 'uSDLC,5'
+          toolbar: "uSDLC,#{order[0]}"
         usdlc.page_editor.addMenuGroup('uSDLC')
         editor.addMenuItem 'bridge',
-          label:    'Edit Instrumentation (Alt-D)'
+          label:    'GWT Bridge Code (Alt-D)'
           command:  'bridge'
           group:    'uSDLC'
-          order:    2
+          order:    order[1]
         editor.contextMenu.addListener (element, selection) ->
           return bridge: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 68, 'bridge')

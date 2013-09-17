@@ -1,10 +1,11 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
+    order = roaster.ckeditor.tools.projects
     usdlc.richCombo
       name: 'projects'
       label: 'Projects'
-      toolbar: 'uSDLC,1'
+      toolbar: "uSDLC,#{order[0]}"
       items: (next) ->
         projects = roaster.environment.projects
         next (key.replace(/_/g, ' ') for key, value of projects).sort()

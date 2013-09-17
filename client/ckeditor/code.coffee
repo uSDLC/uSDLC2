@@ -76,6 +76,7 @@ module.exports = (exchange) ->
       list.push value
       list = usdlc.listStorage('code_type', list)
     
+    order = roaster.ckeditor.tools.code
     CKEDITOR.plugins.add 'code',
       icons: 'code',
       init: (editor) ->
@@ -88,17 +89,17 @@ module.exports = (exchange) ->
                 list_update(selected.value)
                 insert selected.value
         editor.ui.addButton 'code',
-          label:    'GWT, Code or Data ...'
+          label:    'GWT, Code or Data... (Alt-G)'
           command:  'code'
-          toolbar:  'uSDLC,4'
+          toolbar:  "uSDLC,#{order[0]}"
         usdlc.page_editor.addMenuGroup('uSDLC')
         editor.addMenuItem 'code',
-          label:    'Given / When / Then (Alt-G)'
+          label:    'GWT, Code or Data... (Alt-G)'
           command:  'code'
           group:    'uSDLC'
-          order:    1
+          order:    order[1]
         editor.contextMenu.addListener (element, selection) ->
-          return gwt: CKEDITOR.TRISTATE_OFF
+          return code: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 71, 'code')
         editor.on 'selectionChange', (evt) ->
           for n in evt.data.path.elements

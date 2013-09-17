@@ -1,10 +1,12 @@
 # Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
+    order = roaster.ckeditor.tools.window
+    
     usdlc.richCombo
       name: 'windows'
       label: 'Windows'
-      toolbar: 'uSDLC,8'
+      toolbar: "uSDLC,#{order}"
       items: (next) ->
         dlgs = roaster.dialogs
         next ("#{key}|#{dlg.dialog('option', 'title')}" for key, dlg of dlgs)
