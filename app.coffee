@@ -136,13 +136,13 @@ usdlc.raw_edit_page = (page, next = ->) ->
   load_document = ->
     @on 'error', (err) ->
       roaster.message "<b>New Document</b>"
-      @[@key] = ''
     @data pathname
 
   insert_into_dom = ->
     @on 'error', (err) -> throw err
     usdlc.projectStorage 'document', @key
-    html = sessionStorage.page_html = @[@key] ? new_document
+    @[@key] = new_document if not @[@key].length
+    html = sessionStorage.page_html = @[@key]
     usdlc.page_editor.config.baseHref = "/#{usdlc.project}/"
     usdlc.page_editor.setData html, @next
 
