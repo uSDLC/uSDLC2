@@ -35,7 +35,6 @@ do dirs.project_reader = (next = ->) ->
       [key, value] = option.split ':'
       data[key] = value
     bases.push path.resolve data.base
-    project_path = path.relative dirs.base(), data.base
     list[project_name] = data
 
 # Assume file starts with name of project...

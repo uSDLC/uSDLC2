@@ -1,11 +1,11 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 path = require 'path'; fs = require 'fs'
-_ = require 'underscore'
+_ = require 'underscore'; dirs = require 'dirs'
 
 module.exports = (exchange) ->
   # request to server
   if project = exchange.request.url.query.project
-    projects = exchange.environment.projects
+    projects = dirs.projects
     usdlc2_path = path.join projects[project].base, 'usdlc2'
     fs.readdir usdlc2_path, (err, documents) ->
       exchange.respond.json (path.basename(name, '.html') \
