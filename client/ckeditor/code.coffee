@@ -45,15 +45,14 @@ module.exports = (exchange) ->
       queue ->
         @on 'error', (error) ->
           console.log(error,error.stack); @abort()
-        @requires 'querystring', '/client/dialog.coffee', ->
-          # now we have querystring and window, use them
-          section = usdlc.section_for(wrapper.$).text()
-          dlg = usdlc.bridge_dlg = @dialog
-            name:   section
-            title:  section
-            fill:   fill
-            dialog_options
-            
+        section = usdlc.section_for(wrapper.$).text()
+        @requires 'querystring', '/client/dialog.coffee'
+        # now we have querystring and window, use them
+        @dialog
+          name:   section
+          title:  section
+          fill:   fill
+          dialog_options
     ref = null
     steps(
       ->  @requires '/client/ckeditor/metadata.coffee'
@@ -81,13 +80,13 @@ module.exports = (exchange) ->
       icons: 'code',
       init: (editor) ->
         editor.addCommand 'code', exec: (editor) -> queue ->
-          @requires "/client/autocomplete.coffee", ->
-            @autocomplete
-              title: 'Type...'
-              source: list
-              (selected) ->
-                list_update(selected.value)
-                insert selected.value
+          @requires "/client/autocomplete.coffee"
+          @autocomplete
+            title: 'Type...'
+            source: list
+            (selected) ->
+              list_update(selected.value)
+              insert selected.value
         editor.ui.addButton 'code',
           label:    'GWT, Code or Data... (Alt-G)'
           command:  'code'

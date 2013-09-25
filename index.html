@@ -10,7 +10,7 @@
 </head>
 <body>
   <textarea id='document'></textarea>
-  <div style="display:none;"><form class='tree_filer'>
+  <div style="display:none;"><form id='tree_filer'>
     <div class="search_by">
         <input type="radio"
           name="search_type" id='search_by_name'
@@ -20,9 +20,10 @@
           id='search_by_grep'/><label
           for="search_by_grep">Grep</label>
     </div>
-    <div class="input">
+    <div>
       <input type="text" style='width:99%' autocomplete='true'
-        placeholder='pattern...' autofocus='true'/>
+        placeholder='pattern...' autofocus='true'
+        class="search_for"/>
     </div>
     <div class='tree'></div>
     <input type='checkbox', id='filter_tree' checked='checked'>
@@ -35,12 +36,21 @@
     </div>
   </form>
   </div>
-  <ul id='tree_menu'
+  <ul id='tree_filer_menu'
   class='ui-helper-hidden' style="display:none">
     <li><a href='delete'>Delete</a></li>
     <li><a href='edit'>Edit</a></li>
     <li><a href='move'>Move...</a></li>
     <li><a href='new'>New...</a></li>
   </ul>
+  <div style="display:none;"><form id='tree_docs'>
+    <div>
+      <input type="text" style='width:99%' autocomplete='true'
+        placeholder='pattern...' autofocus='true'
+        class="search_for"/>
+    </div>
+    <div class='tree'></div>
+  </form>
+  </div>
 </body>
 <html>

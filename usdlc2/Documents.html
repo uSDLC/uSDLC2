@@ -8,17 +8,23 @@
 
 <p>uSDLC saves all documents as standard HTML files.</p>
 
-<div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="windows"><a href="javascript:usdlc.edit_source({value:'windows.coffee',path:'client/ckeditor/windows.coffee',category:'ckeditor'})">windows.coffee</a></span><span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.coffee',path:'client/ckeditor/projects.coffee',category:'ckeditor'})">projects.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.html',path:'index.html',category:'.'})">index.html</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.js',path:'templates/gwt.js',category:'templates'})">gwt.js</a></span><span class="save"><a href="javascript:usdlc.edit_source({value:'save.coffee',path:'server/http/save.coffee',category:'http'})">save.coffee</a></span></div>
 
 <h2>Editing</h2>
 
 <p>uSDLC uses <a href="http://ckeditor.com/">CKEditor</a> for documents, dividing up the provided functionality into tabs. All the standard WYSIWYG&nbsp;features are provided, along with uSDLC specific ones in the last tab. In short a uSDLC document is a HTML file that can be clearly displayed in a browser without running the application. Editors can manipulate data inserted or maintained by uSDLC as they can any other document element.</p>
 
+<div class="metadata Ref">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span></div>
+
 <h3>Creating links between documents</h3>
 
-<p>CKEditor provides a general <a>link</a> for in the Insert tab. By choosing &#39;other&#39; for the link type you can use this to reference local documents by name. It is easier to use the Link action provided by uSDLC - on the uSDLC tab, the context menu or by typing alt-L. Highlight some text first then use the above methods to create a link. The document will have the same name as the link text - with spaces and other non-word characters converted to underscores. If the document exists it is opened, otherwise a new document is <a>created</a>.</p>
+<p>CKEditor provides a general <a>link</a> for in the Insert tab. By choosing &#39;other&#39; for the link type you can use this to reference local documents by name.</p>
 
-<div class="metadata Ref">Ref: <span class="document_link"><a href="javascript:usdlc.edit_source({value:'document_link.coffee',path:'client/ckeditor/document_link.coffee',category:'ckeditor'})">document_link.coffee</a></span></div>
+<p>It is easier to use the Link action provided by uSDLC - on the uSDLC tab, the context menu or by typing alt-L. Highlight some text first then use the above methods to create a link. The document will have the same name as the link text - with spaces and other non-word characters converted to underscores. If the document exists it is opened, otherwise a new document is <a>created</a>.</p>
+
+<p>If you do not highlight text the a dialog will load displaying all documents from all projects. Select one to insert it.</p>
+
+<div class="metadata Ref">Ref: <span class="document_link"><a href="javascript:usdlc.edit_source({value:'document_link.coffee',path:'client/ckeditor/document_link.coffee',category:'ckeditor'})">document_link.coffee</a></span><span class="tree_filer"><a href="javascript:usdlc.edit_source({value:'tree_filer.coffee',path:'client/tree_filer.coffee',category:'client'})">tree_filer.coffee</a></span><span class="tree"><a href="javascript:usdlc.edit_source({value:'tree.coffee',path:'client/tree.coffee',category:'client'})">tree.coffee</a></span></div>
 
 <h2>Navigation</h2>
 
@@ -36,11 +42,11 @@
 
 <p>Normally you will only need to bookmark to the project level - which will return you to where you last left off.</p>
 
-<div class="metadata Ref">Ref: <span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span><span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.ini',path:'local/projects.ini',category:'local'})">projects.ini</a></span></div>
 
 <h3>Between Projects</h3>
 
-<div class="metadata Ref">Ref: <span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.coffee',path:'client/ckeditor/projects.coffee',category:'ckeditor'})">projects.coffee</a></span><span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.coffee',path:'client/ckeditor/projects.coffee',category:'ckeditor'})">projects.coffee</a></span><span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="tree_filer"><a href="javascript:usdlc.edit_source({value:'tree_filer.coffee',path:'client/tree_filer.coffee',category:'client'})">tree_filer.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span></div>
 
 <h3>Between Documents</h3>
 

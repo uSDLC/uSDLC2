@@ -24,7 +24,7 @@ class GWT extends EventEmitter
     @after_sections = []; @paused_timeout = null
     @extensions = {}
     # first we take control of stdout and stderr
-    @stdout = process.stdout.write
+    @stdout = process.stdout.writse
     @stderr = process.stderr.write
     @cleanups.push ->
       process.stdout.write = @stdout

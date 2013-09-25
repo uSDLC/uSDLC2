@@ -49,13 +49,14 @@ module.exports = (exchange) ->
         @on 'error', (error) ->
           console.log(error, error.stack); @abort()
         @requires 'querystring', '/client/dialog.coffee', ->
-          # now we have querystring and window, use them
-          dlg = usdlc.bridge_dlg = @dialog
-            name:   "Instrumentation"
-            title:  "Bridge"
-            fill:   fill
-            resizeStop: (dlg) -> onResize(dlg)
-            dialog_options
+        # now we have querystring and window, use them
+        @dialog
+          name:   "Instrumentation"
+          title:  "Bridge"
+          fill:   fill
+          resizeStop: (dlg) -> onResize(dlg)
+          dialog_options
+          (dlg) -> usdlc.bridge_dlg = dlg
             
     order = roaster.ckeditor.tools.bridge
     CKEDITOR.plugins.add 'bridge',

@@ -7,7 +7,7 @@ roaster.message = (msg) -> console.log msg
 save_actions = {}
 
 roaster.ready -> queue ->
-  @package "jquery,jqueryui,ckeditor", ->
+  @package "jquery,jqueryui,ckeditor"
   @requires "/client/ckeditor/ckeditor.coffee", "/app.less", ->
     # Go to page  or return to the last location
     loc = window.location
@@ -141,8 +141,11 @@ usdlc.raw_edit_page = (page, next = ->) ->
   insert_into_dom = ->
     @on 'error', (err) -> throw err
     usdlc.projectStorage 'document', @key
-    @[@key] = new_document if not @[@key].length
-    html = sessionStorage.page_html = @[@key]
+    if @[@key].length
+      html = sessionStorage.page_html = @[@key]
+    else
+      html = @[@key] = new_document
+      sessionStorage.page_html = ''
     usdlc.page_editor.config.baseHref = "/#{usdlc.project}/"
     usdlc.page_editor.setData html, @next
 

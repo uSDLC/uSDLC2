@@ -2,9 +2,20 @@
 
 module.exports = (exchange) ->
   exchange.respond.client ->
-    add_link = (editor) ->
+    tree_options =
+      title:      'Documents...'
+      position:   { my: "eft", at: "left+200", of: window }
+      closeOnEscape: true
+      form: '#tree_docs'
+      tree_action: ->
+    doc_url = '/server/http/files.coffee?type=docs'
+      
+    select_document = -> queue ->
+      @requires '/client/tree.coffee', ->
+      @tree tree_options, (error, dialog) ->
+  
+    add_link = (editor, title) ->
       link = editor.document.createElement('a')
-      title = editor.getSelection().getSelectedText()
       link.setHtml(title)
       link.setAttribute('href', title.replace(/\W/g, '_'))
       editor.insertHtml(link.getOuterHtml())
@@ -13,8 +24,10 @@ module.exports = (exchange) ->
     CKEDITOR.plugins.add 'document_link',
       icons: 'document_link',
       init: (editor) ->
-        editor.addCommand 'document_link',
-          exec: -> add_link(editor)
+        editor.addCommand 'document_link', exec: =>
+          title = editor.getSelection()?.getSelectedText()
+          title = select_document() if not title?.length
+          add_link(editor, title)
         editor.ui.addButton 'document_link',
           label: 'Link highlight to document (Alt-L)'
           command: 'document_link'

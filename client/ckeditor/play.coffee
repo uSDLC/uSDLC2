@@ -23,7 +23,7 @@ module.exports = (exchange) ->
             project:  projects[usdlc.project].base
             document: doc
             sections: sections
-          dlg = usdlc.instrument_window = @dialog
+         @dialog
             name:   "Instrument"
             title:  "Play: #{section.title}"
             url:    url
@@ -31,6 +31,7 @@ module.exports = (exchange) ->
             after:  @next
             resizeStop: (dlg) -> onResize(dlg)
             dialog_options
+            (dlg) -> usdlc.instrument_window = dlg
       )
       
     init = (dlg) ->

@@ -29,6 +29,7 @@ usdlc.edit_source = (item) -> queue ->
       "path:'#{item.path}',category:'#{item.category}'}"
     path = "javascript:usdlc.edit_source(#{item_data})"
     ref name: item.value, url: path
+    @next()
 
 module.exports.initialise = (next) -> queue ->
   @requires '/client/ckeditor/metadata.coffee', ->

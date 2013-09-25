@@ -31,7 +31,6 @@ module.exports = (exchange) ->
     grep = (file, next) ->
       files.is_dir file, (error, is_dir) ->
         return next(true) if is_dir
-        console.log 'GREP',file
         fs.readFile file, (err, contents) ->
           return next(false) if err
           return next(re.test(contents))
@@ -56,19 +55,33 @@ module.exports = (exchange) ->
 
   send_json = -> exchange.respond.json list
   send_html = -> exchange.respond.html list...
-
+  add_node = (list, name, category, path) ->
+    list.push item = {name, category, path}
+    return item
+  
   json_list = (from, list, dir_read) ->
     read_dir from, dir_read,
     (file, file_path, stats, next) ->
       category = from.split('/')[-1..-1][0]
-      list.push(item =
-        name: file
-        category: category
-        path: file_path)
+      item = add_node list, file, category, file_path
       if stats.isDirectory()
         json_list file_path, item.children = [], next
       else # ordinary file
         next()
+  
+  doc_list = (sender) ->
+    dirs.project_reader (projects) ->
+      sorted = (project for project, data of projects).sort()
+      do one_project = ->
+        return sender() if not sorted.length
+        project = sorted.shift()
+        path_to_project = projects[project].path
+        node = add_node project, '', path_to_project
+        node.children = []
+        fs.readdir path_to_project, (err, files) ->
+          for file in files
+            add_node node.children, file, project, file
+          
   
   html_item = (before, file, file_path, after) ->
     list.push before
@@ -105,5 +118,7 @@ module.exports = (exchange) ->
       autocomplete_list project, list, send_json
     when 'html'
       html_list project, send_html
+    when 'docs'
+      doc_list send_json
     else # 'json'
       json_list project, list, send_json

@@ -10,12 +10,12 @@ module.exports = (options, next = ->) -> queue ->
   @on 'error', (error) ->
     console.log(error, error.stack ? '')
     @abort()
-  @requires '/client/dialog.coffee', ->
-    @dlg = @dialog
-      name: options.name
-      fill: (dlg) ->
-        dlg.content.empty()
-        dlg.editor =
-          usdlc.source_editor.edit(dlg.content, options.source)
-      dialog_options, options
-    next null, @dlg
+  @requires '/client/dialog.coffee'
+  @dialog
+    name: options.name
+    fill: (dlg) ->
+      dlg.content.empty()
+      dlg.editor =
+        usdlc.source_editor.edit(dlg.content, options.source)
+    dialog_options, options, (@dlg) ->
+  next null, @dlg

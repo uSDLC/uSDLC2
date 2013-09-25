@@ -41,10 +41,6 @@ module.exports = ->
     args = "project=#{usdlc.project}&type=json"
     @json "#{path}?#{args}&#{selector}&#{search}"
     
-  update_icon_path = (dtree) ->
-    for key, path of dtree.icon
-      dtree.icon[key] = "/ext/dtree/#{path}"
-      
   empty_branch = (item) ->
     return false if not item.children?
     return true if item.children.length is 0
@@ -54,7 +50,8 @@ module.exports = ->
         
   build_tree = ->
     usdlc.dtree = dtree = new dTree('usdlc.dtree')
-    update_icon_path(dtree)
+    for key, path of dtree.icon
+      dtree.icon[key] = "/ext/dtree/#{path}"
     dtree.config.inOrder = true
     dtree.config.folderLinks = false
     dtree.config.useCookies = false
@@ -75,9 +72,9 @@ module.exports = ->
     branches = tree.find('div.dTreeNode')
     usdlc.dtree.openAll() if search_type() is 'grep'
     branches.first().click -> usdlc.dtree.closeAll()
-    $('form.tree_filer').find('a,input').attr('tabindex', '-1')
+    $('#tree_filer').find('a,input').attr('tabindex', '-1')
     tree.contextmenu
-      menu: '#tree_menu'
+      menu: '#tree_filer_menu'
       delegate: '.dTreeNode'
       select: (event, ui) ->
         usdlc.tree_action = tree_actions[ui.cmd]
@@ -128,11 +125,11 @@ module.exports = ->
     )
   
   open_dialog = ->
-    @dlg = @dialog
+    @dialog
       name: 'Source...'
       init: (dlg) =>
-        dlg.append form = $('form.tree_filer')
-        search_for = form.find('div.input input')
+        dlg.append form = $('#tree_filer')
+        search_for = form.find('input.search_for')
         search_for.keyup ->
           return if (search = search_for.val()) is last_search
           filter_tree(last_search = search)

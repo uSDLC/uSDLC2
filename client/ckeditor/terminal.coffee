@@ -58,7 +58,7 @@ module.exports = (exchange) ->
         -> @on 'error', -> @abort()
         -> @requires '/client/dialog.coffee'
         ->
-          dlg = @dialog
+          @dialog
             name: 'Terminal'
             title: 'Console'
             fill: ->
