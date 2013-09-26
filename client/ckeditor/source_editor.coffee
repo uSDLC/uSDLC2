@@ -1,4 +1,4 @@
-# Copyright (C) 2013 paul@marrington.net, see GPL for license
+# Copyright (C) 2013 paul@marrington.net, see /GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
     order = roaster.ckeditor.tools.source_editor

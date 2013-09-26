@@ -36,7 +36,8 @@ module.exports.initialise = (next) ->
           CoffeeScript.compile(coffeescript, bare:true)
       catch e
         javascript = "#{e}\n#{JSON.stringify(e.location)}"
-      queue -> @requires '/client/codemirror/editor.coffee', ->
+      queue ->
+        @requires '/client/codemirror/editor.coffee'
         @editor
           name:     'Javascript'
           title:    'Javascript'
