@@ -43,8 +43,6 @@ module.exports = (exchange) ->
         dlg.editor.focus()
 
       queue ->
-        @on 'error', (error) ->
-          console.log(error,error.stack); @abort()
         section = usdlc.section_for(wrapper.$).text()
         @requires 'querystring', '/client/dialog.coffee'
         # now we have querystring and window, use them
@@ -103,7 +101,7 @@ module.exports = (exchange) ->
         editor.on 'selectionChange', (evt) ->
           for n in evt.data.path.elements
             if n.getName() is 'pre' and n.hasAttribute('type')
-              if edit = usdlc.type_editors[type]
-                edit(n)
-              else
-                return usdlc.embedded_code_editor(n)
+              type = n.getAttribute('type')
+              edit = usdlc.type_editors[type] ?
+                usdlc.embedded_code_editor
+              return edit(n)
