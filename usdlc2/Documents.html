@@ -8,7 +8,7 @@
 
 <p>uSDLC saves all documents as standard HTML files.</p>
 
-<div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.html',path:'index.html',category:'.'})">index.html</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.js',path:'templates/gwt.js',category:'templates'})">gwt.js</a></span><span class="save"><a href="javascript:usdlc.edit_source({value:'save.coffee',path:'server/http/save.coffee',category:'http'})">save.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="documents"><a href="javascript:usdlc.edit_source({value:'documents.coffee',path:'client/ckeditor/documents.coffee',category:'ckeditor'})">documents.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="document"><a href="javascript:usdlc.edit_source({value:'document.css',path:'usdlc2/document.css',category:'usdlc2'})">document.css</a></span></div>
 
 <h2>Editing</h2>
 
@@ -25,6 +25,21 @@
 <p>If you do not highlight text the a dialog will load displaying all documents from all projects. Select one to insert it.</p>
 
 <div class="metadata Ref">Ref: <span class="document_link"><a href="javascript:usdlc.edit_source({value:'document_link.coffee',path:'client/ckeditor/document_link.coffee',category:'ckeditor'})">document_link.coffee</a></span><span class="tree_filer"><a href="javascript:usdlc.edit_source({value:'tree_filer.coffee',path:'client/tree_filer.coffee',category:'client'})">tree_filer.coffee</a></span><span class="tree"><a href="javascript:usdlc.edit_source({value:'tree.coffee',path:'client/tree.coffee',category:'client'})">tree.coffee</a></span></div>
+
+<h3>Code and Data Reference</h3>
+
+<p>If you want a visually separate panel for human consumption only, go to the styles tab and select <em>Styles -&gt; Special Container</em> and <em>Styles -&gt; Computer Code</em>.</p>
+
+<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;"><code>and you will get a result like this.<br />
+Use &lt;Shift&gt;&lt;Enter&gt; to continue text in the same box.</code></div>
+
+<p>For code or data that is to be used in instrumentation, use the target icon (Alt-G) from the uSDLC tab or context menu. Instrumentation (gwt) and text (txt) sections are edited in-place. Any others will trigger a code editor instance.</p>
+
+<pre style="width: 454.75px;" title="txt" type="txt">
+This is a text box that can be used by instrumentation
+for data ingestion.</pre>
+
+<div class="metadata Ref">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span></div>
 
 <h2>Navigation</h2>
 

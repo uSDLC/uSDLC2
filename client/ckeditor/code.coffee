@@ -60,12 +60,12 @@ module.exports = (exchange) ->
       switch (type)
         when 'gwt'
           CKEDITOR.instances.document.insertHtml(
-            "<pre type='gwt'><b>"+
+            "<pre type='gwt' title='gwt'><b>"+
             "Given</b> \n<b>When</b> \n<b>Then</b> </pre>")
           usdlc.page_editor.metadata.add_bridge_and_play_ref()
         else
           CKEDITOR.instances.document.insertHtml(
-            "<pre type='#{type}'></pre>")
+            "<pre type='#{type}' title='#{type}'></pre>")
             
     list = usdlc.listStorage('code_type')
     list = ['gwt'] if not list.length
@@ -74,6 +74,7 @@ module.exports = (exchange) ->
       list = usdlc.listStorage('code_type', list)
     
     order = roaster.ckeditor.tools.code
+    select_code = true
     CKEDITOR.plugins.add 'code',
       icons: 'code',
       init: (editor) ->
@@ -98,9 +99,13 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return code: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 71, 'code')
+        editor.on 'focus', -> select_code = false
         editor.on 'selectionChange', (evt) ->
+          return select_code = true if not select_code
           for n in evt.data.path.elements
             if n.getName() is 'pre' and n.hasAttribute('type')
+              return if code_selected
+              code_selected = true
               type = n.getAttribute('type')
               edit = usdlc.type_editors[type] ?
                 usdlc.embedded_code_editor
