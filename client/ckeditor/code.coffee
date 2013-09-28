@@ -56,16 +56,14 @@ module.exports = (exchange) ->
       ->  @requires '/client/ckeditor/metadata.coffee'
       ->  ref = @metadata.define name: 'Ref', type: 'Links'
     )
-    insert = (type) ->
-      switch (type)
-        when 'gwt'
-          CKEDITOR.instances.document.insertHtml(
-            "<pre type='gwt' title='gwt'><b>"+
-            "Given</b> \n<b>When</b> \n<b>Then</b> </pre>")
-          usdlc.page_editor.metadata.add_bridge_and_play_ref()
-        else
-          CKEDITOR.instances.document.insertHtml(
-            "<pre type='#{type}' title='#{type}'></pre>")
+    insert = (type) -> queue ->
+      contents = ''
+      template = "/client/templates/#{type}_template.coffee"
+      @requires template, (contents) ->
+        CKEDITOR.instances.document.insertHtml(
+          "<pre type='#{type}' title='#{type}'>"+
+          "#{contents()}</pre>")
+      usdlc.page_editor.metadata.add_bridge_and_play_ref()
             
     list = usdlc.listStorage('code_type')
     list = ['gwt'] if not list.length
