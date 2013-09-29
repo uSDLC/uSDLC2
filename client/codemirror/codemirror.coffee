@@ -22,10 +22,14 @@ module.exports.initialise = (next) ->
 
   _.extend CodeMirror.commands,
     fold_at_cursor: (cm) -> cm.foldCode(cm.getCursor())
+    
     play_current: (cm) -> roaster.replay()
+    
     file_manager: (cm) -> queue ->
-      @requires '/client/tree_filer.coffee', -> @tree_filer()
+      @requires '/client/tree_filer.coffee', (flr) -> flr()
+      
     toggle_auto_complete: (cm) -> alert "Under Construction"
+    
     view_source: (cm) ->
       if cm.somethingSelected()
         coffeescript = cm.doc.getSelection()
