@@ -24,7 +24,7 @@ module.exports = (exchange) ->
       greetings: ''
       onInit: (terminal) ->
         term = terminal
-        usdlc.page_editor.on 'focus', -> term.disable()
+        usdlc.page_editor.on 'focus', -> term.disable(); true
       completion: (term, cmd, list) ->
         data = term.history().data(); l = cmd.length
         list (item for item in data when item[0...l] is cmd)

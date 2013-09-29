@@ -35,6 +35,7 @@ module.exports.initialise = (next) ->
       $('#cke_document').css
         'z-index': roaster.zindex++
         position: 'absolute'
+      return true
     next()
   steps(
     ->  @requires '/client/ckeditor/metadata.coffee'

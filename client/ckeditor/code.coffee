@@ -97,7 +97,7 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return code: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 71, 'code')
-        editor.on 'focus', -> select_code = false
+        editor.on 'focus', -> select_code = false; return true
         editor.on 'selectionChange', (evt) ->
           return select_code = true if not select_code
           for n in evt.data.path.elements
