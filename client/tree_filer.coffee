@@ -142,6 +142,8 @@ module.exports = ->
         $('#search_by_name').click ->
           search_for.val('')
           fill_tree()
+        $('div.search_by').click ->
+          setTimeout (-> search_for.focus()), 200
         tree = form.find('div.tree')
         form.find('#filter_tree').change -> fill_tree()
         cludes = form.find('div.clusions input')

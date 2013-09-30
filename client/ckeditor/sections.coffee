@@ -8,7 +8,10 @@ module.exports = (exchange) ->
       hash = window.location.hash
       from = "#{window.location.pathname}?edit##{hash}"
       heading.scrollIntoView()
-      document.body.scrollTop -= 60
+      usdlc.page_editor.document.$.body.scrollTop -= 60
+      range = usdlc.page_editor.createRange()
+      range.setStart(p = new CKEDITOR.dom.node(heading), 0)
+      range.select() # set cursor
       [pathname,hash] = usdlc.url.split('#')
       hash = heading.innerText
       usdlc.url = "#{pathname}##{hash}"

@@ -4,7 +4,6 @@ dialog_options =
   position:
     { my: "right top+60", at: "right-5 top", of: window }
   init: (dlg) -> dlg.append(dlg.content = $('<div/>'))
-  # fix_height_to_window: 65
 
 module.exports = (options, next = ->) -> queue ->
   @on 'error', (error) ->
@@ -17,5 +16,8 @@ module.exports = (options, next = ->) -> queue ->
       dlg.content.empty()
       dlg.editor =
         usdlc.source_editor.edit(dlg.content, options.source)
-    dialog_options, options, (@dlg) ->
-  next null, @dlg
+    dialog_options, options, (dlg) ->
+      set_focus = -> dlg.editor.focus()
+      dlg.click set_focus
+      dlg.prev().click set_focus # heading
+      next null, @dlg

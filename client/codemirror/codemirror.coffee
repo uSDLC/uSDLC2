@@ -160,7 +160,7 @@ module.exports.initialise = (next) ->
       editor.on 'keypress', (cm, event) ->
         ch = String.fromCharCode(event.which ? event.keyCode)
         allow_autocomplete = true if ch.match(alnum)
-      editor.on 'focus', -> cm = editor
+      editor.on 'focus', -> usdlc.in_focus = cm = editor
       editor.on 'blur', -> update(); usdlc.save_page()
       (element = $(editor.getWrapperElement())).contextmenu
         select: (event, ui) ->

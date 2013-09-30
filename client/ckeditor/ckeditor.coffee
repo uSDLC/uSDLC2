@@ -31,7 +31,21 @@ module.exports.initialise = (next) ->
   # Do things only available once the editor is up and loaded
   usdlc.page_editor.onInstanceReady.push ->
     usdlc.page_editor.resize(600, $(window).height() - 20)
-    usdlc.page_editor.on 'focus', ->
+    fto = null
+    restore_focus = ->
+      clearTimeout fto
+      fto = setTimeout (-> usdlc.in_focus.focus()), 200
+    (w = $(window)).focus ->
+      if document.activeElement is document.body
+        restore_focus()
+    w.click (event) ->
+      clearTimeout fto
+      if document.activeElement is document.body
+        restore_focus()
+    usdlc.page_editor.on 'focus', (e) ->
+      usdlc.in_focus = usdlc.page_editor
+      if document.activeElement is document.body
+        restore_focus()
       $('#cke_document').css
         'z-index': roaster.zindex++
         position: 'absolute'
