@@ -50,6 +50,9 @@ module.exports.initialise = (next) ->
         'z-index': roaster.zindex++
         position: 'absolute'
       return true
+    setTimeout (->
+      usdlc.page_editor.document.$.body.onkeydown =
+      window.onkeydown), 200
     next()
   steps(
     ->  @requires '/client/ckeditor/metadata.coffee'
