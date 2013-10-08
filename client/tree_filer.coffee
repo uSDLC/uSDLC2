@@ -11,13 +11,31 @@ dialog_options =
   
 form = tree = search_by = cludes = search_for = nodes = null
 last_search = ''; dtree = branches = null
+filer = "/server/http/files.coffee"
   
 module.exports = ->
   tree_actions =
     edit: (data) -> usdlc.edit_source(data)
-    'delete': (data) ->
-    move: (data) ->
-    'new': (data) ->
+    'delete': (data) -> queue ->
+      @json "#{filer}?cmd=rm&path=#{data.path}", ->
+        fill_tree()
+    move: (data) -> queue ->
+      @requires "/client/autocomplete.coffee"
+      @autocomplete
+        title: 'Move/Rename...'
+        source: (req, rsp) -> rsp [req.term, data.value]
+        (selected) =>
+          console.log "Move to",selected
+          @json "#{filer}?cmd=mv&from=#{data.path}"+
+                "&to=#{selected.value}", -> fill_tree()
+    'new': (data) -> queue ->
+      @requires "/client/autocomplete.coffee"
+      @autocomplete
+        title: 'New...'
+        source: (req, rsp) -> rsp [req.term, data.value]
+        (selected) =>
+          @json "#{filer}?cmd=mk&path=#{data.path}"+
+                "&name=#{selected.value}", -> fill_tree()
   usdlc.tree_action = tree_actions.edit
   
   load_packages = -> @package "dtree"
@@ -30,7 +48,6 @@ module.exports = ->
     '/client/dialog.coffee')
     
   load_file_list = ->
-    path = "/server/http/files.coffee"
     if form.find('#filter_tree:checked').length
       exclude = cludes[1].val()
       include = cludes[0].val()
@@ -39,7 +56,7 @@ module.exports = ->
     selector = "exclude=#{exclude}&include=#{include}"
     search = "search=#{search_type()}&re=#{search_for.val()}"
     args = "project=#{usdlc.project}&type=json"
-    @json "#{path}?#{args}&#{selector}&#{search}"
+    @json "#{filer}?#{args}&#{selector}&#{search}"
     
   empty_branch = (item) ->
     return false if not item.children?

@@ -32,7 +32,7 @@ module.exports = (exchange) ->
         altV = CKEDITOR.ALT + 86
         editor.setKeystroke(altV, 'source_editor')
         editor.on 'contentDom', ->
-          editor.editable().on 'mousedown', (event) ->
+          editor.editable().on 'mouseup', (event) ->
             return if not event.data.$.shiftKey
             return if not (a = $(event.data.$.target)).is('a')
             href = a.attr('href')
