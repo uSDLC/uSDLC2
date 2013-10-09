@@ -14,4 +14,4 @@ module.exports = -> steps.queue ->
     @autocomplete
       title: 'File...'
       source: @files
-      (filename) -> @edit_source filename
+      select: (filename) -> @edit_source filename

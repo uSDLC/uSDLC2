@@ -81,7 +81,7 @@ module.exports = (exchange) ->
           @autocomplete
             title: 'Type...'
             source: list
-            (selected) ->
+            select: (selected) ->
               list_update(selected.value)
               insert selected.value
         editor.ui.addButton 'code',

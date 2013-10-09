@@ -20,8 +20,7 @@ dialog_opts =
   position:   { my: "top", at: "top", of: window }
   closeOnEscape: true
 
-module.exports = (opts, next) -> queue ->
-  select = (item) -> next(item)
+module.exports = (opts) -> queue ->
   @requires  '/client/dialog.coffee'
   @dialog
     title: opts.title
@@ -35,7 +34,7 @@ module.exports = (opts, next) -> queue ->
         minLength:  0
         select:     (event, ui) =>
           dlg.dialog 'close'
-          select(ui.item)
+          opts.select(ui.item)
         response:   (event, ui) =>
           if not ui.content.length
             val = dlg.input.val()

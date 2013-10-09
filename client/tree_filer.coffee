@@ -12,7 +12,7 @@ dialog_options =
 form = tree = search_by = cludes = search_for = nodes = null
 last_search = ''; dtree = branches = null
 filer = "/server/http/files.coffee"
-  
+
 module.exports = ->
   tree_actions =
     edit: (data) -> usdlc.edit_source(data)
@@ -20,6 +20,7 @@ module.exports = ->
       @json "#{filer}?cmd=rm&path=#{data.path}", ->
         fill_tree()
     move: (data) -> queue ->
+      tree_actions.url = data.path
       @requires "/client/autocomplete.coffee"
       @autocomplete
         title: 'Move/Rename...'
@@ -28,16 +29,16 @@ module.exports = ->
             rsp [req.term, data.value]
           else
             rsp [data.value]
-        (selected) -> queue ->
-          console.log "SELECTED"
-          @json "#{filer}?cmd=mv&from=#{data.path}"+
-                "&to=#{selected.value}", -> fill_tree()
+        select: (selected) -> queue ->
+          url = "#{filer}?cmd=mv&from=#{tree_actions.url}"+
+                "&to=#{selected.value}"
+          @json url, -> fill_tree()
     'new': (data) -> queue ->
       @requires "/client/autocomplete.coffee"
       @autocomplete
         title: 'New...'
         source: (req, rsp) -> rsp [req.term, data.value]
-        (selected) =>
+        select: (selected) -> queue ->
           @json "#{filer}?cmd=mk&path=#{data.path}"+
                 "&name=#{selected.value}", -> fill_tree()
   usdlc.tree_action = tree_actions.edit
