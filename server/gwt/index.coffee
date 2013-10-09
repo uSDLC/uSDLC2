@@ -74,10 +74,11 @@ class GWT extends EventEmitter
             when '.gwt'
               reader = line_reader.for_file script,
               (statement) =>
-                statement = statement.trim()
-                if statement?.length and statement[0] isnt '#'
-                  gwt.add (gwt) ->
-                    gwt.test_statement statement
+                if statement?
+                  statement = statement.trim()
+                  if statement?.length and statement[0] isnt '#'
+                    gwt.add (gwt) ->
+                      gwt.test_statement statement
               reader.on 'end', read_script
             when '.coffee'
               parents = []
