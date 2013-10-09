@@ -23,9 +23,13 @@ module.exports = ->
       @requires "/client/autocomplete.coffee"
       @autocomplete
         title: 'Move/Rename...'
-        source: (req, rsp) -> rsp [req.term, data.value]
-        (selected) =>
-          console.log "Move to",selected
+        source: (req, rsp) ->
+          if req.term
+            rsp [req.term, data.value]
+          else
+            rsp [data.value]
+        (selected) -> queue ->
+          console.log "SELECTED"
           @json "#{filer}?cmd=mv&from=#{data.path}"+
                 "&to=#{selected.value}", -> fill_tree()
     'new': (data) -> queue ->

@@ -21,6 +21,7 @@ dialog_opts =
   closeOnEscape: true
 
 module.exports = (opts, next) -> queue ->
+  select = (item) -> next(item)
   @requires  '/client/dialog.coffee'
   @dialog
     title: opts.title
@@ -34,15 +35,20 @@ module.exports = (opts, next) -> queue ->
         minLength:  0
         select:     (event, ui) =>
           dlg.dialog 'close'
-          next ui.item
+          select(ui.item)
         response:   (event, ui) =>
           if not ui.content.length
             val = dlg.input.val()
             ui.content.push label: val, value: val
     fill: (dlg) =>
       dlg.input.catcomplete 'option', 'source', opts.source
-      dlg.input.val opts.source[0]
-      dlg.input.catcomplete 'search', ''
-      dlg.input.focus().select()
+      set_val = (source) ->
+        dlg.input.val source[0]
+        dlg.input.catcomplete 'search', ''
+        setTimeout (-> dlg.input.focus().select()), 200
+      if opts.source instanceof Function
+        opts.source (->), (source) -> set_val(source)
+      else
+        set_val(opts.source)
     dialog_opts, (@dlg) ->
     opts.dialog ? {}
