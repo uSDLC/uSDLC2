@@ -55,7 +55,7 @@ class GWT extends EventEmitter
         runner_file = gwt.options.runner_file
         try
           reader = line_reader.for_file runner_file, (line) =>
-            scripts.push line
+            scripts.push line if line?
           reader.on 'end', next
         catch e
           next()
@@ -68,7 +68,9 @@ class GWT extends EventEmitter
         do read_script = =>
           if not scripts.length
             gwt.section(); return next()
-          gwt.section script = scripts.shift()
+          script = scripts.shift()
+          return read_script() if not script
+          gwt.section script
           ext_name = path.extname(script)
           switch ext_name
             when '.gwt'
@@ -76,7 +78,7 @@ class GWT extends EventEmitter
               (statement) =>
                 if statement?
                   statement = statement.trim()
-                  if statement?.length and statement[0] isnt '#'
+                  if statement.length and statement[0] isnt '#'
                     gwt.add (gwt) ->
                       gwt.test_statement statement
               reader.on 'end', read_script
