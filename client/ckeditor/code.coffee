@@ -57,12 +57,12 @@ module.exports = (exchange) ->
       ->  ref = @metadata.define name: 'Ref', type: 'Links'
     )
     insert = (type) -> queue ->
-      contents = ''
       template = "/client/templates/#{type}_template.coffee"
       @requires template, (contents) ->
+        contents = contents?() ? ''
         CKEDITOR.instances.document.insertHtml(
           "<pre type='#{type}' title='#{type}'>"+
-          "#{contents()}</pre>")
+          "#{contents}</pre>")
       usdlc.page_editor.metadata.add_bridge_and_play_ref()
             
     list = usdlc.listStorage('code_type')
