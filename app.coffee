@@ -122,7 +122,7 @@ usdlc.raw_edit_page = (page, next = ->) ->
     first = parts[0].split('#')
     usdlc.setProject first[0]
     if parts.length < 2
-      page = usdlc.projectStorage('url').split('#')[0]
+      page = usdlc.projectStorage('url')?.split('#')[0]
       page ?= "#{usdlc.project}/Index"
       page += '#'+first[1] if first.length > 1
 
