@@ -1,5 +1,5 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
-fs = require 'fs'; dirs = require 'dirs'
+fs = require 'fs'; dirs = require 'dirs'; fs = require 'fs'
 steps = require 'steps'; queue = steps.queue
 files = require 'files'; path = require 'path'
 
@@ -10,8 +10,8 @@ module.exports = (exchange) ->
   
   errmsg = (what, error) ->
     e = false
-    filename = path.basename query.path
-    e = "Can't #{what} #{filename}" if error
+    filename = path.basename query.path ? query.from
+    e = "Can't #{what} '#{filename}'" if error
     return error: e
   
   switch query.cmd
@@ -22,10 +22,10 @@ module.exports = (exchange) ->
       @files.mv query.from, query.to, (error) ->
         exchange.respond.json errmsg 'move', error
     when 'mk' then queue ->
-      @files.join query.path, query.name, (@path) ->
-      @fs.open @path, 'wx', (error, @fd) ->
-        exchange.respond.json errmsg 'new', error
-      @fs.close @fd, ->
+      @files.join query.path, query.name, (filename) ->
+        fs.open filename, 'wx', (error, fd) ->
+          fs.close fd, ->
+          exchange.respond.json errmsg 'new', error
     else # ls
       type = query.type
       search = query.search
