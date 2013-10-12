@@ -22,6 +22,9 @@ module.exports = (exchange) ->
       @files.mv query.from, query.to, (error) ->
         exchange.respond.json errmsg 'move', error
     when 'mk' then queue ->
+      if query.path[0] is '~'
+        console.log query.path[1..]
+        query.path = dirs.projects[query.path[1..]].base
       @files.join query.path, query.name, (filename) ->
         fs.open filename, 'wx', (error, fd) ->
           fs.close fd, ->

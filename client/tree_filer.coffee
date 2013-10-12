@@ -15,7 +15,11 @@ filer = "/server/http/files.coffee"
 
 module.exports = ->
   tree_actions =
-    edit: (data) -> usdlc.edit_source(data)
+    edit: (data) ->
+      if data.is_dir
+        usdlc.dtree.o(data.id)
+      else
+        usdlc.edit_source(data)
     'delete': (data) -> queue ->
       @json "#{filer}?cmd=rm&path=#{data.path}", ->
         fill_tree()
@@ -75,14 +79,17 @@ module.exports = ->
     for key, path of dtree.icon
       dtree.icon[key] = "/ext/dtree/#{path}"
     dtree.config.inOrder = true
-    dtree.config.folderLinks = false
-    dtree.config.useCookies = false
+    dtree.config.folderLinks = true
+    dtree.config.useCookies = true
     
     next_id = 0
     branch = (parent, item) ->
       id = ++next_id
+      is_dir = item.children?.length ? false
+      item.path ?= '~'+usdlc.project
       item_data = "{value:'#{item.name}'," +
-        "path:'#{item.path}',category:'#{item.category}'}"
+        "path:'#{item.path}',category:'#{item.category}',"+
+        "is_dir:#{is_dir}, id:#{id - 1}}"
       path = "javascript:usdlc.tree_action(#{item_data})"
       # don't show empty branches
       if not empty_branch(item)
