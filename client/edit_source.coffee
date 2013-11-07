@@ -9,28 +9,22 @@ usdlc.edit_source = (item) -> queue ->
   contents = ''
   params = "filename=#{item.path}&seed=#{usdlc.seed++}"
   
-  @requires '/client/codemirror/editor.coffee'
-  
-  @data "/server/http/read.coffee?#{params}"
-  
+  @requires '/client/codemirror/editor.coffee', @next ->
+  @data "/server/http/read.coffee?#{params}", @next ->
   @queue ->
-    next = @next
-    if (contents = @read).length
-      next()
-    else
-      type = path.extname(item.path).substring(1)
-      template = "/client/templates/#{type}_template.coffee"
-      queue -> @requires template, (template_retriever) ->
-        contents = template_retriever?() ? ''
-        next()
+    sessionStorage[item.key] = @read
+    return @next() if (@contents = @read).length
+    type = path.extname(item.path).substring(1)
+    template = "/client/templates/#{type}_template.coffee"
+    @requires template, @next (template_retriever) ->
+      @contents = template_retriever?() ? ''
   
   @queue ->
     text = (value) =>
       if value
-        usdlc.save item.path, item.key, @read = value
+        usdlc.save item.path, item.key, @contents = value
       else
-        sessionStorage[item.key] = @read
-        return contents
+        return @contents
 
     @editor
       name:     item.key
@@ -47,6 +41,6 @@ usdlc.edit_source = (item) -> queue ->
     @next()
 
 module.exports.initialise = (next) -> queue ->
-  @requires '/client/ckeditor/metadata.coffee', ->
+  @requires '/client/ckeditor/metadata.coffee', @next ->
     ref = @metadata.define name: 'Ref', type: 'Links'
     next()

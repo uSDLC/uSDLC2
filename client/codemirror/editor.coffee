@@ -9,8 +9,7 @@ module.exports = (options, next = ->) -> queue ->
   @on 'error', (error) ->
     console.log(error, error.stack ? '')
     @abort()
-  @requires '/client/dialog.coffee'
-  @dialog
+  @requires '/client/dialog.coffee', @next -> @dialog
     name: options.name
     fill: (dlg) ->
       dlg.content.empty()

@@ -1,6 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 fs = require 'fs'; dirs = require 'dirs'; fs = require 'fs'
-steps = require 'steps'; queue = steps.queue
+steps = require 'steps'; queue = require 'queue'
 files = require 'files'; path = require 'path'
 
 module.exports = (exchange) ->

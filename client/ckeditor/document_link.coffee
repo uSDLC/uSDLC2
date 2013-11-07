@@ -8,11 +8,8 @@ module.exports = (exchange) ->
       closeOnEscape: true
       form: '#tree_docs'
       tree_action: ->
+        # TODO: select and add link from action
     doc_url = '/server/http/files.coffee?type=docs'
-      
-    select_document = -> queue ->
-      @requires '/client/tree.coffee', ->
-      @tree tree_options, (error, dialog) ->
   
     add_link = (editor, title) ->
       link = editor.document.createElement('a')
@@ -26,8 +23,12 @@ module.exports = (exchange) ->
       init: (editor) ->
         editor.addCommand 'document_link', exec: =>
           title = editor.getSelection()?.getSelectedText()
-          title = select_document() if not title?.length
-          add_link(editor, title)
+          if not title?.length
+            queue ->
+              @requires '/client/tree.coffee', @next ->
+              @tree tree_options, (error, dialog) ->
+          else
+            add_link(editor, title)
         editor.ui.addButton 'document_link',
           label: 'Link highlight to document (Alt-L)'
           command: 'document_link'

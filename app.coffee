@@ -7,8 +7,8 @@ roaster.message = (msg) -> console.log msg
 save_actions = {}
 
 roaster.ready -> queue ->
-  @package "jquery,jqueryui,ckeditor"
-  @requires "/client/ckeditor/ckeditor.coffee", "/app.less", ->
+  @package "jquery,jqueryui,ckeditor", @next ->
+  @requires "/client/ckeditor/ckeditor.coffee", "/app.less", @next ->
     # Go to page  or return to the last location
     loc = window.location
     if loc.search is '?edit' and loc.pathname.length > 2
@@ -20,6 +20,12 @@ roaster.ready -> queue ->
     usdlc.sources = ->
       $('textarea[source]', usdlc.document)
     usdlc.raw_edit_page usdlc.url
+    user = (localStorage.user_name ?= 'guest')
+    usdlc.set_default_message = (msg) ->
+      msg = " <i>#{localStorage.user_name}</i>" if not msg
+      roaster.default_message = msg
+      roaster.message ''
+    usdlc.set_default_message()
 
     actor = null
     usdlc.save_timer = (id, save_action) ->
@@ -34,9 +40,9 @@ roaster.ready -> queue ->
 usdlc.load_source_editor = (next) -> queue ->
   # only called once
   usdlc.load_source_editor = (next) -> next()
-  @package "coffee-script,codemirror,jquery_terminal", ->
+  @package "coffee-script,codemirror,jquery_terminal", @next ->
   @requires "/client/codemirror/codemirror.coffee",
-    "/client/codemirror/editor.coffee", next
+    "/client/codemirror/editor.coffee", @next next
 
 localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'
@@ -181,7 +187,7 @@ usdlc.source = (header) ->
       source:   'true'
       type:     'gwt.coffee'
       readonly: 'readonly'
-
+      
 # restore the state if the user presses the back button
 window.onpopstate = (event) ->
   return if not usdlc.page_editor

@@ -1,15 +1,27 @@
-# Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
+# Copyright (C) 2013 paul@marrington.net, see /GPL for license
 
 patterns = [
-  /^#:\s*(.*)\s*$/, (command) -> @div('command', command)
-  /^#(\d)\s*(.*)\s*$/, (level, heading) -> @heading(level, heading)
-  /^#\s+(\d\d):(\d\d) seconds total\s*$/, (minutes, seconds) -> @timer(minutes, seconds)
-  /^# (\w\w\w \w\w\w \d\d 2\d\d\d .*)\s*$/, (date) -> @div('date', date)
-  /^#\s*(.*)\s*$/, (comment) -> @div('comment', comment)
-  /^ok\s.*# SKIP$/, -> 
-  /^ok\s+(.*)/, (note) -> @result('ok', 'ok', true, note)
-  /^not ok\s+(.*)/, (note) -> @result('not ok', 'not_ok', false, note)
-  /^Failed (\d+)\/(\d+), (\d+) skipped, (\d+)% okay\s*$/, (failed, total, skipped, ok) ->
+  /^#:\s*(.*)\s*$/, (command) ->
+    @div('command', command)
+  /^#(\d)\s*(.*)\s*$/, (level, heading) ->
+    @heading(level, heading)
+  /^#\s+(\d\d):(\d\d) seconds total\s*$/, (minutes, seconds) ->
+    @timer(minutes, seconds)
+  /^# (\w\w\w \w\w\w \d\d 2\d\d\d .*)\s*$/, (date) ->
+    @div('date', date)
+  /^#!!\s*(.*)\s*$/, (comment) ->
+    @div('error', comment)
+  /^Error:\s+(.*)$/, (comment) ->
+    @div('error', comment)
+  /^#\s*(.*)\s*$/, (comment) ->
+    @div('comment', comment)
+  /^ok\s.*# SKIP$/, ->
+  /^ok\s+(.*)/, (note) ->
+    @result('ok', 'ok', true, note)
+  /^not ok\s+(.*)/, (note) ->
+    @result('not ok', 'not_ok', false, note)
+  /^Failed (\d+)\/(\d+), (\d+) skipped, (\d+)% okay\s*$/,
+  (failed, total, skipped, ok) ->
     @summary(failed, total, skipped, ok)
   /^(.+)\s*$/, (line) -> @output(line)
 ]
@@ -17,7 +29,8 @@ _div = document.createElement('DIV')
 _br = document.createElement('BR')
 
 document.onkeydown = (event) ->
-  window.location.href =  window.location.href if event.keyCode is 80 # P
+  if event.keyCode is 80 # P
+    window.location.href =  window.location.href
 
 toggle_hidden = (element, class_name) ->
   if element.className is 'hidden'
@@ -27,7 +40,8 @@ toggle_hidden = (element, class_name) ->
 
 class Instrument
   constructor: ->
-    @container = [@viewport = document.getElementById('viewport')]
+    @viewport = document.getElementById('viewport')
+    @container = [@viewport]
     @same_action = false; @last_action = null
     @level = 0; @ok = true
   div: (className, text) ->
@@ -38,10 +52,10 @@ class Instrument
     return div
   html: (className, html) ->
     @div(className, '').innerHTML = html
-  timer: (minutes, seconds) ->
+  timer: (min, sec) ->
     div = _div.cloneNode()
     div.className = 'timer'
-    div.innerHTML = "<b>#{minutes}:#{seconds}</b> seconds total"
+    div.innerHTML = "<b>#{min}:#{sec}</b> minutes total"
     @viewport.appendChild(div)
   heading: (level, heading) ->
     @fix_level_one() if level is 1
@@ -87,7 +101,8 @@ class Instrument
       header.onclick = => toggle_hidden(@last_div, 'output')
   fix_level_one: ->
     className = if @ok then "ok" else "not_ok"
-    @container.slice(-2,-1)[0].className += " border-#{className}"
+    level_1 = @container.slice(-2,-1)[0]
+    level_1.className += " border-#{className}"
     @ok = true
   find: (statement) ->
     # Look for a matching statement, then return the action
@@ -123,7 +138,10 @@ window.instrument = ->
     catch e then text = ''
     error = null
     if is_complete = (request.readyState is 4)
-      if request.status isnt 200 then alert(error = request.statusText)
-    instrument.display(line) for line in text.split(/\s*\r*\n/)
+      if request.status isnt 200
+        error = "#{request.statusText} (#{request.status})"
+        instrument.display "Return code: #{error}"
+    for line in text.split(/\s*\r*\n/)
+      instrument.display(line)
   request.open 'GET', url, true
   request.send null

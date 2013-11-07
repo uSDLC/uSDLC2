@@ -1,5 +1,5 @@
 # Copyright (C) 2013 paul@marrington.net, see /GPL for license
-dirs = require ('dirs')
+dirs = require 'dirs'
 
 module.exports = (exchange) ->
   # request to server
@@ -23,7 +23,9 @@ module.exports = (exchange) ->
       selected: -> usdlc.project.replace /_/g, ' '
       select: (value) ->
         if value is 'create'
-          alert("Under Construction")
+          queue ->
+            @requires '/client/ckeditor/create_project.coffee',
+              @next -> @create_project()
         else
           usdlc.setProject value.replace(/\s/g, '_')
           page = usdlc.projectStorage('url') ? 'Index'

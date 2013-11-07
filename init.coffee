@@ -23,9 +23,12 @@ do dirs.project_reader = (next = ->) ->
   list = {}; bases = []
   
   line_reader.for_file 'local/projects.ini', (line) ->
-    if line is null
+    if not line?
       # now we have them all, atomic update
       dirs.bases = bases
+      if process.environment
+        process.environment.projects = list
+        process.environment.configuration.projects = list
       return next(dirs.projects = projects = list)
     return if line.length is 0 or line[0] is '#'
     [project_name, options] = line.split '='

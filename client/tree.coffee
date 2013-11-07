@@ -11,9 +11,8 @@ module.exports = (options, next) -> queue ->
   tree_action = options.tree_action; last_search = ''
   dtree = branches = null; form = tree = nodes = null
 
-  @package "dtree", ->
-  @requires '/client/dialog.coffee'
-  @dialog
+  @package "dtree", @next ->
+  @requires '/client/dialog.coffee', @next -> @dialog
     name: options.title
     init: initialise_dialog
     fill: fill_tree
@@ -105,4 +104,3 @@ module.exports = (options, next) -> queue ->
         usdlc.dtree.openTo(id, first)
         first = false
       return true
-      

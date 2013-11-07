@@ -7,8 +7,10 @@ decode = null
 
 module.exports = (options, extraction_complete) ->
   gen = path.join options.project, "gen/usdlc2"
-  options.runner_file = path.join gen, "#{options.document}.list"
-  input_path = path.join options.project, "usdlc2/#{options.document}.html"
+  options.runner_file =
+    path.join gen, "#{options.document}.list"
+  input_path = path.join(
+    options.project, "usdlc2/#{options.document}.html")
 
   if newer(options.runner_file, options.document_path)
     return extraction_complete()
@@ -29,7 +31,8 @@ module.exports = (options, extraction_complete) ->
         if attr[0..4] is 'type='
           script_content = []
           script_name = "#{path.join headings...}.#{attr[6..-2]}"
-          script_name = script_name.replace(/(\s+|(&nbsp;)+)/g, '_')
+          script_name = script_name.replace(
+            /(&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\])+/g, '_')
           script_name = path.join gen, script_name
           break
     next()

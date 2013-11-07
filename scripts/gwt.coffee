@@ -15,7 +15,8 @@ default_options =
   maximum_step_time: 30
 
 stdout = null
-forked_writer = (string, encoding, fd)  -> process.send string
+forked_writer = (string, encoding, fd)  ->
+  process.send string.toString()
 shelled_writer = (string, encoding, fd) ->
   stdout.call(process.stdout, string, encoding, fd)
 writer = shelled_writer
@@ -38,11 +39,11 @@ module.exports = (args...) ->
   stdout = process.stdout.write; stderr = process.stderr.write
   if options.forked
     process.stdout.write = forked_writer
+    arg_string = args[0..-2].join("' '")
+    console.log "#: ./go.sh gwt '#{arg_string}'"
   else
     process.stdout.write = shelled_writer
-  arg_string = args[0..-2].join("' '")
-  console.log "#: ./go.sh gwt '#{arg_string}'"
-  # Load rules and start processing
+#   Load rules and start processing
   gwt = gwt.load(options)
   gwt.on_exit ->
     process.stdout.write = stdout

@@ -6,16 +6,17 @@ module.exports = (exchange) ->
     usdlc.play = ->
       doc = usdlc.url.split('#')[0]
       doc = doc.split('/').slice(-1)[0]
-      sp = (section.title for section in usdlc.section_path())
+      section_path = usdlc.section_path()
+      nz = (t) ->
+        t.replace /&quot;|[\s"'\(\)\*\+\^\$\?\\]+/g, '_'
+      sp = (nz(section.title) for section in section_path)
       sections = ".*/#{sp.join('/')}([/\\.].*)*$"
-      sections = sections.replace(/\s/g, '_')
 
       onResize = (dlg) ->
         height = usdlc.instrument_window.height() - 10
         usdlc.instrument_window.iframe.height(height)
 
       steps(
-        ->  @on 'error', -> @abort()
         ->  @requires 'querystring', '/client/dialog.coffee'
         ->  # now we have querystring and window, use them
           projects = roaster.environment.projects
@@ -23,7 +24,7 @@ module.exports = (exchange) ->
             project:  projects[usdlc.project].base
             document: doc
             sections: sections
-         @dialog
+          @dialog
             name:   "Instrument"
             title:  "Play: #{section.title}"
             url:    url

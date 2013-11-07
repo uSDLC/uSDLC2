@@ -1,6 +1,4 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
-queue = steps.queue
-
 $.widget  "custom.catcomplete", $.ui.autocomplete,
   _renderMenu: ( ul, items ) ->
     that = this
@@ -21,33 +19,37 @@ dialog_opts =
   closeOnEscape: true
 
 module.exports = (opts) -> queue ->
-  @requires  '/client/dialog.coffee'
-  @dialog
+  @requires  '/client/dialog.coffee', @next -> @dialog
     title: opts.title
     name: opts.title
     init: (dlg) =>
       dlg.append(dlg.input = $('<input>'))
-      dlg.input.catcomplete
-        source:     opts.source
-        autoFocus:  true
-        delay:      0
-        minLength:  0
-        select:     (event, ui) =>
-          dlg.dialog 'close'
-          opts.select(ui.item)
-        response:   (event, ui) =>
-          if not ui.content.length
-            val = dlg.input.val()
-            ui.content.push label: val, value: val
-    fill: (dlg) =>
-      dlg.input.catcomplete 'option', 'source', opts.source
-      set_val = (source) ->
-        dlg.input.val source[0]
-        dlg.input.catcomplete 'search', ''
-        setTimeout (-> dlg.input.focus().select()), 200
-      if opts.source instanceof Function
-        opts.source (->), (source) -> set_val(source)
-      else
-        set_val(opts.source)
+      module.exports.widget.init dlg.input, opts, (ev, ui) ->
+        dlg.dialog 'close'
+        opts.select(ui.item)
+    fill: (dlg) => module.exports.widget.fill(dlg.input, opts)
     dialog_opts, (@dlg) ->
     opts.dialog ? {}
+    
+module.exports.widget =
+  init: (input, opts, select) ->
+    input.catcomplete
+      source:     opts.source
+      autoFocus:  true
+      delay:      0
+      minLength:  0
+      select:     select
+      response:   (event, ui) =>
+        if not ui.content.length
+          val = input.val()
+          ui.content.push label: val, value: val
+  fill: (input, opts) ->
+    input.catcomplete 'option', 'source', opts.source
+    set_val = (source) ->
+      input.val source[0]
+      input.catcomplete 'search', ''
+      setTimeout (-> dlg.input.focus().select()), 200
+    if opts.source instanceof Function
+      opts.source (->), (source) -> set_val(source)
+    else
+      set_val(opts.source)

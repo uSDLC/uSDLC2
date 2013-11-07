@@ -44,9 +44,8 @@ module.exports = (exchange) ->
 
       queue ->
         section = usdlc.section_for(wrapper.$).text()
-        @requires 'querystring', '/client/dialog.coffee'
-        # now we have querystring and window, use them
-        @dialog
+        @requires 'querystring', '/client/dialog.coffee',
+        @next -> @dialog
           name:   section
           title:  section
           fill:   fill
@@ -58,7 +57,7 @@ module.exports = (exchange) ->
     )
     insert = (type) -> queue ->
       template = "/client/templates/#{type}_template.coffee"
-      @requires template, (contents) ->
+      @requires template, @next (contents) ->
         contents = contents?() ? ''
         CKEDITOR.instances.document.insertHtml(
           "<pre type='#{type}' title='#{type}'>"+
@@ -77,7 +76,7 @@ module.exports = (exchange) ->
       icons: 'code',
       init: (editor) ->
         editor.addCommand 'code', exec: (editor) -> queue ->
-          @requires "/client/autocomplete.coffee"
+          @requires "/client/autocomplete.coffee", @next ->
           @autocomplete
             title: 'Type...'
             source: list

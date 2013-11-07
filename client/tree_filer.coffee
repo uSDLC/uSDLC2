@@ -21,12 +21,12 @@ module.exports = ->
       else
         usdlc.edit_source(data)
     'delete': (data) -> queue ->
-      @json "#{filer}?cmd=rm&path=#{data.path}", ->
+      @json "#{filer}?cmd=rm&path=#{data.path}", @next ->
         fill_tree()
     move: (data) -> queue ->
       tree_actions.url = data.path
-      @requires "/client/autocomplete.coffee"
-      @autocomplete
+      @requires "/client/autocomplete.coffee",
+      @next -> @autocomplete
         title: 'Move/Rename...'
         source: (req, rsp) ->
           if req.term
@@ -36,15 +36,15 @@ module.exports = ->
         select: (selected) -> queue ->
           url = "#{filer}?cmd=mv&from=#{tree_actions.url}"+
                 "&to=#{selected.value}"
-          @json url, -> fill_tree()
+          @json url, @next -> fill_tree()
     'new': (data) -> queue ->
-      @requires "/client/autocomplete.coffee"
-      @autocomplete
+      @requires "/client/autocomplete.coffee",
+      @next -> @autocomplete
         title: 'New...'
         source: (req, rsp) -> rsp [req.term, data.value]
         select: (selected) -> queue ->
           @json "#{filer}?cmd=mk&path=#{data.path}"+
-                "&name=#{selected.value}", -> fill_tree()
+                "&name=#{selected.value}", @next -> fill_tree()
   usdlc.tree_action = tree_actions.edit
   
   load_packages = -> @package "dtree"
@@ -171,7 +171,7 @@ module.exports = ->
         $('#search_by_name').click ->
           search_for.val('')
           fill_tree()
-        $('div.search_by').click ->
+        search_by.click ->
           setTimeout (-> search_for.focus()), 200
         tree = form.find('div.tree')
         form.find('#filter_tree').change -> fill_tree()

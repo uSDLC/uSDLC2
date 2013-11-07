@@ -26,7 +26,7 @@ module.exports.initialise = (next) ->
     play_current: (cm) -> roaster.replay()
     
     file_manager: (cm) -> queue ->
-      @requires '/client/tree_filer.coffee', (flr) -> flr()
+      @requires '/client/tree_filer.coffee', @next (flr) -> flr()
       
     toggle_auto_complete: (cm) -> alert "Under Construction"
     
@@ -41,7 +41,7 @@ module.exports.initialise = (next) ->
       catch e
         javascript = "#{e}\n#{JSON.stringify(e.location)}"
       queue ->
-        @requires '/client/codemirror/editor.coffee'
+        @requires '/client/codemirror/editor.coffee', @next ->
         @editor
           name:     'Javascript'
           title:    'Javascript'
@@ -188,6 +188,6 @@ module.exports.initialise = (next) ->
           editor.setSelection(cursor.from(), cursor.to())
       setTimeout (-> editor.focus()), 500
       return editor
-  queue -> @data '/client/codemirror/menu.html', ->
+  queue -> @data '/client/codemirror/menu.html', @next ->
     context_menu = $(@menu).appendTo('body')
   next()

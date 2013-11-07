@@ -48,9 +48,8 @@ module.exports = (exchange) ->
       queue ->
         @on 'error', (error) ->
           console.log(error, error.stack); @abort()
-        @requires 'querystring', '/client/dialog.coffee', ->
-        # now we have querystring and window, use them
-        @dialog
+        @requires 'querystring', '/client/dialog.coffee',
+        @next -> @dialog
           name:   "Instrumentation"
           title:  "Bridge"
           fill:   fill

@@ -1,6 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 
-module.exports = -> steps.queue ->
+module.exports = -> queue ->
   project = roaster.environment.projects[usdlc.project]
   path = "/server/http/files.coffee"
   exclude = project.exclude ? ''
@@ -9,8 +9,8 @@ module.exports = -> steps.queue ->
   args = "project=#{usdlc.project}&type=autocomplete"
   
   @requires "/client/autocomplete.coffee",
-    "/client/edit_source.coffee", ->
-  @json "#{path}?#{args}&#{selector}", ->
+    "/client/edit_source.coffee", @next ->
+  @json "#{path}?#{args}&#{selector}", @next ->
     @autocomplete
       title: 'File...'
       source: @files
