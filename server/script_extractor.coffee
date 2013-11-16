@@ -32,7 +32,7 @@ module.exports = (options, extraction_complete) ->
           script_content = []
           script_name = "#{path.join headings...}.#{attr[6..-2]}"
           script_name = script_name.replace(
-            /(&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\])+/g, '_')
+            /(&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,])+/g, '_')
           script_name = path.join gen, script_name
           break
     next()

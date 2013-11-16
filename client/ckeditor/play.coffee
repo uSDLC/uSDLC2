@@ -8,7 +8,7 @@ module.exports = (exchange) ->
       doc = doc.split('/').slice(-1)[0]
       section_path = usdlc.section_path()
       nz = (t) ->
-        t.replace /&quot;|[\s"'\(\)\*\+\^\$\?\\]+/g, '_'
+        t.replace /&quot;|[\s"'\(\)\*\+\^\$\?\\:;,]+/g, '_'
       sp = (nz(section.title) for section in section_path)
       sections = ".*/#{sp.join('/')}([/\\.].*)*$"
 
