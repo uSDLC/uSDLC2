@@ -10,20 +10,23 @@ dialog_options =
   fix_height_to_window: 10
   
 form = tree = search_by = cludes = search_for = nodes = null
-last_search = ''; dtree = branches = null
+last_search = ''; dtree = branches = data = null
 filer = "/server/http/files.coffee"
 
 module.exports = ->
   tree_actions =
-    edit: (data) ->
+    edit: (_data) ->
+      data = _data
       if data.is_dir
         usdlc.dtree.o(data.id)
       else
         usdlc.edit_source(data)
-    'delete': (data) -> queue ->
+    'delete': (_data) -> queue ->
+      data = _data
       @json "#{filer}?cmd=rm&path=#{data.path}", @next ->
         fill_tree()
-    move: (data) -> queue ->
+    move: (_data) -> queue ->
+      data = _data
       tree_actions.url = data.path
       @requires "/client/autocomplete.coffee",
       @next -> @autocomplete
@@ -37,7 +40,8 @@ module.exports = ->
           url = "#{filer}?cmd=mv&from=#{tree_actions.url}"+
                 "&to=#{selected.value}"
           @json url, @next -> fill_tree()
-    'new': (data) -> queue ->
+    'new': (_data) -> queue ->
+      data = _data
       @requires "/client/autocomplete.coffee",
       @next -> @autocomplete
         title: 'New...'
