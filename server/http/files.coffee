@@ -16,16 +16,16 @@ module.exports = (exchange) ->
   
   switch query.cmd
     when 'rm' then queue ->
-      @files.rm query.path, (error) ->
+      @files.rm query.path, @next (error) ->
         exchange.respond.json errmsg 'delete', error
     when 'mv' then queue ->
-      @files.mv query.from, query.to, (error) ->
+      @files.mv query.from, query.to, @next (error) ->
         exchange.respond.json errmsg 'move', error
     when 'mk' then queue ->
       if query.path[0] is '~'
         console.log query.path[1..]
         query.path = dirs.projects[query.path[1..]].base
-      @files.join query.path, query.name, (filename) ->
+      @files.join query.path, query.name, @next (filename) ->
         fs.open filename, 'wx', (error, fd) ->
           fs.close fd, ->
           exchange.respond.json errmsg 'new', error

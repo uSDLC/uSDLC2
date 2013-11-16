@@ -31,7 +31,7 @@ class GWT extends EventEmitter
       process.stderr.write = @stderr
     @output_array = []
     process.stdout.write = => @gwt_out arguments...
-#     process.stderr.write = => @gwt_err arguments...
+    process.stderr.write = => @gwt_err arguments...
     # all about skipping
     @skip = (msg) -> @pass "# SKIP #{msg}", @skipped++
     # gwt.skip.statements(1) # skip one or more statements
@@ -118,12 +118,13 @@ class GWT extends EventEmitter
           ext_name = path.extname(script)[1..]
           
           gwt.tests = queue ->
-          gwt.queue = (self..., step) =>
-            gwt.tests.queue =>
+          gwt.queue = (owner..., step) ->
+            owner = owner[0] ? @
+            owner.q = @
+            gwt.tests.queue ->
               gwt.tests.maximum_time_seconds =
                 gwt.options.maximum_step_time
-              gwt.self = self[0] ? gwt
-              (@context = step).apply(gwt)
+              (@context = step).apply(owner)
           gwt.pass_messages = []
           
           gwt.artifacts[ext_name] ?= []
@@ -162,7 +163,7 @@ class GWT extends EventEmitter
   gwt_err: (chunk, encoding, fd) ->
     chunk = chunk.toString()
     ls = ('#!! '+l for l in chunk.split('\n') when l.length)
-    @gwt_out ls.join('\n'), encoding, fd
+    @gwt_out ls.join('\n') + '\n', encoding, fd
   output: -> (output_array = [@output_array.join('')])[0]
   # Checking test output for telling signs
   monitor_output: pass: null, fail: null, end: null
@@ -244,11 +245,10 @@ class GWT extends EventEmitter
     overtime = =>
       @fail """
         gwt did not resume in #{max_time} seconds
-        increase gwt.options.maximum_step_time (seconds)
-        if needed"""
+        increase gwt.options.maximum_step_time (seconds)"""
     @paused_timeout = setTimeout(overtime, max_time * 1000)
     try act.call(gwt, gwt) if act = @actions.shift()
-    catch err then return @fail err
+    catch err then return @fail err.stack
   # extend gwt with methods of interest to the current tests
   extend: (modules...) ->
     for ext in modules
