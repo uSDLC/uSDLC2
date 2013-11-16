@@ -48,7 +48,7 @@ module.exports.widget =
     set_val = (source) ->
       input.val source[0]
       input.catcomplete 'search', ''
-      setTimeout (-> dlg.input.focus().select()), 200
+      setTimeout (-> input.focus().select()), 200
     if opts.source instanceof Function
       opts.source (->), (source) -> set_val(source)
     else
