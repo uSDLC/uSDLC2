@@ -26,7 +26,8 @@ module.exports.initialise = (next) ->
     play_current: (cm) -> roaster.replay()
     
     file_manager: (cm) -> queue ->
-      @requires '/client/tree_filer.coffee', @next (flr) -> flr()
+      @requires '/client/tree_filer.coffee',
+        @next -> @tree_filer()
       
     toggle_auto_complete: (cm) -> alert "Under Construction"
     
