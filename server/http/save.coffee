@@ -18,7 +18,6 @@ module.exports = (exchange) ->
     ->  files.find name, @next (@filename) ->
     ->  if not @filename then @skip()
     ->  fs.readFile @filename, 'utf8', @next (@err, @html) ->
-      # this turns to streams 1
     ->  exchange.respond.read_request @next (@changes) ->
     ->  patch.apply @html ? '', @changes, @next (@html) ->
     ->  boom(@filename) if not @html

@@ -69,11 +69,14 @@ usdlc.setProject = (project) ->
 
 clean_html = -> return usdlc.page_editor.getData()
 
-usdlc.save = (file_name, original_id, changed, next) ->
-  next ?= ->
+lockouts = {}
+usdlc.save = (file_name, original_id, changed, next = ->) ->
+  return next() if lockouts[file_name]
+  lockouts[file_name] = 1
+  done = -> lockouts[file_name] = 0; next()
   roaster.message ''
   original = sessionStorage[original_id]
-  return next() unless changed isnt original
+  return done() unless changed isnt original
   save_url = "/server/http/save.coffee?name=#{file_name}"
   steps(
     ->  @requires '/common/patch.coffee'
@@ -87,11 +90,11 @@ usdlc.save = (file_name, original_id, changed, next) ->
         if confirm('Save failed\n'+
         'Do you want to merge the changes?')
           roaster.message '<b>Merging under construction</b>'
-        @abort next
+        @abort done
     ->
       sessionStorage[original_id] = changed
       roaster.message 'Saved'
-      next()
+      done()
   )
 
 save_lockout = 1
