@@ -77,12 +77,12 @@ module.exports = (exchange) ->
       init: (editor) ->
         editor.addCommand 'code', exec: (editor) -> queue ->
           @requires "/client/autocomplete.coffee", @next ->
-          @autocomplete
-            title: 'Type...'
-            source: list
-            select: (selected) ->
-              list_update(selected.value)
-              insert selected.value
+            @autocomplete
+              title: 'Type...'
+              source: list
+              select: (selected) ->
+                list_update(selected.value)
+                insert selected.value
         editor.ui.addButton 'code',
           label:    'GWT, Code or Data... (Alt-G)'
           command:  'code'
