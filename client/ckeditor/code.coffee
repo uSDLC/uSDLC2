@@ -5,13 +5,16 @@ module.exports = (exchange) ->
     # any editor not mentioned here will go to the code editor
     usdlc.type_editors =
       gwt: (wrapper) ->
+        n.removeAttribute('contenteditable')
       txt: (wrapper) ->
+        n.removeAttribute('contenteditable')
       
     html_to_code = (html) ->
       return html.
         replace(/<br\/?>/g, '\n').
         replace(/&nbsp;/g, ' ').
         replace(/&lt;/g, '<').
+        replace(/&gt;/g, '>').
         replace(/<[^>]+>/g, '')
     code_to_html = (code) ->
       return code
@@ -71,7 +74,7 @@ module.exports = (exchange) ->
       list = usdlc.listStorage('code_type', list)
     
     order = roaster.ckeditor.tools.code
-    select_code = true
+    selection_timer = null
     CKEDITOR.plugins.add 'code',
       icons: 'code',
       init: (editor) ->
@@ -96,14 +99,14 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return code: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 71, 'code')
-        editor.on 'focus', -> select_code = false; return true
         editor.on 'selectionChange', (evt) ->
-          return select_code = true if not select_code
+          clearTimeout selection_timer
           for n in evt.data.path.elements
             if n.getName() is 'pre' and n.hasAttribute('type')
-              return if code_selected
-              code_selected = true
-              type = n.getAttribute('type')
-              edit = usdlc.type_editors[type] ?
-                usdlc.embedded_code_editor
-              return edit(n)
+              return selection_timer = setTimeout ( ->
+                type = n.getAttribute('type')
+                n.setAttribute('contenteditable', 'false')
+                edit = usdlc.type_editors[type] ?
+                  usdlc.embedded_code_editor
+                return edit(n)
+              ), 200
