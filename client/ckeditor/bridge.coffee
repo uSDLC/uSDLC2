@@ -3,6 +3,7 @@ module.exports = (exchange) ->
   exchange.respond.client ->
     # Code for editor that pops up for bridge code
     usdlc.bridge_editor = ->
+      usdlc.page_editor.metadata.add_bridge_and_play_ref()
       dialog_options =
         width:  600
         position:

@@ -4,6 +4,7 @@ dirs = require 'dirs'
 module.exports = (exchange) ->
   exchange.respond.client ->
     usdlc.play = ->
+      usdlc.page_editor.metadata.add_bridge_and_play_ref()
       doc = usdlc.url.split('#')[0]
       doc = doc.split('/').slice(-1)[0]
       section_path = usdlc.section_path()
