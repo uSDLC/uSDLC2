@@ -27,6 +27,7 @@ patterns = [
 ]
 _div = document.createElement('DIV')
 _br = document.createElement('BR')
+header_idx = 1
 
 document.onkeydown = (event) ->
   if event.keyCode is 80 # P
@@ -95,10 +96,11 @@ class Instrument
       @last_div.appendChild(document.createTextNode(line))
       @last_div.appendChild(_br.cloneNode())
     else
-      header = @div('output_header', '')
-      @last_div = @div('hidden', '')
+      hid = 'output_header_'+header_idx++
+      header = @div('output_header '+hid, '')
+      @last_div = last_div = @div('hidden', '')
       header.innerHTML = "#{line}<b>...</b>"
-      header.onclick = => toggle_hidden(@last_div, 'output')
+      header.onclick = => toggle_hidden(last_div, hid)
   fix_level_one: ->
     className = if @ok then "ok" else "not_ok"
     level_1 = @container.slice(-2,-1)[0]
