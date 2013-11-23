@@ -44,7 +44,7 @@ module.exports =
     if err then @fail err else @pass msg
     return err
   # test and provide a message if not as expected
-  expect: (value, to_be) ->
+  check: (value, to_be) ->
     if value is to_be
       @pass "'#{value}' correct"
     else

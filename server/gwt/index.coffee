@@ -17,7 +17,8 @@ class GWT extends EventEmitter
       @options.project, "usdlc2/#{@options.document}.html")
     @options.script_path =
       path.join(@options.project, @options.script_path)
-    scripts = []; @actions = []; @test_count = 0
+    scripts = []; @preactions = []
+    @actions = []; @test_count = 0
     @ruler = new Rules(@)
     @statement_skip = @section_skip = 0; @failures = 0
     @cleanups = []; @skipped = 0
@@ -63,7 +64,7 @@ class GWT extends EventEmitter
         last_slash = script.lastIndexOf('/')
         dot = script.indexOf('.', last_slash)
         base = '.'
-        base = script[0..dot - 1] if dot > 0
+        base = script[0..dot - 1]
         if script.ends_with('.gwt.coffee')
           ext_name = '.gwt.coffee'
           while base.length > 10 and
@@ -71,6 +72,7 @@ class GWT extends EventEmitter
             parents.push(base)
             base = path.dirname(base)
         else
+          ext_name = script[dot..]
           parents = [base]
           
         do process = ->
@@ -82,10 +84,10 @@ class GWT extends EventEmitter
             script = path.resolve dirs.base(), script
             actor = require(script)
             if typeof actor is 'function'
-              switch actor.length
-                when 0 then gwt.add(actor) # direct
-                when 1 then actor(gwt, process); return
-                else actor(gwt) # synchronous
+              if not actor.length
+                gwt.add actor
+              else
+                actor.call(gwt, process); return
           catch err
             if err.code isnt 'MODULE_NOT_FOUND'
               console.log err.stack
@@ -164,9 +166,11 @@ class GWT extends EventEmitter
     chunk = chunk.toString()
     ls = ('#!! '+l for l in chunk.split('\n') when l.length)
     @gwt_out ls.join('\n') + '\n', encoding, fd
-  output: -> (output_array = [@output_array.join('')])[0]
+  output: -> (@output_array = [@output_array.join('')])[0]
+  clear_output: -> @output_array = []
   # Checking test output for telling signs
   monitor_output: pass: null, fail: null, end: null
+  expect: (pass,fail,end) -> @monitor_output = {pass,fail,end}
   monitor: (chunk) ->
     # there is a small chance this will fail if the chunk
     # does not break on a line boundary
@@ -224,6 +228,7 @@ class GWT extends EventEmitter
                   TAP version 13
                   1..#{@test_count}"""
       @count = 0
+      @actions = [@preactions..., @actions...]
       @next = @next_next
       @next()
     else
