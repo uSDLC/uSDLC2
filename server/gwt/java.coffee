@@ -4,14 +4,14 @@ processes = require 'processes'; gwt = require 'gwt'
 path = require 'path'
 
 class Java
-  constructor: (@opts) -> gwt.actions.push =>
+  constructor: (@opts) -> gwt.preactions.push =>
     @opts.dir ?= '.'
     @opts.out ?= '.'
     @shell = processes()
     @shell.options.cwd = @opts.dir
     dirs.mkdirs @opts.out, -> gwt.next()
     
-  compile: (files...) -> gwt.actions.push =>
+  compile: (files...) -> gwt.preactions.push =>
     cp = "-classpath #{@opts.out}"
     cmd = "javac #{cp} -d #{@opts.out} #{files.join(' ')}"
     @shell.cmd cmd, -> gwt.next()

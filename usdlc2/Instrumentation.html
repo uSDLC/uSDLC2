@@ -47,7 +47,7 @@ Given a number between 1 and 10
 When we multiply the number by 2
 Then the result is an even number</pre>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="shell"><a href="javascript:usdlc.edit_source({value:'shell.coffee',path:'server/http/shell.coffee',category:'http'})">shell.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span><span class="instrument"><a href="javascript:usdlc.edit_source({value:'instrument.html',path:'instrument.html',category:'.'})">instrument.html</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="go"><a href="javascript:usdlc.edit_source({value:'go.sh.bat',path:'go.sh.bat',category:'.'})">go.sh.bat</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span></div>
 
 <h3 style="">Built-in Rules</h3>
 
@@ -59,7 +59,7 @@ Then the result is an even number</pre>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
-<div class="metadata Ref">Ref: <span class="instrument"><a href="javascript:usdlc.edit_source({value:'instrument.coffee',path:'instrument.coffee',category:'.'})">instrument.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="instrument"><a href="javascript:usdlc.edit_source({value:'instrument.coffee',path:'instrument.coffee',category:'.'})">instrument.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span></div>
 
 <h5 style="">Checking Output by Substring</h5>
 
@@ -98,9 +98,87 @@ Then the response includes &#39;uSDLC child output test&#39;</pre>
 
 <h2>Code and Data</h2>
 
-<p style="display: block;">Given/When/Then is a specific example of a code segment.</p>
+<p style="display: block;">Given/When/Then is a specific example of a code segment. For developers by developers, instrumentation will be by code examples rather than &#39;natural language&#39;.</p>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span><span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="sections"><a href="javascript:usdlc.edit_source({value:'sections.coffee',path:'client/ckeditor/sections.coffee',category:'ckeditor'})">sections.coffee</a></span></div>
+<h3 style="display: block;">Coffeescript/Javascript</h3>
+
+<p style="display: block;">Each code segment acts as an independent Node module. The only visible entity returned is <em>module.exports</em> - and it should be a function.</p>
+
+<h4>Instrumentation Steps</h4>
+
+<p style="display: block;">If the module is a function without parameters then it will be queued as an instrumentation steps. These steps are only run after all the segments have been loaded. They run in the <em>gwt</em> context and complete with an <em>@pass()</em> or <em>@fail()</em>.</p>
+
+<pre style="display: block;" title="coffee" type="coffee">
+module.exports = -&gt;
+  @pass &quot;adding instrument steps directly&quot;
+</pre>
+
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span></div>
+
+<h4>Asynchronous Action</h4>
+
+<p style="display: block;">If the module is a function with one parameter - it is expected to be a callback. Unlike instrumentation steps these modules are called immediately during the build phase - with further processing held until the callback. Use these actions to load data or code before the instrumentation phase starts. They run in gwt context - so this can be used to share data.</p>
+
+<pre style="display: block;" title="coffee" type="coffee">
+module.exports = (ready) -&gt;
+  fetch_data = =&gt;
+    @my_data = &quot;hello world&quot;
+    ready()
+  setTimeout fetch_data, 10</pre>
+
+<p style="display: block;">Now we create an instrumentation step that confirms the preparations. Note that we had to add explicitly, as uSDLC combines all scripts of the same type in a section.</p>
+
+<pre style="display: block;" title="coffee" type="gwt.coffee">
+require(&#39;gwt&#39;).add -&gt;
+  @test @my_data, &quot;hello world&quot;</pre>
+
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+
+<h3>Other Languages</h3>
+
+<p style="display: block;">Anything is possible. If you are instrumenting with code, then your audience involves developers, so the code will either be libraries for them to use or low level components of the production system.</p>
+
+<p style="display: block;">Where possible it is good to test code in isolation before integration. Other approaches include server integration, code injections and FICL.</p>
+
+<h4>Command-line Instrumentation</h4>
+
+<p style="display: block;">For modules with few or well-defined dependencies it may be possible to wrap a small command-line program around them.</p>
+
+<p style="display: block;">I place scaffolding code at the end of the page in a section with the same name. Scaffolding will instantiate the command and provide supporting code.</p>
+
+<p style="display: block;">The bridge will build the command-line program from fixed components like scaffolding and libraries, plus files from the current section. All files in a section are concatenated before compiled or executed - so scaffolding that cannot be isolated can be placed in minimised sections. The bridge can also provide code to be run for each file in the section by extension - so it can be used to compile or run the command-line tool.</p>
+
+<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block; background-position: initial initial; background-repeat: initial initial;"><span style="color:#FF0000;">Create an example from FICL/API.</span></div>
+
+<h4>REPL Instrumentation</h4>
+
+<p style="display: block;">Many components can be instrumented in isolation using a REPL (read, execute, print, loop). Many systems, including Groovy, Python and Node-JS come standard with a REPL.</p>
+
+<p style="display: block;">Whether extending a REPL or generating one from scratch, there is a need for some scaffolding.</p>
+
+<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block; background-position: initial initial; background-repeat: initial initial;"><span style="color:#FF0000;">Create an example from FICL/REFERENCE</span></div>
+
+<h4>Server Integrated Instrumentation</h4>
+
+<p style="display: block;">Use the bridge to copy code from the section being instrumented into the server code base. The bridge can also rebuild, start and stop the server as needed.</p>
+
+<h4>Code Injection</h4>
+
+<p style="display: block;">Code injection can be used for all interactive languages such as Groovy, Ruby, Python or JavaScript. They require a transport mechanism to make the files available and code on the target system to ingest and run the injected code.</p>
+
+<p style="display: block;">The transport depends on the target system. For servers, a HTTP request is easiest. For browsers they can make a web-socket connection to uSDLC. For many systems it is just a matter of copying the files in a known location.</p>
+
+<p style="display: block;">Running injected code involves a security risk. This is easily mitigated with basic precautions - such that uSDLC must be running on the same computer as the target system.</p>
+
+<h5>Browser / Javascript</h5>
+
+<h5>​Server / Roaster / Node-JS / Coffeescript</h5>
+
+<h4>FICL</h4>
+
+<p style="display: block;">Some systems are static and can&#39;t be easily rebuilt on-the-fly for instrumentation. This includes many large Java and .NET system as well as most mobile devices. For these environments we provide FICL (fast integrated configuration language) - a very lightweight system for injecting instrumentation. There are Java versions for Android and C versions for .NET and iOS.</p>
+
+<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block; background-position: initial initial; background-repeat: initial initial;"><span style="color:#FF0000;">Create an example from FICL/REFERENCE</span></div>
 
 <h2>The Bridge</h2>
 
@@ -151,5 +229,13 @@ gwt.rules(
     heartbeat 5
     heartbeat 2
 )</textarea></p>
+
+<h2>Play Instrumentation</h2>
+
+<h3>Console Output</h3>
+
+<p>Details and console output are captured. Only the first line is displayed. Click on ... to see the rest.</p>
+
+<div class="metadata Ref">Ref: <span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="instrument"><a href="javascript:usdlc.edit_source({value:'instrument.coffee',path:'instrument.coffee',category:'.'})">instrument.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="edit_source"><a href="javascript:usdlc.edit_source({value:'edit_source.coffee',path:'client/edit_source.coffee',category:'client'})">edit_source.coffee</a></span><span class="ckeditor"><a href="javascript:usdlc.edit_source({value:'ckeditor.coffee',path:'client/ckeditor/ckeditor.coffee',category:'ckeditor'})">ckeditor.coffee</a></span><span class="sections"><a href="javascript:usdlc.edit_source({value:'sections.coffee',path:'client/ckeditor/sections.coffee',category:'ckeditor'})">sections.coffee</a></span><span class="editor"><a href="javascript:usdlc.edit_source({value:'editor.coffee',path:'client/codemirror/editor.coffee',category:'codemirror'})">editor.coffee</a></span></div>
 </body>
 </html>

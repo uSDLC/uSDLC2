@@ -20,7 +20,7 @@ class Process
     return @
   
   repl: (cmd, onExit) ->
-    gwt.actions.push =>
+    gwt.preactions.push =>
       @process.cmd cmd, (error) =>
         done = -> onExit(error)
         if @finished then done() else @cleanups.push done
