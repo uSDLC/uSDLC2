@@ -1,8 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see /GPL for license
 dialog_options =
   width: 600
-  position:
-    { my: "right top+60", at: "right-5 top", of: window }
   init: (dlg) -> dlg.append(dlg.content = $('<div/>'))
 
 module.exports = (options, next = ->) -> queue ->
@@ -16,7 +14,9 @@ module.exports = (options, next = ->) -> queue ->
       dlg.editor =
         usdlc.source_editor.edit(dlg.content, options.source)
     dialog_options, options, (dlg) ->
+      pos = my: "right top+60", at: "right-5 top", of: window
+#       dlg.position pos
       set_focus = -> dlg.editor.focus()
       dlg.click set_focus
       dlg.prev().click set_focus # heading
-      next null, @dlg
+      next null, dlg

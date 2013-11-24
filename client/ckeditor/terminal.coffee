@@ -42,10 +42,6 @@ module.exports = (exchange) ->
     dialog_options =
       width: 600
       height: 400
-      position:
-        my: "right-100 bottom-50"
-        at: "right bottom"
-        of: window
       init: init
       
     dlg = null

@@ -46,8 +46,6 @@ module.exports.initialise = (next) ->
         @editor
           name:     'Javascript'
           title:    'Javascript'
-          position:
-            my: "left top+60", at: "left+10 top", of: window
           source:
             attr: (-> 'javascript'), text: (-> javascript)
     toggle_option: (cm, name) ->

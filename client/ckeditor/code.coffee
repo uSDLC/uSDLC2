@@ -25,10 +25,7 @@ module.exports = (exchange) ->
     usdlc.embedded_code_editor = (wrapper) ->
       dialog_options =
         width:  600
-        position:
-          my: "right top+80", at: "right-5 top", of: window
         init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
-        fix_height_to_window: 105
         closeOnEscape: false
   
       # fill dialog with source

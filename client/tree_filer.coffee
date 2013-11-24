@@ -5,9 +5,8 @@ dialog_options =
   autoResize: true
   minHeight:  50
   title:      'Files...'
-  position:   { my: "left", at: "left+610", of: window }
+  position:   { my: "left top", at: "left+610 top", of: window }
   closeOnEscape: false
-  fix_height_to_window: 10
   
 form = tree = search_by = cludes = search_for = nodes = null
 last_search = ''; dtree = branches = data = null

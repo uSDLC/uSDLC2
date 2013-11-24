@@ -29,10 +29,7 @@ usdlc.edit_source = (item) -> queue ->
     @editor
       name:     item.key
       title:    "#{item.value} - #{item.category}"
-      fix_height_to_window: 20
       source:   { attr, text }
-      position:
-        my: "right top+10", at: "right-10 top", of: window
 
     item_data = "{value:'#{item.value}'," +
       "path:'#{item.path}',category:'#{item.category}'}"

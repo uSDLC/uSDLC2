@@ -8,7 +8,8 @@ save_actions = {}
 
 roaster.ready -> queue ->
   @package "jquery,jqueryui,ckeditor", @next ->
-  @requires "/client/ckeditor/ckeditor.coffee", "/app.less", @next ->
+  @requires "/client/ckeditor/ckeditor.coffee", "/app.less",
+  @next ->
     # Go to page  or return to the last location
     loc = window.location
     if loc.search is '?edit' and loc.pathname.length > 2
@@ -179,6 +180,19 @@ usdlc.raw_edit_page = (page, next = ->) ->
     prepare_editing
     release_Lockout_and_continue
   )
+
+dialog_left = 700
+dialog_top = 0
+console.log "USDLC SET",roaster.dialog_position
+roaster.dialog_position = ->
+  w = $(window)
+  dialog_left += 80
+  dialog_left = 700 if dialog_left > w.width() - 600
+  dialog_top += 40
+  dialog_top = 0 if dialog_top > w.height() / 2
+  my: "left top"
+  at: "left+#{dialog_left} top+#{dialog_top}"
+  of: window
 
 new_document = """<html><head>
 <link href='document.css' rel='stylesheet' type='text/css'>

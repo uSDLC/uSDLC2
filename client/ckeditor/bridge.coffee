@@ -6,10 +6,7 @@ module.exports = (exchange) ->
       usdlc.page_editor.metadata.add_bridge_and_play_ref()
       dialog_options =
         width:  600
-        position:
-          my: "right top+60", at: "right-5 top", of: window
         init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
-        fix_height_to_window: 65
         closeOnEscape: false
   
       section_path = usdlc.section_path()

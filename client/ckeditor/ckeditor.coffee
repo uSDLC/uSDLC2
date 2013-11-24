@@ -38,9 +38,6 @@ module.exports.initialise = (next) ->
       clearTimeout fto
       fto = setTimeout (-> usdlc.in_focus.focus()), 200
     w = $(window)
-#     w.focus ->
-#       if document.activeElement is document.body
-#         restore_focus()
     w.click (event) ->
       clearTimeout fto
       if document.activeElement is document.body
