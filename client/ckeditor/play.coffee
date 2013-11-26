@@ -41,6 +41,7 @@ module.exports = (exchange) ->
       dlg.iframe.height(dlg.height() - 10)
     dialog_options =
       width:      600
+      height:     600
       init:       init
 
     order = roaster.ckeditor.tools.play

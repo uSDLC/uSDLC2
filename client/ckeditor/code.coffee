@@ -100,6 +100,7 @@ module.exports = (exchange) ->
           clearTimeout selection_timer
           for n in evt.data.path.elements
             if n.getName() is 'pre' and n.hasAttribute('type')
+              console.log evt.data.selection.getNative().focusOffset
               return selection_timer = setTimeout ( ->
                 type = n.getAttribute('type')
                 n.setAttribute('contenteditable', 'false')
