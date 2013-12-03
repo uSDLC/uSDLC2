@@ -33,7 +33,7 @@ roaster.ready -> queue ->
       clearTimeout(actor) if actor
       roaster.message ""
       save_actions[id] = save_action if id
-      actor = setTimeout(usdlc.save_page, 2000)
+      actor = setTimeout(usdlc.save_page, 1000)
     usdlc.page_editor.on 'change', -> usdlc.save_timer()
     usdlc.page_editor.on 'blur', usdlc.save_page
     roaster.ckeditor.show_tab 'uSDLC'
@@ -168,13 +168,13 @@ usdlc.raw_edit_page = (page, next = ->) ->
     document = @key.replace(/_/g, ' ')
     project = project.replace(/_/g, ' ')
     $('title').html "#{document} - #{project}"
-    usdlc.load_source_editor @next
 
   release_Lockout_and_continue = ->
     save_lockout = 0
     next()
 
   steps(
+    usdlc.load_source_editor
     load_document
     insert_into_dom
     prepare_editing
@@ -183,7 +183,6 @@ usdlc.raw_edit_page = (page, next = ->) ->
 
 dialog_left = 700
 dialog_top = 0
-console.log "USDLC SET",roaster.dialog_position
 roaster.dialog_position = ->
   w = $(window)
   dialog_left += 80

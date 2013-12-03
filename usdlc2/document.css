@@ -67,21 +67,6 @@ pre[type=gwt] {
   width: 85%;
   cursor: auto;
 }
-pre.small {
-  height: 1.3em;
-  overflow: hidden;
-  padding: 0;
-}
-pre[type]:before {
-  content: "\00B1";
-  color: white;
-  float: right;
-  margin-top: -0.6em;
-  margin-right: -1em;
-  padding: 0 3px;
-  border: 1px outset #cff;
-  background-color: black;
-}
 textarea[source] {
   width: 80%;
   padding: 2;
@@ -100,12 +85,9 @@ body.cke_editable textarea[source] {
 div.metadata {
   font-style: italic;
   color: #ccc;
-  width: 75%;
-  text-align: right;
-  padding-left: 0.5em;
   font-size: smaller;
-  text-indent: -3em;
-  margin-left: 6em;
+  margin-left: 2em;
+  margin-top: 1em;
 }
 div.metadata a {padding-left: 0.5em;}
 /* unvisited link */

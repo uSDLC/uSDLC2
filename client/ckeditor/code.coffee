@@ -5,11 +5,11 @@ module.exports = (exchange) ->
     # any editor not mentioned here will go to the code editor
     usdlc.type_editors =
       gwt: (wrapper) ->
-        n.removeAttribute('contenteditable')
+        wrapper.attributes.contenteditable = true
       txt: (wrapper) ->
-        n.removeAttribute('contenteditable')
+        wrapper.attributes.contenteditable = true
       
-    html_to_code = (html) ->
+    html_to_code = (html = '') ->
       return html.
         replace(/<br\/?>/g, '\n').
         replace(/&nbsp;/g, ' ').
@@ -21,35 +21,7 @@ module.exports = (exchange) ->
       div = $('<div>')
       CodeMirror.runMode(code, 'coffeescript', div.get(0))
       return div.html()
-    # Code for editor that pops up for bridge code
-    usdlc.embedded_code_editor = (wrapper) ->
-      dialog_options =
-        width:  600
-        init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
-        closeOnEscape: false
-  
-      # fill dialog with source
-      fill = (dlg) ->
-        dlg.content.empty()
-        src =
-          attr: (key) -> wrapper.getAttribute(key)
-          text: (value) ->
-            if value
-              wrapper.setHtml(code_to_html(value))
-            else
-              return html_to_code(wrapper.getHtml())
-        edit = usdlc.source_editor.edit
-        dlg.editor = edit(dlg.content, src)
-        dlg.editor.focus()
-
-      queue ->
-        section = usdlc.section_for(wrapper.$).text()
-        @requires 'querystring', '/client/dialog.coffee',
-        @next -> @dialog
-          name:   section
-          title:  section
-          fill:   fill
-          dialog_options
+          
     ref = null
     steps(
       ->  @requires '/client/ckeditor/metadata.coffee'
@@ -73,6 +45,7 @@ module.exports = (exchange) ->
     order = roaster.ckeditor.tools.code
     selection_timer = null
     CKEDITOR.plugins.add 'code',
+      requires: 'widget'
       icons: 'code',
       init: (editor) ->
         editor.addCommand 'code', exec: (editor) -> queue ->
@@ -96,15 +69,58 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return code: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 71, 'code')
-        editor.on 'selectionChange', (evt) ->
-          clearTimeout selection_timer
-          for n in evt.data.path.elements
-            if n.getName() is 'pre' and n.hasAttribute('type')
-              console.log evt.data.selection.getNative().focusOffset
-              return selection_timer = setTimeout ( ->
-                type = n.getAttribute('type')
-                n.setAttribute('contenteditable', 'false')
-                edit = usdlc.type_editors[type] ?
-                  usdlc.embedded_code_editor
-                return edit(n)
-              ), 200
+      
+        editor.widgets.add 'code-widget',
+          upcast: (el, data) ->
+            if el.name isnt 'pre' or not el.attributes.type
+              return false
+            return true
+            div = new CKEDITOR.htmlParser.element 'div',
+              type: el.attributes.type
+              title: el.attributes.title
+            div.setHtml el.getHtml?() ? ''
+            return div
+          init: ->
+            @once 'focus', ->
+              el = $(@element.$)
+              ed = $('<div>').css
+                position:      'absolute'
+                width:         el.width()
+                height:        el.height()
+                top:           '-1000px'
+                right:         '-1000px'
+              $('body').append(ed)
+              el.text html_to_code el.html()
+              @setData 'attr', (key) -> el.attr(key)
+              fit = =>
+                doc = $(editor.document.$)
+                doco = $('iframe',$(editor.container.$))
+                doco = doco.offset()
+                ed.outerWidth el.outerWidth() - 4
+                ed.outerHeight el.outerHeight() - 4
+                scrollTop = doc.scrollTop()
+                scrollLeft = doc.scrollLeft()
+                offset = el.offset()
+                offset.top += doco.top + 2 - scrollTop
+                offset.left += doco.left + 2 - scrollLeft
+                ed.css 'z-index': roaster.zindex + 2
+                ed.offset offset
+              code_editor = usdlc.source_editor.edit ed,
+                attr: (key) => @data.attr(key)
+                text: (value) =>
+                  if value then el.text(value); return fit()
+                  return el.text()
+              code_editor.setOption 'lineNumbers', false
+              code_editor.setOption 'gutters', []
+              doc = $(editor.document.$)
+              doc.scroll -> ed.hide()
+              editor.on 'change', -> ed.hide()
+              editor.on 'beforeCommandExec', -> ed.hide()
+              editor.on 'contentDomInvalidated', -> ed.hide()
+              editor.on 'dialogShow', -> ed.hide()
+              editor.on 'resize', -> ed.hide()
+              do focus = ->
+                ed.show()
+                fit()
+                code_editor.focus()
+              @on 'focus', focus
