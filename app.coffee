@@ -182,11 +182,11 @@ usdlc.raw_edit_page = (page, next = ->) ->
   )
 
 dialog_left = 700
-dialog_top = 0
+dialog_top = -20
 roaster.dialog_position = ->
   w = $(window)
   dialog_left += 80
-  dialog_left = 700 if dialog_left > w.width() - 600
+  dialog_left = 680 if dialog_left > w.width() - 600
   dialog_top += 40
   dialog_top = 0 if dialog_top > w.height() / 2
   my: "left top"

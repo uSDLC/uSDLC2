@@ -3,11 +3,11 @@
 module.exports = (exchange) ->
   exchange.respond.client ->
     # any editor not mentioned here will go to the code editor
-    usdlc.type_editors =
-      gwt: (wrapper) ->
-        wrapper.attributes.contenteditable = true
-      txt: (wrapper) ->
-        wrapper.attributes.contenteditable = true
+    usdlc.type_editors = {}
+#       gwt: (wrapper) ->
+#         wrapper.attributes.contenteditable = true
+#       txt: (wrapper) ->
+#         wrapper.attributes.contenteditable = true
       
     html_to_code = (html = '') ->
       return html.
@@ -119,8 +119,8 @@ module.exports = (exchange) ->
               editor.on 'contentDomInvalidated', -> ed.hide()
               editor.on 'dialogShow', -> ed.hide()
               editor.on 'resize', -> ed.hide()
-              do focus = ->
+              do edit = ->
                 ed.show()
                 fit()
                 code_editor.focus()
-              @on 'focus', focus
+              @on 'focus', edit
