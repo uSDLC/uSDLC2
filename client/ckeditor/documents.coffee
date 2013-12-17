@@ -21,7 +21,7 @@ module.exports = (exchange) ->
       items: (next) ->
         url = "/client/ckeditor/documents.coffee"+
               "?project=#{usdlc.project}"
-        roaster.request.json url, (documents) ->
+        roaster.request.json url, (err, documents) ->
           next (name.replace(/_/g, ' ')\
             for name in documents).sort()
       selected: ->

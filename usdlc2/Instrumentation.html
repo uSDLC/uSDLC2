@@ -59,9 +59,9 @@ Then the result is an even number</pre>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="instrument"><a href="javascript:usdlc.edit_source({value:'instrument.coffee',path:'instrument.coffee',category:'.'})">instrument.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="install-usdlc2"><a href="javascript:usdlc.edit_source({value:'install-usdlc2.sh',path:'install-usdlc2.sh',category:'.'})">install-usdlc2.sh</a></span><span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="edit_source"><a href="javascript:usdlc.edit_source({value:'edit_source.coffee',path:'client/edit_source.coffee',category:'client'})">edit_source.coffee</a></span><span class="editor"><a href="javascript:usdlc.edit_source({value:'editor.coffee',path:'client/codemirror/editor.coffee',category:'codemirror'})">editor.coffee</a></span></div>
-
+<p>&nbsp;
 <h5 style="">Checking Output by Substring</h5>
+</p>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
@@ -69,7 +69,7 @@ Then the result is an even number</pre>
 
 <pre style="display: block;" type="gwt">
 Given a number between 1 and 10
-Then the response includes '<span data-scayt_word="ecking" data-scaytid="1">ecking</span> Output Co'</pre>
+Then the response includes &#39;<span data-scayt_word="ecking" data-scaytid="6">ecking</span> Output Co&#39;</pre>
 
 <div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span></div>
 
@@ -89,8 +89,8 @@ Then response matches /.*ok 1 - \d/</pre>
 
 <pre style="display: block;" type="gwt">
 Given a shell
-When we execute 'echo uSDLC child output test'
-Then the response includes 'uSDLC child output test'</pre>
+When we execute &#39;echo uSDLC child output test&#39;
+Then the response includes &#39;uSDLC child output test&#39;</pre>
 
 <div class="metadata Ref" style="display: block;">Ref: <span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span><span class="sections"><a href="javascript:usdlc.edit_source({value:'sections.coffee',path:'client/ckeditor/sections.coffee',category:'ckeditor'})">sections.coffee</a></span></div>
 
@@ -110,7 +110,7 @@ Then the response includes 'uSDLC child output test'</pre>
 
 <pre style="display: block;" title="coffee" type="coffee">
 module.exports = -&gt;
-  @pass "adding instrument steps directly"
+  @pass &quot;adding instrument steps directly&quot;
 </pre>
 
 <div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span></div>
@@ -122,15 +122,15 @@ module.exports = -&gt;
 <pre style="display: block;" title="coffee" type="coffee">
 module.exports = (ready) -&gt;
   fetch_data = =&gt;
-    @my_data = "hello world"
+    @my_data = &quot;hello world&quot;
     ready()
-  setTimeout fetch_data, 10</pre>
+  <span data-scayt_word="setTimeout" data-scaytid="7">setTimeout</span> fetch_data, 10</pre>
 
 <p style="display: block;">Now we create an instrumentation step that confirms the preparations. Note that we had to add explicitly, as uSDLC combines all scripts of the same type in a section.</p>
 
 <pre style="display: block;" title="coffee" type="gwt.coffee">
-require('gwt').add -&gt;
-  @test @my_data, "hello world"</pre>
+require(&#39;gwt&#39;).add -&gt;
+  @test @my_data, &quot;hello world&quot;</pre>
 
 <div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
 
