@@ -28,23 +28,25 @@ update_bases = ->
 # this one is run once to load projects from disk
 do dirs.project_reader = (next = ->) ->
   list = {}
-  line_reader.for_file 'local/projects.ini', (line) ->
-    if not line?
-      # now we have them all, atomic update
-      dirs.projects = projects = list
-      update_bases()
-      if process.environment
-        process.environment.projects = list
-        process.environment.configuration.projects = list
-      return next(projects)
-    return if line.length is 0 or line[0] is '#'
-    [project_name, options] = line.split '='
-    options = options.split ','
-    data = {}
-    for option in options
-      [key, value] = option.split ':'
-      data[key] = value
-    list[project_name] = data
+  try
+    line_reader.for_file 'local/projects.ini', (line) ->
+      if not line?
+        # now we have them all, atomic update
+        dirs.projects = projects = list
+        update_bases()
+        if process.environment
+          process.environment.projects = list
+          process.environment.configuration.projects = list
+        return next(projects)
+      return if line.length is 0 or line[0] is '#'
+      [project_name, options] = line.split '='
+      options = options.split ','
+      data = {}
+      for option in options
+        [key, value] = option.split ':'
+        data[key] = value
+      list[project_name] = data
+  catch error # who cares
     
 dirs.add_project = (name, data) ->
   name = name.replace /\s+/g, '_'
