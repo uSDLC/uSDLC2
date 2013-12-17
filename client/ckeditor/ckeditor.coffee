@@ -12,6 +12,8 @@ roaster.ckeditor.tools =
   source_editor: [8, 4]
   play: [9, 5]
   terminal: [10]
+  user: [11]
+  pairing: [12]
 # load ckeditor plugins
 roaster.ckeditor.toolbar('ckeditor', 'uSDLC'
   (key for key, value of roaster.ckeditor.tools)...)
@@ -35,9 +37,7 @@ module.exports.initialise = (next) ->
     restore_focus = ->
       clearTimeout fto
       fto = setTimeout (-> usdlc.in_focus.focus()), 200
-    (w = $(window)).focus ->
-      if document.activeElement is document.body
-        restore_focus()
+    w = $(window)
     w.click (event) ->
       clearTimeout fto
       if document.activeElement is document.body
@@ -52,11 +52,9 @@ module.exports.initialise = (next) ->
       return true
     setTimeout (->
       usdlc.page_editor.document.$.body.onkeydown =
-      window.onkeydown), 200
+      window.onkeydown), 300
     next()
-  steps(
-    ->  @requires '/client/ckeditor/metadata.coffee'
-    ->  usdlc.page_editor.metadata = @metadata
-    ->  @requires '/client/ckeditor/rich_combo.coffee'
-    ->  usdlc.richCombo = @rich_combo
-  )
+  roaster.clients '/client/ckeditor/metadata.coffee',
+  '/client/ckeditor/rich_combo.coffee', (md, rc) ->
+    usdlc.page_editor.metadata = md
+    usdlc.richCombo = rc

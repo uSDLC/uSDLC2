@@ -25,8 +25,9 @@ module.exports.initialise = (next) ->
     
     play_current: (cm) -> roaster.replay()
     
-    file_manager: (cm) -> queue ->
-      @requires '/client/tree_filer.coffee', (flr) -> flr()
+    file_manager: (cm) ->
+      roaster.clients '/client/tree_filer.coffee', (tree_filer) ->
+        tree_filer()
       
     toggle_auto_complete: (cm) -> alert "Under Construction"
     
@@ -40,13 +41,11 @@ module.exports.initialise = (next) ->
           CoffeeScript.compile(coffeescript, bare:true)
       catch e
         javascript = "#{e}\n#{JSON.stringify(e.location)}"
-      queue ->
-        @requires '/client/codemirror/editor.coffee'
-        @editor
+
+      roaster.clients '/client/codemirror/editor.coffee', (editor) ->
+        editor
           name:     'Javascript'
           title:    'Javascript'
-          position:
-            my: "left top+60", at: "left+10 top", of: window
           source:
             attr: (-> 'javascript'), text: (-> javascript)
     toggle_option: (cm, name) ->
@@ -188,6 +187,6 @@ module.exports.initialise = (next) ->
           editor.setSelection(cursor.from(), cursor.to())
       setTimeout (-> editor.focus()), 500
       return editor
-  queue -> @data '/client/codemirror/menu.html', ->
-    context_menu = $(@menu).appendTo('body')
+  roaster.request.data '/client/codemirror/menu.html', (html) ->
+    context_menu = $(html).appendTo('body')
   next()

@@ -42,10 +42,6 @@ module.exports = (exchange) ->
     dialog_options =
       width: 600
       height: 400
-      position:
-        my: "right-100 bottom-50"
-        at: "right bottom"
-        of: window
       init: init
       
     dlg = null
@@ -54,18 +50,15 @@ module.exports = (exchange) ->
       dlg.term.height(height)
       
     usdlc.terminal = ->
-      steps(
-        -> @on 'error', -> @abort()
-        -> @requires '/client/dialog.coffee'
-        ->
-          @dialog
-            name: 'Terminal'
-            title: 'Console'
-            fill: ->
-            after: @next
-            resizeStop: (dlg) -> on_resize(dlg)
-            dialog_options
-      )
+      roaster.clients '/client/dialog.coffee', (dialog) ->
+        dialog
+          name: 'Terminal'
+          title: 'Console'
+          fill: ->
+          after: @next
+          resizeStop: (dlg) -> on_resize(dlg)
+          dialog_options
+
     order = roaster.ckeditor.tools.terminal
     
     CKEDITOR.plugins.add 'terminal',

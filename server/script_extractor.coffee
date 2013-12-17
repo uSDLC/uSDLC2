@@ -1,14 +1,16 @@
 # Copyright (C) 2012,13 paul@marrington.net, see /GPL license
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
-dirs = require('dirs')
-newer = require 'newer'; steps = require 'steps'
+dirs = require('dirs'); newer = require 'newer'
+requires = require 'requires'; streams = require 'streams'
 
 decode = null
 
 module.exports = (options, extraction_complete) ->
   gen = path.join options.project, "gen/usdlc2"
-  options.runner_file = path.join gen, "#{options.document}.list"
-  input_path = path.join options.project, "usdlc2/#{options.document}.html"
+  options.runner_file =
+    path.join gen, "#{options.document}.list"
+  input_path = path.join(
+    options.project, "usdlc2/#{options.document}.html")
 
   if newer(options.runner_file, options.document_path)
     return extraction_complete()
@@ -29,7 +31,8 @@ module.exports = (options, extraction_complete) ->
         if attr[0..4] is 'type='
           script_content = []
           script_name = "#{path.join headings...}.#{attr[6..-2]}"
-          script_name = script_name.replace(/(\s+|(&nbsp;)+)/g, '_')
+          script_name = script_name.replace(
+            /(&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,])+/g, '_')
           script_name = path.join gen, script_name
           break
     next()
@@ -51,18 +54,13 @@ module.exports = (options, extraction_complete) ->
     console.log "#: Build #{script_name}"
     content = decode script_content.join '\n'
     script_content = null
-    steps(
-      ->  dirs.mkdirs path.dirname(script_name), @next
-      ->  fs.appendFile script_name, content, @next
-      ->  add_to_runner(script_name, @next)
-      ->  next()
-    )
+    dirs.mkdirs path.dirname(script_name), ->
+      fs.appendFile script_name, content, ->
+        add_to_runner script_name, next
 
   sax.on 'finish', extraction_complete
 
-  steps(
-    ->  @requires 'ent'
-    ->  decode = @ent.decode
-    ->  dirs.rmdirs gen, @next
-    ->  @pipe fs.createReadStream(input_path), sax
-  )
+  requires 'ent', (ent) ->
+    decode = ent.decode
+    dirs.rmdirs gen, ->
+      streams.pipe fs.createReadStream(input_path), sax, ->

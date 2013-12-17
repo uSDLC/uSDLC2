@@ -10,31 +10,76 @@
 </head>
 <body>
   <textarea id='document'></textarea>
-  <div style="display:none;"><form id='tree_filer'>
-    <div class="search_by">
-        <input type="radio"
-          name="search_type" id='search_by_name'
-          checked="checked"/><label
-          for="search_by_name">Name</label>
-        <input type="radio" name="search_type"
-          id='search_by_grep'/><label
-          for="search_by_grep">Grep</label>
-    </div>
-    <div>
-      <input type="text" style='width:99%' autocomplete='true'
-        placeholder='pattern...' autofocus='true'
-        class="search_for"/>
-    </div>
-    <div class='tree'></div>
-    <input type='checkbox', id='filter_tree' checked='checked'>
-    <label>Enable Filter</label>
-    <div class="clusions">
-      <label>Include:</label>
-      <input type="text" placeholder='pattern...'/><br/>
-      <label>Exclude:</label>
-      <input type="text" placeholder='pattern...'/><br/>
-    </div>
-  </form>
+  <div style="display:none;">
+    <form id='tree_filer'>
+      <div class="search_by">
+          <input type="radio"
+            name="search_type" id='search_by_name'
+            checked="checked"/><label
+            for="search_by_name">Name</label>
+          <input type="radio" name="search_type"
+            id='search_by_grep'/><label
+            for="search_by_grep">Grep</label>
+      </div>
+      <div>
+        <input type="text" style='width:99%' autocomplete='true'
+          placeholder='pattern...' autofocus='true'
+          class="search_for"/>
+      </div>
+      <div class='tree'></div>
+      <input type='checkbox', id='filter_tree' checked='checked'>
+      <label>Enable Filter</label>
+      <div class="clusions">
+        <label>Include:</label>
+        <input type="text" placeholder='pattern...'/><br/>
+        <label>Exclude:</label>
+        <input type="text" placeholder='pattern...'/><br/>
+      </div>
+    </form>
+    <form id='tree_docs'>
+      <div>
+        <input type="text" style='width:99%'
+          placeholder='pattern...' autofocus='on'
+          class="search_for"/>
+      </div>
+      <div class='tree'></div>
+    </form>
+    <form id='add_project'
+      action="javascript:usdlc.add_project()">
+      <input type="text" style='width:99%'
+        placeholder='project name...' autofocus='on'
+        class="project_name"/>
+      <input type="text" style='width:99%'
+        placeholder='path...'
+        class="project_path"/>
+<!--       <input type="submit" value="Add"/> -->
+    </form>
+    <form id='user_management'>
+      <label>Name: </label>
+      <input type="text" size=10 class="user_name"
+             placeholder='user name...' autofocus='on'/>
+      <br>
+      <label>Email: </label>
+      <input type="text" size=20 class="email" type="email"
+             placeholder='email...'/>
+    </form>
+    <form id='pairing'>
+      <div class="pairing">
+          <input type="radio"
+            name="pairing_type" id='create_pairing'/>
+          <label for="create_pairing">Create</label>
+          <input type="radio" name="pairing_type"
+            id='join_pairing' checked="checked"/><label
+            for="join_pairing">Join</label>
+          <input type="radio" name="pairing_type"
+            id='close_pairing'/><label
+            for="close_pairing">Close</label>
+      </div>
+      <input type="text" size=10
+             autocomplete='on' autofocus='on'
+             placeholder='pairing session name...'
+             id="pair_name" autosave='on'/>
+    </form>
   </div>
   <ul id='tree_filer_menu'
   class='ui-helper-hidden' style="display:none">
@@ -43,14 +88,5 @@
     <li><a href='move'>Move...</a></li>
     <li><a href='new'>New...</a></li>
   </ul>
-  <div style="display:none;"><form id='tree_docs'>
-    <div>
-      <input type="text" style='width:99%' autocomplete='true'
-        placeholder='pattern...' autofocus='true'
-        class="search_for"/>
-    </div>
-    <div class='tree'></div>
-  </form>
-  </div>
 </body>
 <html>

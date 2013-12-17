@@ -3,12 +3,10 @@ module.exports = (exchange) ->
   exchange.respond.client ->
     # Code for editor that pops up for bridge code
     usdlc.bridge_editor = ->
+      usdlc.page_editor.metadata.add_bridge_and_play_ref()
       dialog_options =
         width:  600
-        position:
-          my: "right top+60", at: "right-5 top", of: window
         init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
-        fix_height_to_window: 65
         closeOnEscape: false
   
       section_path = usdlc.section_path()
@@ -45,12 +43,8 @@ module.exports = (exchange) ->
       onResize = (dlg) ->
         usdlc.bridge_dlg.content.accordion('refresh')
 
-      queue ->
-        @on 'error', (error) ->
-          console.log(error, error.stack); @abort()
-        @requires 'querystring', '/client/dialog.coffee', ->
-        # now we have querystring and window, use them
-        @dialog
+      roaster.clients '/client/dialog.coffee', (dialog) ->
+        dialog
           name:   "Instrumentation"
           title:  "Bridge"
           fill:   fill

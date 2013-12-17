@@ -7,13 +7,11 @@ dialog_options =
   
 # title:required, form:selector, position:{my:'',at:'',of:''}
 # tree_action:function_name
-module.exports = (options, next) -> queue ->
+module.exports = (options, next) ->
   tree_action = options.tree_action; last_search = ''
   dtree = branches = null; form = tree = nodes = null
 
-  @package "dtree", ->
-  @requires '/client/dialog.coffee'
-  @dialog
+  roaster.clients '/client/dialog.coffee', (dialog) -> dialog
     name: options.title
     init: initialise_dialog
     fill: fill_tree
@@ -40,7 +38,7 @@ module.exports = (options, next) -> queue ->
     search_for.focus -> search_for.select()
     next null, dlg
         
-  fill_tree = ->
+  fill_tree = -> roaster.packages 'dtree', ->
     usdlc.dtree = dtree = new dTree(options.title)
     for key, path of dtree.icon
       dtree.icon[key] = "/ext/dtree/#{path}"
@@ -105,4 +103,3 @@ module.exports = (options, next) -> queue ->
         usdlc.dtree.openTo(id, first)
         first = false
       return true
-      

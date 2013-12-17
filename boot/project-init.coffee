@@ -4,3 +4,4 @@ module.exports =
   pre: (environment) ->
   post: (environment) ->
     require('boot/create-ws-server')(environment)
+    require('boot/create-faye-server')(environment)

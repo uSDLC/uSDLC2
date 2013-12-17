@@ -1,6 +1,5 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 fs = require 'fs'; dirs = require 'dirs'; fs = require 'fs'
-steps = require 'steps'; queue = steps.queue
 files = require 'files'; path = require 'path'
 
 module.exports = (exchange) ->
@@ -15,17 +14,17 @@ module.exports = (exchange) ->
     return error: e
   
   switch query.cmd
-    when 'rm' then queue ->
-      @files.rm query.path, (error) ->
+    when 'rm'
+      files.rm query.path, (error) ->
         exchange.respond.json errmsg 'delete', error
-    when 'mv' then queue ->
-      @files.mv query.from, query.to, (error) ->
+    when 'mv'
+      files.mv query.from, query.to, (error) ->
         exchange.respond.json errmsg 'move', error
-    when 'mk' then queue ->
+    when 'mk'
       if query.path[0] is '~'
         console.log query.path[1..]
         query.path = dirs.projects[query.path[1..]].base
-      @files.join query.path, query.name, (filename) ->
+      files.join query.path, query.name, (filename) ->
         fs.open filename, 'wx', (error, fd) ->
           fs.close fd, ->
           exchange.respond.json errmsg 'new', error
@@ -72,12 +71,10 @@ module.exports = (exchange) ->
             fs.lstat file_path,  (error, stats) ->
               return next(error) if error
               processor file, file_path, stats, next
-        steps(
-          ->  @long_operation()
-          ->  fs.readdir from, @next (@error, @files) ->
-          ->  @list @files..., process_file
-          ->  dir_read()
-        )
+        fs.readdir from, (error, files) ->
+          do process_one = ->
+            return dir_read() if not files.length
+            process_file files.shift(), process_one
     
       send_json = -> exchange.respond.json list
       send_html = -> exchange.respond.html list...

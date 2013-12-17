@@ -4,26 +4,29 @@ dirs = require 'dirs'
 module.exports = (exchange) ->
   exchange.respond.client ->
     usdlc.play = ->
+      usdlc.page_editor.metadata.add_bridge_and_play_ref()
       doc = usdlc.url.split('#')[0]
       doc = doc.split('/').slice(-1)[0]
-      sp = (section.title for section in usdlc.section_path())
+      section_path = usdlc.section_path()
+      nz = (t) ->
+        t.replace /&quot;|[\s"'\(\)\*\+\^\$\?\\:;,]+/g, '_'
+      sp = (nz(section.title) for section in section_path)
       sections = ".*/#{sp.join('/')}([/\\.].*)*$"
-      sections = sections.replace(/\s/g, '_')
 
       onResize = (dlg) ->
         height = usdlc.instrument_window.height() - 10
         usdlc.instrument_window.iframe.height(height)
 
-      steps(
-        ->  @on 'error', -> @abort()
-        ->  @requires 'querystring', '/client/dialog.coffee'
-        ->  # now we have querystring and window, use them
+      roaster.request.requireAsync 'querystring', (err, libs) ->
+        querystring = libs[0]
+        roaster.clients '/client/dialog.coffee', (dialog) ->
+          # now we have querystring and window, use them
           projects = roaster.environment.projects
-          url = "/instrument.html?" + @querystring.stringify
+          url = "/instrument.html?" + querystring.stringify
             project:  projects[usdlc.project].base
             document: doc
             sections: sections
-         @dialog
+          dialog
             name:   "Instrument"
             title:  "Play: #{section.title}"
             url:    url
@@ -32,18 +35,13 @@ module.exports = (exchange) ->
             resizeStop: (dlg) -> onResize(dlg)
             dialog_options
             (dlg) -> usdlc.instrument_window = dlg
-      )
       
     init = (dlg) ->
       dlg.append(dlg.iframe = $('<iframe/>'))
       dlg.iframe.height(dlg.height() - 10)
     dialog_options =
       width:      600
-      position:
-        my: "right top+20"
-        at: "right top"
-        of: window
-      fix_height_to_window: 130
+      height:     600
       init:       init
 
     order = roaster.ckeditor.tools.play

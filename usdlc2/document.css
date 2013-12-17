@@ -54,6 +54,7 @@ h6:before {
 pre[type], textarea[type] {
   margin: 0 10px;
   padding: 0.5em 1em 1em 1em;
+  cursor: pointer;
 }
 pre[type] {
   border: 1px inset #cff;
@@ -64,6 +65,7 @@ pre[type=gwt] {
   border: 1px inset #cff;
   background-color: #fcffff;
   width: 85%;
+  cursor: auto;
 }
 textarea[source] {
   width: 80%;
@@ -83,12 +85,9 @@ body.cke_editable textarea[source] {
 div.metadata {
   font-style: italic;
   color: #ccc;
-  width: 75%;
-  text-align: right;
-  padding-left: 0.5em;
   font-size: smaller;
-  text-indent: -3em;
-  margin-left: 6em;
+  margin-left: 2em;
+  margin-top: 1em;
 }
 div.metadata a {padding-left: 0.5em;}
 /* unvisited link */

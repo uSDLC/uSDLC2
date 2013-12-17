@@ -24,8 +24,7 @@ class Links extends Metadata
 types = { Links }; instances = {}; ref = null
 
 module.exports =
-  initialise: (next) ->
-    next()
+  initialise: (next) -> next()
   define: (options) -> # name, label, css, type
     instance = new types[options.type](options)
     return (options) -> instance.update(options)

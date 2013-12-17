@@ -8,13 +8,11 @@ module.exports = (exchange) ->
       init: (editor) ->
         editor.addCommand 'source_editor', exec: (editor) ->
           a = $(usdlc.get_caret().$).parentsUntil('.Ref', 'a')
-          queue = steps().queue
-          queue -> @requires '/client/tree_filer.coffee'
-          queue ->
+          roaster.clients '/client/tree_filer.coffee', (tree_filer) ->
             if a.length
               eval(a.attr('href'))
             else
-              @tree_filer()
+              tree_filer()
           return true
 
         editor.ui.addButton 'source_editor',
@@ -38,11 +36,8 @@ module.exports = (exchange) ->
             href = a.attr('href')
           
             if /^javascript:/.test(href)
-              queue = steps().queue
-              queue -> @requires(
-                '/client/edit_source.coffee'
-                '/client/ckeditor/bridge.coffee')
-              queue -> eval(href)
+              roaster.clients '/client/edit_source.coffee',
+              '/client/ckeditor/bridge.coffee', -> eval(href)
             else if /^\w+(\/\w+)?$/.test(href)
               usdlc.edit_page(href)
             else

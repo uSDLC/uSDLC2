@@ -1,26 +1,24 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'
-dirs = require 'dirs'; line_reader = require 'line_reader'
+dirs = require 'dirs'
 
 module.exports =
   # called if test passes
   pass: (msg = '') ->
     # pass can't really pass if there is more to do
     @pass_messages.push msg.toString()
-    if @steps.empty()
+    if not @next_test()
       msg = @pass_messages.join(' - ')
       msg = " - #{msg}" if msg.length
       if expect_failure
         expect_failure = false
         @fail(message) # because we did not fail???
       else
-        console.log "ok #{++@count}#{msg}"
+        console.log "\nok #{++@count}#{msg}"
       @next()
-    else
-      @steps.next()
   # called if test fails
-  fail: (msg) ->
+  fail: (msg = '') ->
     negate = 'not '
     if expect_failure
       expect_failure = false
@@ -29,10 +27,11 @@ module.exports =
       @failures++
     msg = msg.toString()
     msg = " - #{msg}" if msg.length
-    console.log "#{negate}ok #{++@count}#{msg}"
+    console.log "\n#{negate}ok #{++@count}#{msg}"
     console.log msg.stack if msg?.stack
     @skip.section('fail')
-    @steps.abort()
+    @tests = []
+    @next_test()
     @next()
   # where we are testing for failures
   expect_failure: false
@@ -44,7 +43,7 @@ module.exports =
     if err then @fail err else @pass msg
     return err
   # test and provide a message if not as expected
-  expect: (value, to_be) ->
+  check: (value, to_be) ->
     if value is to_be
       @pass "'#{value}' correct"
     else

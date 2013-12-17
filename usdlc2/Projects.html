@@ -1,0 +1,59 @@
+<html>
+<head>
+	<title></title>
+	<link href="document.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="scayt-enabled">
+<h1>Projects</h1>
+
+<p>All the documentation, instrumentation and support files are saved with the project source files. To unify the software development lifecycle, all relevant data needs to be recorded together for availability.&nbsp;</p>
+
+<h2>Adding a Project</h2>
+
+<p>The same procedure is used to create a project, add a new project or add an project with an existing uSDLC component. The left-most drop-down on the uSDLC tab is used to select known projects. The last item,&nbsp;<strong><em>new...</em></strong>, will open a dialog box. Give the project a name and a base path.</p>
+
+<h3>Base Path</h3>
+
+<p>This is the path relative to the directory holding uSDLC. The text box uses auto-complete to aid in finding existing projects or the base directory for a new project. A project name is generated from the final directory in the base path.</p>
+
+<h3>Project Name</h3>
+
+<p>Different installations can use different names for a project. Only the base path is used to connect the projects internally and externally.</p>
+
+<h3>Artifacts Added to Project</h3>
+
+<h4>projects.ini</h4>
+
+<p>First the uSDLC2 project has a <strong><em>local</em></strong> directory that is not added to version control. In that directory is a <em>projects.ini</em> file. There is one entry per project of the form:</p>
+
+<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;"><tt>Project_Name=base:../path/from/uSDLC2</tt></div>
+
+<p>Any underscores in project name will be displayed as spaces on the UI. The path is from inside uSDLC2 - so one deeper than the one specified in the UI.</p>
+
+<div class="metadata Ref">Ref: <span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/gwt/files.coffee',category:'gwt'})">files.coffee</a></span><span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.coffee',path:'client/ckeditor/projects.coffee',category:'ckeditor'})">projects.coffee</a></span></div>
+
+<h4>usdlc2</h4>
+
+<p>Only one directory is important to retaining the project design, instrumentation and test system, <em>usdlc2</em>.</p>
+
+<p>The usdlc2 directory should be checked in to version control with the source.</p>
+
+<h5>document.css</h5>
+
+<p>This file is copied from uSDLC2 during project creation and can be updated to provide different formats for different projects. Every HTML file refers to it so that formatting will work inside uSDLC2 or when viewing the documents directly in a browser.</p>
+
+<h5>Index.html</h5>
+
+<p>An empty <em>Index.html</em> file is created for new projects. It is used to reference and create new documents for the project. It has no special flavour other than being the first document, so any html format or layout can be used.</p>
+
+<h5><a href="Documents">Documents</a></h5>
+
+<p>All other HTML files in the directory (or ones below it) represent documents for system. uSDLC2 does not enforce structure for documentation, but is is easier to maintain few files than many small ones with lots of cross-references.</p>
+
+<h4>gen</h4>
+
+<p>The document files contain most of the gwt, bridge code, data and meta-data. When instrumentation happens any updates are extracted as separate files in the gen directory.</p>
+
+<p>Exclude this directory from version control as any information it holds is rebuilt when needed.</p>
+</body>
+</html>

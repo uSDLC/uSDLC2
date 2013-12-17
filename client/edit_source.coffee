@@ -1,52 +1,44 @@
 # Copyright (C) 2013 paul@marrington.net, see /GPL for license
-ref = null; path = require 'path'
+path = require 'path'
+ref = editor = metadata = null
 
 # item.value item.path item.category
-usdlc.edit_source = (item) -> queue ->
+usdlc.edit_source = (item) ->
   item.key = item.path.replace /[\.\/]/g, '_'
   parts = item.value.split('.')
   attr = -> parts[parts.length - 1]
   contents = ''
   params = "filename=#{item.path}&seed=#{usdlc.seed++}"
   
-  @requires '/client/codemirror/editor.coffee'
-  
-  @data "/server/http/read.coffee?#{params}"
-  
-  @queue ->
-    next = @next
-    if (contents = @read).length
-      next()
-    else
+  read_contents = (next) ->
+    roaster.request.data "/server/http/read.coffee?#{params}", (err, contents) ->
+      sessionStorage[item.key] = contents
+      return next(contents) if contents.length
       type = path.extname(item.path).substring(1)
       template = "/client/templates/#{type}_template.coffee"
-      queue -> @requires template, (template_retriever) ->
-        contents = template_retriever?() ? ''
-        next()
+      roaster.clients template, (template_retriever) ->
+        next(template_retriever?() ? '')
   
-  @queue ->
+  read_contents (contents) ->
     text = (value) =>
       if value
-        usdlc.save item.path, item.key, @read = value
+        usdlc.save item.path, item.key, contents = value
       else
-        sessionStorage[item.key] = @read
         return contents
 
-    @editor
+    editor
       name:     item.key
       title:    "#{item.value} - #{item.category}"
-      fix_height_to_window: 20
       source:   { attr, text }
-      position:
-        my: "right top+10", at: "right-10 top", of: window
 
     item_data = "{value:'#{item.value}'," +
       "path:'#{item.path}',category:'#{item.category}'}"
     url = "javascript:usdlc.edit_source(#{item_data})"
     ref name: item.value, url: url
-    @next()
 
-module.exports.initialise = (next) -> queue ->
-  @requires '/client/ckeditor/metadata.coffee', ->
-    ref = @metadata.define name: 'Ref', type: 'Links'
-    next()
+module.exports.initialise = (next) ->
+  roaster.clients "/client/codemirror/editor.coffee",
+    "/client/ckeditor/metadata.coffee", (args...) ->
+      [editor, metadata] = args
+      ref = metadata.define name: 'Ref', type: 'Links'
+      next()

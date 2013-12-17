@@ -4,7 +4,9 @@ path = require 'path'; files = require "files"
 dirs = require 'dirs'
 
 # projects to check for as part of a file path
-dirs.projects = projects = { uSDLC2 : {base:'.'} }
+dirs.projects = projects =
+  uSDLC2 :  base: '.'
+  roaster : base: '../roaster'
 
 # over-ride files.find() to search other projects
 base_find = files.find
@@ -17,25 +19,46 @@ files.find = (name, next) ->
     next(dirs.base(base, 'usdlc2', rest), base, rest)
   else
     base_find name, next
+    
+update_bases = ->
+  dirs.bases = []
+  for name, data of projects
+    dirs.bases.push(path.resolve data.base)
 
 # this one is run once to load projects from disk
 do dirs.project_reader = (next = ->) ->
-  list = {}; bases = []
-  
-  line_reader.for_file 'local/projects.ini', (line) ->
-    if line is null
-      # now we have them all, atomic update
-      dirs.bases = bases
-      return next(dirs.projects = projects = list)
-    return if line.length is 0 or line[0] is '#'
-    [project_name, options] = line.split '='
-    options = options.split ','
-    data = {}
-    for option in options
-      [key, value] = option.split ':'
-      data[key] = value
-    bases.push path.resolve data.base
-    list[project_name] = data
+  list = {}
+  try
+    line_reader.for_file 'local/projects.ini', (line) ->
+      if not line?
+        # now we have them all, atomic update
+        dirs.projects = projects = list
+        update_bases()
+        if process.environment
+          process.environment.projects = list
+          process.environment.configuration.projects = list
+        return next(projects)
+      return if line.length is 0 or line[0] is '#'
+      [project_name, options] = line.split '='
+      options = options.split ','
+      data = {}
+      for option in options
+        [key, value] = option.split ':'
+        data[key] = value
+      list[project_name] = data
+  catch error # who cares
+    
+dirs.add_project = (name, data) ->
+  name = name.replace /\s+/g, '_'
+  projects[name] = data
+  serialised = []
+  for name, data of projects
+    serialised.push(name,'=')
+    opts = []
+    opts.push("#{k}:#{v}") for k,v of data
+    serialised.push opts.join(','), '\n'
+  fs.writeFile 'local/projects.ini', serialised.join(''), ->
+  update_bases()
 
 # Assume file starts with name of project...
 files.find_in_project = (name, next) ->
