@@ -57,7 +57,8 @@ dirs.add_project = (name, data) ->
     opts = []
     opts.push("#{k}:#{v}") for k,v of data
     serialised.push opts.join(','), '\n'
-  fs.writeFile 'local/projects.ini', serialised.join(''), ->
+  dirs.mkdirs 'local', ->
+    fs.writeFile 'local/projects.ini', serialised.join(''), ->
   update_bases()
 
 # Assume file starts with name of project...
