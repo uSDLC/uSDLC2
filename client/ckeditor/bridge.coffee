@@ -43,11 +43,8 @@ module.exports = (exchange) ->
       onResize = (dlg) ->
         usdlc.bridge_dlg.content.accordion('refresh')
 
-      queue ->
-        @on 'error', (error) ->
-          console.log(error, error.stack); @abort()
-        @requires 'querystring', '/client/dialog.coffee',
-        @next -> @dialog
+      roaster.clients '/client/dialog.coffee', (dialog) ->
+        dialog
           name:   "Instrumentation"
           title:  "Bridge"
           fill:   fill

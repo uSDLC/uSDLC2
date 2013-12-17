@@ -9,7 +9,7 @@ dialog_options =
   closeOnEscape: false
   
 form = tree = search_by = cludes = search_for = nodes = null
-last_search = ''; dtree = branches = data = null
+last_search = ''; dtree = branches = data = files = null
 filer = "/server/http/files.coffee"
 
 module.exports = ->
@@ -20,56 +20,38 @@ module.exports = ->
         usdlc.dtree.o(data.id)
       else
         usdlc.edit_source(data)
-    'delete': (_data) -> queue ->
+    'delete': (_data) ->
       data = _data
-      @json "#{filer}?cmd=rm&path=#{data.path}", @next ->
-        fill_tree()
-    move: (_data) -> queue ->
-      data = _data
-      tree_actions.url = data.path
-      @requires "/client/autocomplete.coffee",
-      @next -> @autocomplete
-        title: 'Move/Rename...'
-        source: (req, rsp) ->
-          if req.term
-            rsp [req.term, data.value]
-          else
-            rsp [data.value]
-        select: (selected) -> queue ->
-          url = "#{filer}?cmd=mv&from=#{tree_actions.url}"+
-                "&to=#{selected.value}"
-          @json url, @next -> fill_tree()
-    'new': (_data) -> queue ->
-      data = _data
-      @requires "/client/autocomplete.coffee",
-      @next -> @autocomplete
-        title: 'New...'
-        source: (req, rsp) -> rsp [req.term, data.value]
-        select: (selected) -> queue ->
-          @json "#{filer}?cmd=mk&path=#{data.path}"+
-                "&name=#{selected.value}", @next -> fill_tree()
+      roaster.request.json "#{filer}?cmd=rm&path=#{data.path}", fill_tree
+    move: (_data) ->
+      roaster.clients "/client/autocomplete.coffee", (autocomplete) ->
+        data = _data
+        tree_actions.url = data.path
+        autocomplete
+          title: 'Move/Rename...'
+          source: (req, rsp) ->
+            if req.term
+              rsp [req.term, data.value]
+            else
+              rsp [data.value]
+          select: (selected) ->
+            url = "#{filer}?cmd=mv&from=#{tree_actions.url}"+
+                  "&to=#{selected.value}"
+            roaster.request.json url, fill_tree
+    'new': (_data) ->
+      roaster.clients "/client/autocomplete.coffee", (autocomplete) ->
+        data = _data
+        autocomplete
+          title: 'New...'
+          source: (req, rsp) -> rsp [req.term, data.value]
+          select: (selected) ->
+            roaster.request.json "#{filer}?cmd=mk&path=#{data.path}"+
+                  "&name=#{selected.value}", fill_tree
   usdlc.tree_action = tree_actions.edit
-  
-  load_packages = -> @package "dtree"
   
   search_type = ->
     search_by.find(':radio:checked').attr('id')[-4..]
   
-  load_requirements = -> @requires(
-    "/client/edit_source.coffee"
-    '/client/dialog.coffee')
-    
-  load_file_list = ->
-    if form.find('#filter_tree:checked').length
-      exclude = cludes[1].val()
-      include = cludes[0].val()
-    else
-      include = exclude = ''
-    selector = "exclude=#{exclude}&include=#{include}"
-    search = "search=#{search_type()}&re=#{search_for.val()}"
-    args = "project=#{usdlc.project}&type=json"
-    @json "#{filer}?#{args}&#{selector}&#{search}"
-    
   empty_branch = (item) ->
     return false if not item.children?
     return true if item.children.length is 0
@@ -98,7 +80,7 @@ module.exports = ->
       if not empty_branch(item)
         dtree.add(id, parent, item.name, path)
         branch(id, child) for child in item.children ? []
-    branch(-1, name: usdlc.project, children: @files)
+    branch(-1, name: usdlc.project, children: files)
     tree.html(dtree.toString())
     nodes = tree.find('div.dTreeNode a[id]')
     branches = tree.find('div.dTreeNode')
@@ -150,14 +132,20 @@ module.exports = ->
         first = false
       return true
       
-  fill_tree = =>
-    steps(
-      load_file_list
-      build_tree
-    )
+  fill_tree = ->
+    if form.find('#filter_tree:checked').length
+      exclude = cludes[1].val()
+      include = cludes[0].val()
+    else
+      include = exclude = ''
+    selector = "exclude=#{exclude}&include=#{include}"
+    search = "search=#{search_type()}&re=#{search_for.val()}"
+    args = "project=#{usdlc.project}&type=json"
+    roaster.request.json "#{filer}?#{args}&#{selector}&#{search}", (err, list) ->
+      build_tree files = list
   
-  open_dialog = ->
-    @dialog
+  open_dialog = (edit_source, dialog) ->
+    dialog
       name: 'Source...'
       init: (dlg) =>
         dlg.append form = $('#tree_filer')
@@ -198,11 +186,9 @@ module.exports = ->
         dlg.on "dialogfocus", set_focus
         dlg.on "dialogcreate", set_focus
         search_for.focus -> search_for.select()
-      fill: fill_tree
+      fill: -> fill_tree()
       dialog_options
-      
-  steps(
-    load_packages
-    load_requirements
-    open_dialog
-  )
+     
+  roaster.packages 'dtree', ->
+    roaster.clients "/client/edit_source.coffee",
+      '/client/dialog.coffee', open_dialog

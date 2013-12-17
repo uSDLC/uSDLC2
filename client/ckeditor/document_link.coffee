@@ -24,9 +24,8 @@ module.exports = (exchange) ->
         editor.addCommand 'document_link', exec: =>
           title = editor.getSelection()?.getSelectedText()
           if not title?.length
-            queue ->
-              @requires '/client/tree.coffee', @next ->
-              @tree tree_options, (error, dialog) ->
+            roaster.clients '/client/tree.coffee', (tree) ->
+              tree tree_options, (error, dialog) ->
           else
             add_link(editor, title)
         editor.ui.addButton 'document_link',

@@ -1,6 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 fs = require 'fs'; patch = require 'common/patch'
-files = require 'files'; steps = require 'steps'
+files = require 'files'
 
 module.exports = (exchange) ->
   name = exchange.request.url.query.name
@@ -13,14 +13,12 @@ module.exports = (exchange) ->
     throw new Error(
       "source differs from expected for #{filename}")
 
-  steps(
-    ->  @on 'error', (msg) -> error(msg); @abort()
-    ->  files.find name, @next (@filename) ->
-    ->  if not @filename then @skip()
-    ->  fs.readFile @filename, 'utf8', @next (@err, @html) ->
-    ->  exchange.respond.read_request @next (@changes) ->
-    ->  patch.apply @html ? '', @changes, @next (@html) ->
-    ->  boom(@filename) if not @html
-    ->  fs.writeFile @filename, @html, 'utf8', @next (@error) ->
-    ->  exchange.response.end()
-  )
+  files.find name, (filename) ->
+    return if not filename
+    fs.readFile filename, 'utf8', (err, html) ->
+      return error(err.message) if err
+      exchange.respond.read_request (changes) ->
+        patch.apply html ? '', changes, (html) ->
+          boom(filename) if not html
+          fs.writeFile filename, html, 'utf8', (err) ->
+            exchange.response.end()

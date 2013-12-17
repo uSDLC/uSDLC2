@@ -54,9 +54,7 @@ module.exports.initialise = (next) ->
       usdlc.page_editor.document.$.body.onkeydown =
       window.onkeydown), 300
     next()
-  steps(
-    ->  @requires '/client/ckeditor/metadata.coffee'
-    ->  usdlc.page_editor.metadata = @metadata
-    ->  @requires '/client/ckeditor/rich_combo.coffee'
-    ->  usdlc.richCombo = @rich_combo
-  )
+  roaster.clients '/client/ckeditor/metadata.coffee',
+  '/client/ckeditor/rich_combo.coffee', (md, rc) ->
+    usdlc.page_editor.metadata = md
+    usdlc.richCombo = rc

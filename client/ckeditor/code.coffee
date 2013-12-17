@@ -23,13 +23,11 @@ module.exports = (exchange) ->
       return div.html()
           
     ref = null
-    steps(
-      ->  @requires '/client/ckeditor/metadata.coffee'
-      ->  ref = @metadata.define name: 'Ref', type: 'Links'
-    )
-    insert = (type) -> queue ->
+    roaster.clients '/client/ckeditor/metadata.coffee', (metadata) ->
+      ref = metadata.define name: 'Ref', type: 'Links'
+    insert = (type) ->
       template = "/client/templates/#{type}_template.coffee"
-      @requires template, @next (contents) ->
+      roaster.clients template, (contents) ->
         contents = contents?() ? ''
         CKEDITOR.instances.document.insertHtml(
           "<pre type='#{type}' title='#{type}'>"+
@@ -48,9 +46,9 @@ module.exports = (exchange) ->
       requires: 'widget'
       icons: 'code',
       init: (editor) ->
-        editor.addCommand 'code', exec: (editor) -> queue ->
-          @requires "/client/autocomplete.coffee", @next ->
-            @autocomplete
+        editor.addCommand 'code', exec: (editor) ->
+          roaster.clients "/client/autocomplete.coffee", (autocomplete) ->
+            autocomplete
               title: 'Type...'
               source: list
               select: (selected) ->

@@ -1,4 +1,3 @@
-var steps = require('steps'),
-    gwt = require('gwt')
+var gwt = require('gwt')
 
 #{script}

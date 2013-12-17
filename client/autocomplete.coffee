@@ -18,20 +18,25 @@ dialog_opts =
   position:   { my: "top", at: "top", of: window }
   closeOnEscape: true
 
-module.exports = (opts) -> queue ->
-  @requires  '/client/dialog.coffee', @next -> @dialog
-    title: opts.title
-    name: opts.title
-    init: (dlg) =>
-      dlg.append(dlg.input = $('<input>'))
-      module.exports.widget.init dlg.input, opts, (ev, ui) ->
-        dlg.dialog 'close'
-        opts.select(ui.item)
-    fill: (dlg) => module.exports.widget.fill(dlg.input, opts)
-    dialog_opts, (@dlg) ->
-    opts.dialog ? {}
+preload = roaster.preload '/client/dialog.coffee'
+
+module.exports = (opts) -> preload (dialog) ->
+  module.exports = (opts) ->
+    dialog
+      title: opts.title
+      name: opts.title
+      init: (dlg) ->
+        dlg.append(dlg.input = $('<input>'))
+        module.exports.widget.init dlg.input, opts, (ev, ui) ->
+          dlg.dialog 'close'
+          opts.select(ui.item)
+      fill: (dlg) -> module.exports.widget.fill(dlg.input, opts)
+      dialog_opts, (dlg) ->
+      opts.dialog ? {}
+  module.exports.widget = widget
+  module.exports(opts)
     
-module.exports.widget =
+module.exports.widget = widget =
   init: (input, opts, select) ->
     input.catcomplete
       source:     opts.source

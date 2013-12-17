@@ -2,9 +2,9 @@
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'
 dirs = require 'dirs'; line_reader = require 'line_reader'
-steps = require 'steps'; Rules = require 'common/rules'
+Rules = require 'common/rules'
 script_extractor = require 'script_extractor'
-require 'common/strings'; queue = require 'queue'
+require 'common/strings'
 
 require.extensions['.gwt.coffee'] =
   require.extensions['.coffee']
@@ -27,9 +27,10 @@ class GWT extends EventEmitter
     # first we take control of stdout and stderr
     @stdout = process.stdout.write
     @stderr = process.stderr.write
-    @cleanups.push ->
+    @cleanups.push (next) ->
       process.stdout.write = @stdout
       process.stderr.write = @stderr
+      next()
     @output_array = []
     process.stdout.write = => @gwt_out arguments...
     process.stderr.write = => @gwt_err arguments...
@@ -93,68 +94,65 @@ class GWT extends EventEmitter
               console.log err.stack
           process()
 
-    queue ->
-      # 1: extract scripts from documentation (if newer)
-      @queue -> script_extractor gwt.options, @next ->
-      # 2: read a list of available scripts
-      @queue ->
-        runner_file = gwt.options.runner_file
-        try
-          reader = line_reader.for_file runner_file, (line) =>
-            return @next() if not line?
-            scripts.push line
-        catch e
-          @next(@error)
-      # 3: load tests - either gwt or explicitly in coffee
-      @queue ->
-        gwt.timer = timer pre: '# ', post: ''
-        re = new RegExp(gwt.options.sections ? '')
-        scripts = (scr for scr in scripts when re.test scr)
-        gwt.processed_scripts = {}
-        do read_script = =>
-          if not scripts.length
-            gwt.section(); return @next()
-          script = scripts.shift()
-          return read_script() if not script
-          gwt.section script
-          ext_name = path.extname(script)[1..]
-          
-          gwt.tests = queue ->
-          gwt.queue = (owner..., step) ->
-            owner = owner[0] ? @
-            owner.q = @
-            gwt.tests.queue ->
-              gwt.tests.maximum_time_seconds =
-                gwt.options.maximum_step_time
-              (@context = step).apply(owner)
-          gwt.pass_messages = []
-          
-          gwt.artifacts[ext_name] ?= []
-          gwt.artifacts[ext_name].push script
-          read_script()
-      # 4: process known artifacts
-      @queue ->
-        process_type = (ext, next) =>
-          artifacts = gwt.artifacts[ext]
-          do process_item = =>
-            if not artifacts?.length
-              delete gwt.artifacts[ext] # only once
-              return next()
-            name = artifacts.shift()
-            if proc = gwt.file_processor[ext]
-              (@context = proc).call gwt, name, process_item
-            else
-              console.error "Unknown file type for #{name}"
-              @abort()
-              gwt.next()
-        process_types = (exts..., next) =>
-          do process_items = =>
-            return next() if not exts.length
-            process_type exts.shift(), process_items
-        keys = (key for key, value of gwt.artifacts)
-        process_types 'coffee', keys..., @next ->
-      # 5: run the tests
-      @queue -> gwt.go(); @next()
+    extract_scripts = (next) -> script_extractor gwt.options, next
+    read_scripts = (next) ->
+      runner_file = gwt.options.runner_file
+      reader = line_reader.for_file runner_file, (line) =>
+        return next() if not line?
+        scripts.push line
+    load_tests = (next) ->
+      gwt.timer = timer pre: '# ', post: ''
+      re = new RegExp(gwt.options.sections ? '')
+      scripts = (scr for scr in scripts when re.test scr)
+      gwt.processed_scripts = {}
+      do read_script = =>
+        if not scripts.length
+          gwt.section(); return next()
+        script = scripts.shift()
+        return read_script() if not script
+        gwt.section script
+        ext_name = path.extname(script)[1..]
+        
+        gwt.tests = []; gwt.test_timer = null
+        gwt.queue = (owner..., step) ->
+          owner = owner[0] ? @
+          owner.q = @
+          gwt.tests.push -> (@context = step).apply(owner)
+          gwt.next_test() if not gwt.test_timer
+        gwt.pass_messages = []
+        
+        gwt.artifacts[ext_name] ?= []
+        gwt.artifacts[ext_name].push script
+        read_script()
+    process_artifacts = (next) ->
+      process_type = (ext, next) =>
+        artifacts = gwt.artifacts[ext]
+        do process_item = =>
+          if not artifacts?.length
+            delete gwt.artifacts[ext] # only once
+            return next()
+          name = artifacts.shift()
+          if proc = gwt.file_processor[ext]
+            (@context = proc).call gwt, name, process_item
+          else
+            console.error "Unknown file type for #{name}"
+            gwt.next()
+      process_types = (exts..., next) =>
+        do process_items = =>
+          return next() if not exts.length
+          process_type exts.shift(), process_items
+      keys = (key for key, value of gwt.artifacts)
+      process_types 'coffee', keys..., next
+
+    extract_scripts -> read_scripts -> load_tests ->
+      process_artifacts -> process_types -> gwt.go()
+  # run the next test if there is one waiting
+  next_test: ->
+    clearTimeout @test_timer
+    @test_timer = null
+    return false if not @tests.length
+    failure = => @fail("Test failed to complete in time")
+    @test_timer = setTimeout failure, gwt.options.maximum_step_time
   # done with load as it has already created an instance
   load: -> @
   # Code under test output control and display
@@ -271,8 +269,7 @@ class GWT extends EventEmitter
   exit: ->
     do next_cleanup = =>
       return @finished = true if not @cleanups.length
-      cleanup = @cleanups.shift()
-      steps(cleanup, next_cleanup)
+      @cleanups.shift() next_cleanup
 
   files: -> gwt.extend 'gwt/files'
   java: (options) ->

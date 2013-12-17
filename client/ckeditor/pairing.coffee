@@ -1,50 +1,50 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 module.exports = (exchange) ->
   exchange.respond.client ->
-    pair_name_field = opts = null
-    opts = source: localStorage.pairs ? []
-    usdlc.pairing = -> queue ->
-      form = $('#pairing')
-      
-      @requires "/client/dialog.coffee",
-                "/client/autocomplete.coffee",
-      @next -> @dialog
-        name: 'Pairing'
-        init: (dlg) ->
-          dlg.append form
-          form.find('div.pairing').buttonset()
-          pair_name_field = $('#pair_name')
-          $('#create_pairing').click ->
-            create_pairing()
-            pair_name_field.hide()
-          $('#close_pairing').click ->
-            close_pairing()
-            pair_name_field.hide()
-          $('#join_pairing').click ->
-            pair_name_field.show()
-            join_pairing pair_name_field.val()
-          @autocomplete.widget.init pair_name_field,
-          opts, (ev, ui) ->
-            join_pairing ui.item
-          pair_name_field.change ->
-            join_pairing pair_name_field.val()
-            if not (usdlc.pair_master in pairs)
-              opts.source.push usdlc.pair_master
-              opts.source.sort()
-              localStorage.pairs = opts.source
-        fill: (dlg) ->
-          pair_name_field.val usdlc.pair_master ? ''
-          @autocomplete.widget.fill pair_name_field, opts
-        width:      'auto'
-        autoResize: true
-        minHeight:  50
-        title:      'User Management...'
-        position:
-          my: "top center"
-          at: "top center"
-          of: window
-        closeOnEscape: true
-    
+    roaster.clients "/client/dialog.coffee",
+    "/client/autocomplete.coffee",
+    (dialog, autocomplete) ->
+      pair_name_field = opts = null
+      opts = source: localStorage.pairs ? []
+      usdlc.pairing = ->
+        form = $('#pairing')
+        dialog
+          name: 'Pairing'
+          init: (dlg) ->
+            dlg.append form
+            form.find('div.pairing').buttonset()
+            pair_name_field = $('#pair_name')
+            $('#create_pairing').click ->
+              create_pairing()
+              pair_name_field.hide()
+            $('#close_pairing').click ->
+              close_pairing()
+              pair_name_field.hide()
+            $('#join_pairing').click ->
+              pair_name_field.show()
+              join_pairing pair_name_field.val()
+            autocomplete.widget.init pair_name_field,
+            opts, (ev, ui) ->
+              join_pairing ui.item
+            pair_name_field.change ->
+              join_pairing pair_name_field.val()
+              if not (usdlc.pair_master in pairs)
+                opts.source.push usdlc.pair_master
+                opts.source.sort()
+                localStorage.pairs = opts.source
+          fill: (dlg) ->
+            pair_name_field.val usdlc.pair_master ? ''
+            @autocomplete.widget.fill pair_name_field, opts
+          width:      'auto'
+          autoResize: true
+          minHeight:  50
+          title:      'User Management...'
+          position:
+            my: "top center"
+            at: "top center"
+            of: window
+          closeOnEscape: true
+
     CKEDITOR.plugins.add 'pairing',
       icons: 'pairing',
       init: (editor) ->

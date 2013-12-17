@@ -1,7 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
-queue = require 'queue'; dirs = require 'dirs'
+dirs = require 'dirs'; path = require 'path'
 processes = require 'processes'; gwt = require 'gwt'
-path = require 'path'
 
 class Java
   constructor: (@opts) -> gwt.preactions.push =>

@@ -17,15 +17,16 @@ module.exports = (exchange) ->
         height = usdlc.instrument_window.height() - 10
         usdlc.instrument_window.iframe.height(height)
 
-      steps(
-        ->  @requires 'querystring', '/client/dialog.coffee'
-        ->  # now we have querystring and window, use them
+      roaster.request.requireAsync 'querystring', (err, libs) ->
+        querystring = libs[0]
+        roaster.clients '/client/dialog.coffee', (dialog) ->
+          # now we have querystring and window, use them
           projects = roaster.environment.projects
-          url = "/instrument.html?" + @querystring.stringify
+          url = "/instrument.html?" + querystring.stringify
             project:  projects[usdlc.project].base
             document: doc
             sections: sections
-          @dialog
+          dialog
             name:   "Instrument"
             title:  "Play: #{section.title}"
             url:    url
@@ -34,7 +35,6 @@ module.exports = (exchange) ->
             resizeStop: (dlg) -> onResize(dlg)
             dialog_options
             (dlg) -> usdlc.instrument_window = dlg
-      )
       
     init = (dlg) ->
       dlg.append(dlg.iframe = $('<iframe/>'))
