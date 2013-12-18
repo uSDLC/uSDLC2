@@ -1,7 +1,7 @@
 # Copyright (C) 2012,13 paul@marrington.net, see /GPL license
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
 dirs = require('dirs'); newer = require 'newer'
-requires = require 'requires'; streams = require 'streams'
+npm = require 'npm'; streams = require 'streams'
 
 decode = null
 
@@ -60,7 +60,7 @@ module.exports = (options, extraction_complete) ->
 
   sax.on 'finish', extraction_complete
 
-  requires 'ent', (ent) ->
+  npm 'ent', (ent) ->
     decode = ent.decode
     dirs.rmdirs gen, ->
       streams.pipe fs.createReadStream(input_path), sax, ->
