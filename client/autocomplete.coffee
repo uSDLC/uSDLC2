@@ -29,8 +29,11 @@ module.exports = (opts) -> preload (dialog) ->
         dlg.append(dlg.input = $('<input>'))
         module.exports.widget.init dlg.input, opts, (ev, ui) ->
           dlg.dialog 'close'
+          usdlc.in_modal = false
           opts.select(ui.item)
-      fill: (dlg) -> module.exports.widget.fill(dlg.input, opts)
+      fill: (dlg) ->
+        module.exports.widget.fill(dlg.input, opts)
+        usdlc.in_modal = true
       dialog_opts, (dlg) ->
       opts.dialog ? {}
   module.exports.widget = widget
@@ -40,7 +43,7 @@ module.exports.widget = widget =
   init: (input, opts, select) ->
     input.catcomplete
       source:     opts.source
-      autoFocus:  true
+      autoFocus:  false
       delay:      0
       minLength:  0
       select:     select
@@ -50,11 +53,11 @@ module.exports.widget = widget =
           ui.content.push label: val, value: val
   fill: (input, opts) ->
     input.catcomplete 'option', 'source', opts.source
-    set_val = (source) ->
-      input.val source[0]
-      input.catcomplete 'search', ''
-      setTimeout (-> input.focus().select()), 200
-    if opts.source instanceof Function
-      opts.source (->), (source) -> set_val(source)
-    else
-      set_val(opts.source)
+#     set_val = (source) ->
+#       input.val source[0]
+    input.catcomplete 'search', ''
+    setTimeout (-> input.focus().select()), 200
+#     if opts.source instanceof Function
+#       opts.source (->), (source) -> set_val(source)
+#     else
+#       set_val(opts.source)

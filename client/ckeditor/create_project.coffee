@@ -16,7 +16,8 @@ module.exports = (exchange) -> preload (dialog) ->
           name = name_field.val()
           if window.confirm("Add uSDLC for project '"+
           name+"' on path '"+base_path+"'?")
-            roaster.request.json "/client/ckeditor/projects.coffee?add="+
+            roaster.request.json \
+            "/client/ckeditor/projects.coffee?add="+
             name+"&path="+base_path, ->
               usdlc.setProject name.replace(/\s/g, '_')
               usdlc.edit_page 'Index'

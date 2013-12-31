@@ -94,7 +94,8 @@ class GWT extends EventEmitter
               console.log err.stack
           process()
 
-    extract_scripts = (next) -> script_extractor gwt.options, next
+    extract_scripts = (next) ->
+      script_extractor gwt.options, next
     read_scripts = (next) ->
       runner_file = gwt.options.runner_file
       reader = line_reader.for_file runner_file, (line) =>
@@ -145,14 +146,15 @@ class GWT extends EventEmitter
       process_types 'coffee', keys..., next
 
     extract_scripts -> read_scripts -> load_tests ->
-      process_artifacts -> process_types -> gwt.go()
+      process_artifacts -> gwt.go()
   # run the next test if there is one waiting
   next_test: ->
     clearTimeout @test_timer
     @test_timer = null
     return false if not @tests.length
     failure = => @fail("Test failed to complete in time")
-    @test_timer = setTimeout failure, gwt.options.maximum_step_time
+    @test_timer = setTimeout failure,
+      gwt.options.maximum_step_time
   # done with load as it has already created an instance
   load: -> @
   # Code under test output control and display

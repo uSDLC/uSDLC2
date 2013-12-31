@@ -11,7 +11,7 @@ module.exports = (exchange) ->
     return
   if query.add
     project_path = "../#{query.path}"
-    usdlc2_path = "../#{project_path}/usdlc2"
+    usdlc2_path = "#{project_path}/usdlc2"
     files.is_dir usdlc2_path, (err, is_dir) ->
       dirs.mkdirs usdlc2_path, ->
         files.copy 'usdlc2/document.css',
@@ -28,15 +28,17 @@ module.exports = (exchange) ->
       label: 'Projects'
       toolbar: "uSDLC,#{order[0]}"
       items: (next) ->
-        roaster.request.json "/client/ckeditor/projects.coffee?load=true",
-        (projects) ->
-          roaster.environment.projects =@projects
-          next (key.replace(/_/g, ' ')\
+        roaster.request.json \
+        "/client/ckeditor/projects.coffee?load=true",
+        (error, projects) ->
+          roaster.environment.projects = projects
+          next (key.replace(/_/g, ' ') \
             for key, value of projects).sort()
       selected: -> usdlc.project.replace /_/g, ' '
       select: (value) ->
         if value is 'create'
-          roaster.client '/client/ckeditor/create_project.coffee',
+          roaster.clients \
+          '/client/ckeditor/create_project.coffee',
           (create_project) -> create_project()
         else
           usdlc.setProject value.replace(/\s/g, '_')

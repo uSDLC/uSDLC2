@@ -40,7 +40,8 @@ roaster.ready ->
 
 load_source_editor = (next) ->
   load_source_editor = (next) -> next()
-  roaster.packages "coffee-script","codemirror", "jquery_terminal", ->
+  roaster.packages "coffee-script","codemirror",
+  "jquery_terminal", ->
     roaster.clients "/client/codemirror/codemirror.coffee",
     "/client/codemirror/editor.coffee", next
 
@@ -136,12 +137,14 @@ usdlc.raw_edit_page = (page, next = ->) ->
   sep = if pathname.indexOf('?') is -1 then '?' else '&'
   url = "#{pathname}#{sep}seed=#{usdlc.seed++}"
   html = ''
-  key = roaster.path.basename(pathname.split('?')[0]).split('.')[0]
-
+  key = roaster.path.basename(
+    pathname.split('?')[0]).split('.')[0]
 
   load_document = (next) ->
-    roaster.request.data pathname, (err, data) ->
-      return roaster.message "<b>New Document</b>" if err
+    roaster.request.data url, (err, data) ->
+      if err
+        roaster.message "<b>New Document</b>"
+        data = ''
       html = data
       next()
 

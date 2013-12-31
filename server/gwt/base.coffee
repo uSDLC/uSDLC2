@@ -38,7 +38,7 @@ module.exports =
   # test and show message on failure
   test: (test, msg = '') ->
     if test then @pass msg else @fail msg
-  # pass err and fail if it exists
+  # parse err and fail if it exists
   check_for_error: (err, msg = '') ->
     if err then @fail err else @pass msg
     return err

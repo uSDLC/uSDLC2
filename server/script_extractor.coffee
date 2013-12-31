@@ -35,6 +35,8 @@ module.exports = (options, extraction_complete) ->
             /(&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,])+/g, '_')
           script_name = path.join gen, script_name
           break
+    else if script_content? and name is 'br'
+      script_content.push('\n')
     next()
 
   sax.on 'text', (text) ->
@@ -52,7 +54,7 @@ module.exports = (options, extraction_complete) ->
     headings[depth] += "</#{name}>" if in_heading
     return next() if not (name in ['pre','textarea']) or not script_content?
     console.log "#: Build #{script_name}"
-    content = decode script_content.join '\n'
+    content = decode script_content.join ''
     script_content = null
     dirs.mkdirs path.dirname(script_name), ->
       fs.appendFile script_name, content, ->
@@ -60,7 +62,8 @@ module.exports = (options, extraction_complete) ->
 
   sax.on 'finish', extraction_complete
 
-  npm 'ent', (ent) ->
+  npm 'ent', (err, ent) ->
+    throw err if err
     decode = ent.decode
     dirs.rmdirs gen, ->
       streams.pipe fs.createReadStream(input_path), sax, ->

@@ -11,7 +11,8 @@ usdlc.edit_source = (item) ->
   params = "filename=#{item.path}&seed=#{usdlc.seed++}"
   
   read_contents = (next) ->
-    roaster.request.data "/server/http/read.coffee?#{params}", (err, contents) ->
+    roaster.request.data "/server/http/read.coffee?#{params}",
+    (err, contents) ->
       sessionStorage[item.key] = contents
       return next(contents) if contents.length
       type = path.extname(item.path).substring(1)

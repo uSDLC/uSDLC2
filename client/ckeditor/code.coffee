@@ -23,7 +23,8 @@ module.exports = (exchange) ->
       return div.html()
           
     ref = null
-    roaster.clients '/client/ckeditor/metadata.coffee', (metadata) ->
+    roaster.clients '/client/ckeditor/metadata.coffee',
+    (metadata) ->
       ref = metadata.define name: 'Ref', type: 'Links'
     insert = (type) ->
       template = "/client/templates/#{type}_template.coffee"
@@ -47,7 +48,8 @@ module.exports = (exchange) ->
       icons: 'code',
       init: (editor) ->
         editor.addCommand 'code', exec: (editor) ->
-          roaster.clients "/client/autocomplete.coffee", (autocomplete) ->
+          roaster.clients "/client/autocomplete.coffee",
+          (autocomplete) ->
             autocomplete
               title: 'Type...'
               source: list
@@ -122,3 +124,4 @@ module.exports = (exchange) ->
                 fit()
                 code_editor.focus()
               @on 'focus', edit
+              @on 'blur', -> ed.hide()

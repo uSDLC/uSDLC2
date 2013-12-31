@@ -30,12 +30,13 @@ do dirs.project_reader = (next = ->) ->
   list = {}
   line_reader.for_file 'local/projects.ini', (line) ->
     if not line?
-      # now we have them all, atomic update
-      dirs.projects = projects = list
-      update_bases()
-      if process.environment
-        process.environment.projects = list
-        process.environment.configuration.projects = list
+      if list.uSDLC2
+        # now we have them all, atomic update
+        dirs.projects = projects = list
+        update_bases()
+        if process.environment
+          process.environment.projects = list
+          process.environment.configuration.projects = list
       return next(projects)
     return if line.length is 0 or line[0] is '#'
     [project_name, options] = line.split '='

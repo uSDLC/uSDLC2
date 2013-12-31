@@ -8,7 +8,7 @@
 
 <h2>Single Script Install</h2>
 
-<p>Just download and run&nbsp;<a href="https://run https://raw.github.com/uSDLC/uSDLC2/master/install-uSDLC2.sh">https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.sh</a>&nbsp;or&nbsp;<a href="https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.bat">https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.bat</a>. The former will work on&nbsp;Unix based systems (including OS X).</p>
+<p>Just download and run&nbsp;<a href="https://run https://raw.github.com/uSDLC/uSDLC2/master/install-uSDLC2.sh">https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.sh</a>&nbsp;or&nbsp;<a href="https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.sh.bat">https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.sh.bat</a>. The former will work on&nbsp;Unix based systems (including OS X).</p>
 
 <p>For Linux or OS X, go to the target directory and&nbsp;use the following script (or just copy and paste the contents to a shell session):</p>
 
@@ -18,7 +18,36 @@ chmod +x install-usdlc2.sh
 ./install-usdlc2.sh
 </textarea></p>
 
+<p>Run the uSDLC2 server and it will download roaster dependencies. You don&#39;t need to be in the directory, so just specify the command on your startup to have uSDLC2 available at all times.</p>
+
+<p><textarea name="runner">uSDLC2/go.sh server</textarea></p>
+
+<p>In a browser, enter <em><strong>http://localhost:9009</strong></em> and an additional set of uSDLC2 client dependencies will download. Future page loads will be fast, but this one can take 40 seconds on ADSL.</p>
+
+<p>Update the installation by re-running the script at any time. Changes will not be lost.</p>
+
 <div class="metadata Ref">Ref: <span class="install-usdlc2"><a href="javascript:usdlc.edit_source({value:'install-usdlc2.sh',path:'install-usdlc2.sh',category:'.'})">install-usdlc2.sh</a></span><span class="go"><a href="javascript:usdlc.edit_source({value:'go.sh',path:'go.sh',category:'.'})">go.sh</a></span></div>
+
+<h2>Command Line Options</h2>
+
+<p>A server is run with <em><strong>go.sh server options...</strong></em> where <em>options</em> are <em>name=value</em> pairs.</p>
+
+<h3>config=debug</h3>
+
+<p>Configuration can be set on the command line or in a configuration file at uSDLC2/config. Debug mode</p>
+
+<ul>
+	<li>Display request on server console</li>
+	<li>Reduces browser caching to 10 seconds</li>
+	<li>Sets up node debugging for the server</li>
+	<li>Adds a server restart link to every page</li>
+</ul>
+
+<div class="metadata Ref">Ref: <span class="debug"><a href="javascript:usdlc.edit_source({value:'debug.coffee',path:'config/debug.coffee',category:'config'})">debug.coffee</a></span></div>
+
+<h3 class="metadata Ref"><span class="debug">port=9009</span></h3>
+
+<p><span class="debug">Set the http port used to access uSDLC2.</span></p>
 
 <h2>User Management</h2>
 

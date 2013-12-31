@@ -35,6 +35,7 @@ module.exports.initialise = (next) ->
     usdlc.page_editor.resize(600, $(window).height() - 20)
     fto = null
     restore_focus = ->
+      return if usdlc.in_modal
       clearTimeout fto
       fto = setTimeout (-> usdlc.in_focus.focus()), 200
     w = $(window)

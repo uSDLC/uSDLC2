@@ -17,8 +17,8 @@ module.exports = (exchange) ->
         height = usdlc.instrument_window.height() - 10
         usdlc.instrument_window.iframe.height(height)
 
-      roaster.request.requireAsync 'querystring', (err, libs) ->
-        querystring = libs[0]
+      roaster.request.requireAsync 'querystring',
+      (err, querystring) ->
         roaster.clients '/client/dialog.coffee', (dialog) ->
           # now we have querystring and window, use them
           projects = roaster.environment.projects

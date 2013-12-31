@@ -16,7 +16,6 @@ module.exports = (exchange) ->
   files.find name, (filename) ->
     return if not filename
     fs.readFile filename, 'utf8', (err, html) ->
-      return error(err.message) if err
       exchange.respond.read_request (changes) ->
         patch.apply html ? '', changes, (html) ->
           boom(filename) if not html
