@@ -146,13 +146,15 @@ require(&#39;gwt&#39;).add -&gt;
 
 <p style="display: block;">For modules with few or well-defined dependencies it is possible to wrap a small command-line program around them.</p>
 
-<div class="metadata Ref">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="codemirror"><a href="javascript:usdlc.edit_source({value:'codemirror.coffee',path:'client/codemirror/codemirror.coffee',category:'codemirror'})">codemirror.coffee</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span></div>
 
 <h5 style="display: block;">Scaffold</h5>
 
 <p>Many languages require a lot of support code for each instrumentation section. I place scaffolding code at the end of the page in a section with the same name. Scaffolding will instantiate the command and provide supporting code.</p>
 
 <p>In the Java example it is an abstract parent class so that test code need only override <em>instrument()</em>. The support functions below print error messages on unexpected results and the program prints out an <em>Errors:</em> line when it is done so that <em><strong>uSDLC2</strong></em> knows to complete the section.</p>
+
+<div class="metadata Ref">Ref: <span class="sections"><a href="javascript:usdlc.edit_source({value:'sections.coffee',path:'client/ckeditor/sections.coffee',category:'ckeditor'})">sections.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span></div>
 
 <h5 style="display: block;">Instrumentation</h5>
 

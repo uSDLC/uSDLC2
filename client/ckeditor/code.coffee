@@ -119,8 +119,9 @@ module.exports = (exchange) ->
               editor.on 'contentDomInvalidated', -> ed.hide()
               editor.on 'dialogShow', -> ed.hide()
               editor.on 'resize', -> ed.hide()
-              do edit = ->
+              do edit = =>
                 ed.show()
+                usdlc.current_section = @element.$
                 fit()
                 code_editor.focus()
               @on 'focus', edit

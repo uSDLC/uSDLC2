@@ -66,15 +66,16 @@ module.exports = (exchange) ->
       return selection.getRanges()[0].startContainer
     usdlc.section_for = (element) ->
       element = $(element)
-      if not element.is(headings)
-        element = element.prevAll(headings).first()
-      return element
+      return element if element.is(headings)
+      e = element.prevAll(headings)
+      return e.first() if e.length
+      return element.parent().prevAll(headings).first()
     current_section = ->
       caret = usdlc.get_caret()
       # last parent before <body> is top of line
       start = caret.getParents(true)
       if start.length < 3
-        start = caret.$
+        start = usdlc.current_section ? caret.$
       else
         start = start[-3..-3][0].$
       return usdlc.section_for(start)
