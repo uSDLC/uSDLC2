@@ -8,6 +8,7 @@ module.exports = (exchange) ->
         width:  600
         init:   (dlg) -> dlg.append(dlg.content = $('<div/>'))
         closeOnEscape: false
+        autoResize: true
   
       section_path = usdlc.section_path()
       # fill dialog for each source on path
@@ -32,7 +33,7 @@ module.exports = (exchange) ->
           editor.focus()
         dlg.content.accordion
           active:       -1
-          heightStyle:  'fill'
+          heightStyle:  'content'
           activate:     (event, ui) ->
             instantiate ui.newPanel
           create:       (event, ui) ->
@@ -71,3 +72,4 @@ module.exports = (exchange) ->
         editor.contextMenu.addListener (element, selection) ->
           return bridge: CKEDITOR.TRISTATE_OFF
         editor.setKeystroke(CKEDITOR.ALT + 68, 'bridge')
+      
