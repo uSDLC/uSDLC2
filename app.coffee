@@ -46,6 +46,7 @@ load_source_editor = (next) ->
   "jquery_terminal", ->
     roaster.clients "/client/codemirror/codemirror.coffee",
     "/client/codemirror/editor.coffee", ->
+      $('#loading').text('')
       pb.progressbar('destroy')
       pb.hide()
   next()
