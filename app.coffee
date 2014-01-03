@@ -27,6 +27,7 @@ roaster.ready ->
         roaster.default_message = msg
         roaster.message ''
       usdlc.set_default_message()
+      $('#loading').hide()
 
       actor = null
       usdlc.save_timer = (id, save_action) ->

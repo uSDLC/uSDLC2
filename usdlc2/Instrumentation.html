@@ -69,7 +69,7 @@ Then the result is an even number</pre>
 
 <pre style="display: block;" type="gwt">
 Given a number between 1 and 10
-Then the response includes &#39;<span data-scayt_word="ecking" data-scaytid="1">ecking</span> Output Co&#39;</pre>
+Then the response includes &#39;<span data-scayt_word="ecking" data-scaytid="2">ecking</span> Output Co&#39;</pre>
 
 <div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span></div>
 
@@ -140,7 +140,7 @@ require(&#39;gwt&#39;).add -&gt;
 
 <p style="display: block;">Where possible it is good to test code in isolation before integration. Other approaches include server integration, code injections and FICL.</p>
 
-<h4>Library Instrumentation</h4>
+<h4>Library Instrumentation <span style="font-size:14px;">(<a href="http://www.screencast.com/t/SprHndAo">screencast</a>)</span></h4>
 
 <p><strong>Example</strong>:&nbsp;<a href="https://github.com/uSDLC/FICL"><em><strong>FICL</strong></em></a>&nbsp;(Fast Integrated Command Language)&nbsp;<em><strong>API</strong></em>&nbsp;- A library used to automate procedures in systems using compiled languages. Clone it and add it to uSDLC2. The document API is referenced below.</p>
 
@@ -178,7 +178,7 @@ require(&#39;gwt&#39;).add -&gt;
 
 <h5 style="display: block;">Play</h5>
 
-<p><em><strong>uSDLC2</strong></em> record a pass or fail on a section based on the number of errors reported.</p>
+<p><em><strong>uSDLC2</strong></em> records a pass or fail on a section based on the number of errors reported.</p>
 
 <h5 style="display: block;">Libraries with Side-Effects</h5>
 
@@ -186,13 +186,25 @@ require(&#39;gwt&#39;).add -&gt;
 
 <div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span></div>
 
-<h4>REPL Instrumentation</h4>
+<h4>REPL Instrumentation <span style="font-size:14px;">(<a href="http://www.screencast.com/t/7KkYTEKnLs">screencast</a>)</span></h4>
 
-<p style="display: block;">Many components can be instrumented in isolation using a REPL (read, execute, print, loop). Many systems, including Groovy, Python and Node-JS come standard with a REPL.</p>
+<p style="display: block;">Components can be instrumented in isolation using a REPL (read, execute, print, loop). Many systems, including Groovy, Python and Node-JS come standard with a REPL.</p>
 
-<p style="display: block;">Whether extending a REPL or generating one from scratch, there is a need for some scaffolding.</p>
+<p><strong>Example</strong>:&nbsp;<a href="https://github.com/uSDLC/FICL"><em><strong>FICL</strong></em></a>&nbsp;(Fast Integrated Command Language)&nbsp;<em><strong>Reference</strong></em>&nbsp;- A library used to automate procedures in systems using compiled languages. Clone it and add it to uSDLC2.</p>
 
-<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block; background-position: initial initial; background-repeat: initial initial;"><span style="color:#FF0000;">Create an example from FICL/REFERENCE</span></div>
+<p><em><strong>FICL</strong></em> comes with a simple REPL specifically designed for USDLC2 testing. For other languages you will need to load a script to provide similar functionality.</p>
+
+<p>The second section is the REPL itself - reading lines from the &#39;console&#39; and executing them.</p>
+
+<p>The bridge is similar across languages instrumented though a REPL.</p>
+
+<ol>
+	<li>Make sure instrumented code is up to date</li>
+	<li>Recognise pass and fail conditions in console output</li>
+	<li>Load instrumentation scripts by file extension</li>
+</ol>
+
+<p>Playing sections starts the REPL and feeds it commands from the requested sections. Click ... to see the rest of the output.</p>
 
 <h4>Server Integrated Instrumentation</h4>
 
