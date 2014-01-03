@@ -159,7 +159,7 @@ usdlc.raw_edit_page = (page, next = ->) ->
     usdlc.page_editor.config.baseHref = "/#{usdlc.project}/"
     usdlc.page_editor.setData html, next
 
-  prepare_editing = ->
+  prepare_editing = (next) ->
     usdlc.document = $(usdlc.page_editor.document.$.body)
     usdlc.page_editor.resetDirty()
     if hash?.length > 1
@@ -171,8 +171,8 @@ usdlc.raw_edit_page = (page, next = ->) ->
     save_lockout = 0
     next()
 
-  load_source_editor -> load_document ->
-    insert_into_dom -> prepare_editing()
+  load_document -> insert_into_dom -> prepare_editing ->
+    load_source_editor -> next()
 
 dialog_left = 700
 dialog_top = -20
