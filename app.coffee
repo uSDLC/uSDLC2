@@ -27,7 +27,6 @@ roaster.ready ->
         roaster.default_message = msg
         roaster.message ''
       usdlc.set_default_message()
-      $('#loading').hide()
 
       actor = null
       usdlc.save_timer = (id, save_action) ->
@@ -40,11 +39,16 @@ roaster.ready ->
       roaster.ckeditor.show_tab 'uSDLC'
 
 load_source_editor = (next) ->
+  pb = $('#progressbar')
+  pb.progressbar value: false
   load_source_editor = (next) -> next()
   roaster.packages "coffee-script","codemirror",
   "jquery_terminal", ->
     roaster.clients "/client/codemirror/codemirror.coffee",
-    "/client/codemirror/editor.coffee", next
+    "/client/codemirror/editor.coffee", ->
+      pb.progressbar('destroy')
+      pb.hide()
+  next()
 
 localStorage.url ?= '/uSDLC2/Index'
 localStorage.project ?= 'uSDLC2'

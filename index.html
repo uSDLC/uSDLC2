@@ -7,11 +7,18 @@
 <script type="text/javascript"
   src="/client/roaster.coffee?domain=client,library">
 </script>
+<script>
+function __startup__() {
+  var loading = document.getElementById('loading')
+  loading.innerText = loading.innerText + '.'
+  setTimeout(__startup__, 5000)
+}
+</script>
 </head>
-<body>
-  <div id='loading' style=
-  'font: bold italic large serif;color:blue'>
-  Loading...</div>
+<body onload='__startup__()'>
+  <div id="progressbar">
+    <div class="progress-label" id='loading'>Loading..</div>
+  </div>
   <textarea id='document' style='display:none;'></textarea>
   <div style="display:none;">
     <form id='tree_filer'>
