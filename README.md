@@ -8,7 +8,7 @@ To install a production copy from the master branch without pulling a github cop
 https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.sh for OS X/Linux	 or
 https://raw.github.com/uSDLC/uSDLC2/master/install-usdlc2.exe for Windows
  
-Use `./go` or `go` to start the server. Use the URL printed to open a client.
+Use `./go.sh` to start the server. Use the URL printed to open a client.
 
 > The first time it is run after a github check-out it will install 3rd party libraries and systems.
 
