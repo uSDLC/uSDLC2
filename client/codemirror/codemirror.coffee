@@ -187,6 +187,7 @@ module.exports.initialise = (next) ->
           editor.setSelection(cursor.from(), cursor.to())
       setTimeout (-> editor.focus()), 500
       return editor
-  roaster.request.data '/client/codemirror/menu.html', (html) ->
+  roaster.request.data '/client/codemirror/menu.html',
+  (error, html) ->
     context_menu = $(html).appendTo('body')
   next()
