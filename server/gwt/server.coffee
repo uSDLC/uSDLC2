@@ -5,6 +5,11 @@ dirs = require 'dirs'; Internet = require 'internet'
 util = require 'util'; send = require 'send'
 strings = require 'common/strings'
 
+gwt.rules(
+  /a running (.*) server/, (name) -> server[name].start()
+  /start a (.*) server/, (name) -> server[name].start()
+)
+
 class Server
   constructor: (@name, options) ->
     _.extend @, options
@@ -14,7 +19,8 @@ class Server
     @stop_url ?= module.exports.stop_url
   # start the active or named server
   start: ->
-    return gwt.pass("#{@name} already running") if @running_instance
+    if @running_instance
+      return gwt.pass("#{@name} already running")
     dirs.in_directory @dir, =>
       @running_instance = processes().cmd @start_command, =>
     check = =>
@@ -22,15 +28,21 @@ class Server
       @net.get @ping ? '', (error) =>
         if error
           @running_instance = null
-          return gwt.fail "Server #{@name} did not start (#{error})"
+          return gwt.fail \
+          "Server #{@name} did not start (#{error})"
     setTimeout check, 2000
     gwt.on_exit (next) =>
       return if not @running_instance
-      if @stop_url[0] isnt '#'
+      if @stop_url and @stop_url[0] isnt '#'
         @running_instance.on 'exit', =>
           @running_instance = null
           next()
-        @net.get @stop_url, -> "Server did not exit as anticipated"
+        @net.get @stop_url, ->
+          "Server did not exit as anticipated"
+      else if @stop_command
+        processes().cmd @stop_command, =>
+          @running_instance = null
+          next()
       else
         @running_instance.kill()
         next()
@@ -42,7 +54,8 @@ class Server
     @net.get_json cmd, query: args, (error, results) =>
       gwt[key] = results
       return gwt.fail(error) if error
-      return gwt.fail("No JSON response for #{cmd}") if not results
+      if not results
+        return gwt.fail("No JSON response for #{cmd}")
       return gwt.fail(results.error) if results?.error
       return next(results) if next
       gwt.pass(strings.from_map(results))
@@ -67,21 +80,24 @@ class Server
           value = ".#{value}" if value.indexOf('.') is -1
           expecting = send.mime.lookup value
           if ext isnt expecting
-            result.push "Expecting type #{expecting}, received #{ext}"
+            result.push \
+              "Expecting type #{expecting}, received #{ext}"
     return gwt.pass() if not result.length
     gwt.fail result.join '\n'
 
 module.exports =
-  # dictionary of known servers accessed by name. Each record has:
+  # dictionary of known servers accessed by name.
+  # Each record has:
   #   url: base url (e.g. http://localhost:9020)
   #   ping: relative url to ping for live check
-  #   dir: base directory to run server from (usually relative to uSDLC2)
-  #   start_command: command to start the server (defaults to './go server')
+  #   dir: base directory (usually relative to uSDLC2)
+  #   start_command: for server (defaults to './go.sh server')
   #   stop_url: relative url to stop the server
   # add to the list of known servers
   add: (servers) ->
     for name, options of servers
       module.exports[name] =
-        module.exports[name.replace(/\s/g, '_')] = new Server name, options
-  start_command: "./go server mode=gwt config=debug"
+        module.exports[name.replace(/\s/g, '_')] =
+          new Server name, options
+  start_command: "./go.sh server mode=gwt config=debug"
   stop_url: 'server/http/terminate.coffee?signal=SIGKILL'
