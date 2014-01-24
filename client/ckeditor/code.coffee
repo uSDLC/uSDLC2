@@ -113,16 +113,23 @@ module.exports = (exchange) ->
               code_editor.setOption 'lineNumbers', false
               code_editor.setOption 'gutters', []
               doc = $(editor.document.$)
-              doc.scroll -> ed.hide()
-              editor.on 'change', -> ed.hide()
-              editor.on 'beforeCommandExec', -> ed.hide()
-              editor.on 'contentDomInvalidated', -> ed.hide()
-              editor.on 'dialogShow', -> ed.hide()
-              editor.on 'resize', -> ed.hide()
+              blur = =>
+                return if not @editing
+                ed.hide()
+                @editing = false
+              doc.scroll blur
+              editor.on 'change', blur
+              editor.on 'beforeCommandExec', blur
+              editor.on 'contentDomInvalidated', blur
+              editor.on 'dialogShow', blur
+              editor.on 'resize', blur
               do edit = =>
+                return if @editing
+                @editing = true
                 ed.show()
                 usdlc.current_section = @element.$
                 fit()
                 code_editor.focus()
               @on 'focus', edit
-              @on 'blur', -> ed.hide()
+              @wrapper.on 'click', edit
+              @on 'blur', blur
