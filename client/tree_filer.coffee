@@ -5,7 +5,7 @@ dialog_options =
   autoResize: true
   minHeight:  50
   title:      'Files...'
-  position:   { my: "left top", at: "left+610 top", of: window }
+  position:   { my:"left top", at:"left+610 top",of: window }
   closeOnEscape: false
   
 form = tree = search_by = cludes = search_for = nodes = null
@@ -22,9 +22,11 @@ module.exports = ->
         usdlc.edit_source(data)
     'delete': (_data) ->
       data = _data
-      roaster.request.json "#{filer}?cmd=rm&path=#{data.path}", fill_tree
+      url = "#{filer}?cmd=rm&path=#{data.path}"
+      roaster.request.json url, fill_tree
     move: (_data) ->
-      roaster.clients "/client/autocomplete.coffee", (autocomplete) ->
+      roaster.clients "/client/autocomplete.coffee",
+      (autocomplete) ->
         data = _data
         tree_actions.url = data.path
         autocomplete
@@ -39,14 +41,16 @@ module.exports = ->
                   "&to=#{selected.value}"
             roaster.request.json url, fill_tree
     'new': (_data) ->
-      roaster.clients "/client/autocomplete.coffee", (autocomplete) ->
+      roaster.clients "/client/autocomplete.coffee",
+      (autocomplete) ->
         data = _data
         autocomplete
           title: 'New...'
           source: (req, rsp) -> rsp [req.term, data.value]
           select: (selected) ->
-            roaster.request.json "#{filer}?cmd=mk&path=#{data.path}"+
-                  "&name=#{selected.value}", fill_tree
+            roaster.request.json "#{filer}?cmd=mk"+
+                  "&path=#{data.path}&name=#{selected.value}",
+                  fill_tree
   usdlc.tree_action = tree_actions.edit
   
   search_type = ->
@@ -141,7 +145,8 @@ module.exports = ->
     selector = "exclude=#{exclude}&include=#{include}"
     search = "search=#{search_type()}&re=#{search_for.val()}"
     args = "project=#{usdlc.project}&type=json"
-    roaster.request.json "#{filer}?#{args}&#{selector}&#{search}", (err, list) ->
+    url = "#{filer}?#{args}&#{selector}&#{search}"
+    roaster.request.json url, (err, list) ->
       build_tree files = list
   
   open_dialog = (edit_source, dialog) ->

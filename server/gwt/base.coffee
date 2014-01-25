@@ -7,9 +7,10 @@ module.exports =
   # called if test passes
   pass: (msg = '') ->
     # pass can't really pass if there is more to do
-    @pass_messages.push msg.toString()
+    @pass_messages.push msg.toString() if msg.length
     if not @next_test()
       msg = @pass_messages.join(' - ')
+      @pass_messages = []
       msg = " - #{msg}" if msg.length
       if expect_failure
         expect_failure = false

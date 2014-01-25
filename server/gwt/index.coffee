@@ -192,7 +192,9 @@ class GWT extends EventEmitter
       @statement_skip = 0 if not @section_skip
       name = /([^\/]+)\.[\w\.]+$/.
         exec(name)?[1].replace(/_/g, ' ')
-      if name and not name.ends_with('.gwt')
+      if name and not name.ends_with('.gwt') and
+      not @sections_completed[name]
+        @sections_completed[name] = true
         console.log "#1 Section: #{name}"
       do func = =>
         return @next() unless @after_sections.length
@@ -201,6 +203,7 @@ class GWT extends EventEmitter
           console.log section.toString()
           throw error
       @timer.elapsed()
+  sections_completed: {}
 
   test_statement: (statement) ->
     return @skip('', @statement_skip--) if @statement_skip
@@ -277,7 +280,7 @@ class GWT extends EventEmitter
   java: (options) ->
     @java = require 'gwt/java'
     @java(options)
-  server: -> @server = require 'gwt/server'
+  server: -> require 'gwt/server'
   process: (type) ->
     require('gwt/processes')(type, @options.project)
   repl: (cmd, dir) -> @process().repl(cmd, dir)

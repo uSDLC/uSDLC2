@@ -6,8 +6,8 @@ util = require 'util'; send = require 'send'
 strings = require 'common/strings'
 
 gwt.rules(
-  /a running (.*) server/, (name) -> server[name].start()
-  /start a (.*) server/, (name) -> server[name].start()
+  /a running (.*) server/, (name) -> gwt.server()[name].start()
+  /start a (.*) server/, (name) -> gwt.server()[name].start()
 )
 
 class Server
@@ -51,20 +51,20 @@ class Server
 
   get: (cmd, args, next) ->
     key = cmd.split('/').slice(-1)[0].split('.')[0]
-    @net.get_json cmd, query: args, (error, results) =>
-      gwt[key] = results
+    @net.get_json cmd, query: args, (error, @last_response) =>
       return gwt.fail(error) if error
-      if not results
+      if not @last_response
         return gwt.fail("No JSON response for #{cmd}")
-      return gwt.fail(results.error) if results?.error
-      return next(results) if next
-      gwt.pass(strings.from_map(results))
+      if @last_response?.error
+        return gwt.fail(@last_response.error)
+      return next(@last_response) if next
+      gwt.pass(strings.from_map(@last_response))
 
   bin: (cmd, args) ->
     key = cmd.split('/').slice(-1)[0].split('.')[0]
-    @net.get cmd, query: args, (error, results) =>
-      gwt[key] = results
-      return gwt.fail(error) if error
+    @net.get_response cmd, query: args,
+    (err, @last_response) =>
+      return gwt.fail(err) if err
       gwt.pass(cmd)
 
   check_get: (contents, against) ->
