@@ -90,7 +90,8 @@ class GWT extends EventEmitter
               else
                 actor.call(gwt, process); return
           catch err
-            if err.code isnt 'MODULE_NOT_FOUND'
+            if (err.code isnt 'MODULE_NOT_FOUND') or
+            (err.message.indexOf(script) == -1)
               console.log err.stack
           process()
 
@@ -281,6 +282,7 @@ class GWT extends EventEmitter
     @java = require 'gwt/java'
     @java(options)
   server: -> require 'gwt/server'
+  browser: -> require 'gwt/browser'
   process: (type) ->
     require('gwt/processes')(type, @options.project)
   repl: (cmd, dir) -> @process().repl(cmd, dir)
