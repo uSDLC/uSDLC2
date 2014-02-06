@@ -1,5 +1,4 @@
 # Copyright (C) 2013 paul@marrington.net, see /GPL for license
-
 module.exports = (exchange) ->
   exchange.respond.client ->
     # any editor not mentioned here will go to the code editor
@@ -119,7 +118,6 @@ module.exports = (exchange) ->
                 ed.hide()
                 @editing = false
               doc.scroll blur
-#               editor.on 'change', blur
               editor.on 'beforeCommandExec', blur
               editor.on 'contentDomInvalidated', blur
               editor.on 'dialogShow', blur
@@ -131,7 +129,6 @@ module.exports = (exchange) ->
                 ed.show()
                 usdlc.current_section = @element.$
                 fit()
-#                 setTimeout (->code_editor.focus()), 900
               @on 'select', edit
               @wrapper.on 'click', edit
               @on 'deselect', blur

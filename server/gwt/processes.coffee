@@ -22,8 +22,8 @@ class Process
   repl: (cmd, onExit) ->
     gwt.preactions.push =>
       @process.cmd cmd, (error) =>
-        done = -> onExit(error)
-        if @finished then done() else @cleanups.push done
+        if gwt.finished onExit(error)
+        else gwt.cleanups.push -> onExit(error)
       gwt.cleanups.unshift => @process.proc.stdin.end()
       gwt.next()
     return @
