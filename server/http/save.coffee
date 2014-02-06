@@ -9,15 +9,15 @@ module.exports = (exchange) ->
     console.log "Save of #{name} failed: #{msg}"
     exchange.respond.error msg
 
-  boom = (filename) ->
-    throw new Error(
-      "source differs from expected for #{filename}")
-
   files.find name, (filename) ->
     return if not filename
     fs.readFile filename, 'utf8', (err, html) ->
+      return error(err.message) if err
       exchange.respond.read_request (changes) ->
         patch.apply html ? '', changes, (html) ->
-          boom(filename) if not html
+          if not html
+            console.log "***FAIL",changes
+            return error "source differs from expected"
           fs.writeFile filename, html, 'utf8', (err) ->
+            return error(err.message) if err
             exchange.response.end()
