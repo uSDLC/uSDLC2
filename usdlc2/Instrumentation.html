@@ -69,7 +69,7 @@ Then the result is an even number</pre>
 
 <pre style="display: block;" type="gwt">
 Given a number between 1 and 10
-Then the response includes '<span data-scayt_word="ecking" data-scaytid="127">ecking</span> Output Co'</pre>
+Then the response includes '<span data-scayt_word="ecking" data-scaytid="2">ecking</span> Output Co'</pre>
 
 <div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span></div>
 
@@ -126,7 +126,7 @@ module.exports = (ready) -&gt;
   fetch_data = =&gt;
     @my_data = "hello world"
     ready()
-  <span data-scayt_word="setTimeout" data-scaytid="129">setTimeout</span> fetch_data, 10</pre>
+  setTimeout fetch_data, 10</pre>
 
 <p style="display: block;">Now we create an instrumentation step that confirms the preparations. Note that we had to add explicitly, as uSDLC combines all scripts of the same type in a section.</p>
 
@@ -160,7 +160,7 @@ require('gwt').add -&gt;
 
 <h5 style="display: block;">Instrumentation</h5>
 
-<p>The intended audiences are developers - so the behavioural&nbsp;examples are in a target language for the library (code).</p>
+<p>The intended audiences are developers - so the behavioral&nbsp;examples are in a target language for the library (code).</p>
 
 <p>Look at section 4.2 in FICL/API for a good example.</p>
 
@@ -170,7 +170,7 @@ require('gwt').add -&gt;
 
 <p>The heavy lifting is done in the <em><strong>instrument</strong></em> method. I have wrapped it in comments to make it stand out. In this example we are checking that shared storage can trigger a <em><strong>FICL</strong></em> word when data changes.</p>
 
-<div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="rules"><a href="javascript:usdlc.edit_source({value:'rules.coffee',path:'server/gwt/rules.coffee',category:'gwt'})">rules.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
 
 <h5 style="display: block;">Bridge</h5>
 
@@ -210,7 +210,7 @@ require('gwt').add -&gt;
 
 <div class="metadata Ref">Ref: <span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.js',path:'templates/gwt.js',category:'templates'})">gwt.js</a></span></div>
 
-<h4>Server Integrated Instrumentation</h4>
+<h4>Server Integrated Instrumentation <span style="font-size:14px;">(<a href="http://www.screencast.com/t/vITHRFXP">screencast</a>)</span></h4>
 
 <p>Instrumenting a production system server requires instrumentation code on the server accessible over HTTP. First we need to be able to start and stop the server. The following code would normally be part of the bridge. The gwt object has a method for loading server support.</p>
 
@@ -221,15 +221,15 @@ server = gwt.server()</pre>
 <p class="metadata Ref">We can now add one or more servers.</p>
 
 <pre title="coffee" type="coffee">
-start = "./go.sh server <span data-scayt_word="config" data-scaytid="146">config</span>=debug port=9019"
-stop = 'server/http/terminate.coffee?signal=<span data-scayt_word="SIGKILL" data-scaytid="135">SIGKILL</span>'
+start = "./go.sh server config=debug port=9019"
+stop = 'server/http/terminate.coffee?signal=<span data-scayt_word="SIGKILL" data-scaytid="14">SIGKILL</span>'
 
 server.add
   'roaster':
-    <span data-scayt_word="url" data-scaytid="136">url</span>: 'http://<span data-scayt_word="localhost" data-scaytid="137">localhost</span>:9019'
-    <span data-scayt_word="dir" data-scaytid="138">dir</span>: '../roaster'
+    <span data-scayt_word="url" data-scaytid="15">url</span>: 'http://localhost:9019'
+    <span data-scayt_word="dir" data-scaytid="16">dir</span>: '../roaster'
     start_command: start
-    <span data-scayt_word="stop_url" data-scaytid="139">stop_url</span>: stop</pre>
+    <span data-scayt_word="stop_url" data-scaytid="17">stop_url</span>: stop</pre>
 
 <p class="metadata Ref">You can use <em>stop_command</em> or <em>stop_url</em>. Some servers have start and stop scripts, while others can easily be terminated except by internal process.</p>
 
@@ -243,11 +243,11 @@ and we start a roaster server</pre>
 
 <pre title="coffee" type="coffee">
 gwt.rules(
-  /(\S+\.html?)/, (<span data-scayt_word="url" data-scaytid="152">url</span>) -&gt;
-    server.roaster.bin <span data-scayt_word="url" data-scaytid="153">url</span>, usdlc2:true, test:true
+  /(\S+\.html?)/, (<span data-scayt_word="url" data-scaytid="20">url</span>) -&gt;
+    server.roaster.bin <span data-scayt_word="url" data-scaytid="21">url</span>, <span data-scayt_word="usdlc2" data-scaytid="24">usdlc2</span>:true, test:true
   /contains '(.*)'/, (re) -&gt;
     response = server.roaster.last_response
-    gwt.test new <span data-scayt_word="RegExp" data-scaytid="154">RegExp</span>(re).test(response)
+    gwt.test new <span data-scayt_word="RegExp" data-scaytid="25">RegExp</span>(re).test(response)
 )</pre>
 
 <pre title="gwt" type="gwt">
@@ -259,8 +259,8 @@ Then it contains 'This is a Test'</pre>
 
 <pre title="coffee" type="coffee">
 gwt.rules(
-  /ask for (.*)/, (<span data-scayt_word="url" data-scaytid="155">url</span>) -&gt;
-    server.roaster.get <span data-scayt_word="url" data-scaytid="156">url</span>, question:'What is it?'
+  /ask for (.*)/, (<span data-scayt_word="url" data-scaytid="27">url</span>) -&gt;
+    server.roaster.get <span data-scayt_word="url" data-scaytid="28">url</span>, question:'What is it?'
   /question is '(.*)'/, (question) -&gt;
     response = server.roaster.last_response
     gwt.check response?.question, question
@@ -290,7 +290,7 @@ Then the question is 'What is it?'</pre>
 
 <p>This section is unusual in that the code that is normally hidden in the bridge is on display. &nbsp;The bridge code accounts for this by loading Coffeescript before processing the GWT statements.</p>
 
-<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="reflect"><a href="javascript:usdlc.edit_source({value:'reflect.coffee',path:'../roaster/test/reflect.coffee',category:'test'})">reflect.coffee</a></span><span class="test_html"><a href="javascript:usdlc.edit_source({value:'test_html.html',path:'../roaster/test/test_html.html',category:'test'})">test_html.html</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="reflect"><a href="javascript:usdlc.edit_source({value:'reflect.coffee',path:'../roaster/test/reflect.coffee',category:'test'})">reflect.coffee</a></span><span class="test_html"><a href="javascript:usdlc.edit_source({value:'test_html.html',path:'../roaster/test/test_html.html',category:'test'})">test_html.html</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="rich_combo"><a href="javascript:usdlc.edit_source({value:'rich_combo.coffee',path:'client/ckeditor/rich_combo.coffee',category:'ckeditor'})">rich_combo.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span></div>
 
 <p><textarea readonly="readonly" source="true" type="gwt.coffee">require './Server_Integrated_Instrumentation'</textarea></p>
 
@@ -302,7 +302,30 @@ Then the question is 'What is it?'</pre>
 
 <p style="display: block;">Running injected code involves a security risk. This is easily mitigated with basic precautions - such that uSDLC must be running on the same computer as the target system.</p>
 
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+
 <h5>Browser / JavaScript</h5>
+
+<p>The target page must include a script found at <em>support/instrument_browser.js</em>, or the 40-odd lines code can be replicated in the project under test. It opens a web-socket to uSDLC2 and waits for instructions. By default this socket is at <em>localhost:9009</em>, so it cannot be accessed by external means. You can change the uSDLC2 address by presetting the host.</p>
+
+<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;"><code>&lt;script&gt;<br />
+&nbsp;&nbsp;<strong>window.usdlc2 = { host: "localhost:9019" name:"parker" };</strong><br />
+&lt;/script&gt;<br />
+&lt;script<br />
+&nbsp; src="http://localhost:9019/support/instrument_browser.js"&gt;<br />
+&lt;/script&gt;</code></div>
+
+<p>&nbsp;GWT provides a browser object with helper functions. Use it to &nbsp;open up a browser page. If a browser is not selected, the system default is used.</p>
+
+<pre title="coffee" type="coffee">
+gwt = require 'gwt'
+browser = gwt.browser()</pre>
+
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser"><a href="javascript:usdlc.edit_source({value:'instrument_browser.js',path:'support/instrument_browser.js',category:'support'})">instrument_browser.js</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a>&nbsp; &nbsp;</span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
 
 <h5>​Server / Roaster / Node-JS / Coffeescript</h5>
 
