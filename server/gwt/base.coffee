@@ -27,6 +27,7 @@ module.exports =
     else
       @failures++
     msg = msg.toString()
+    msg += "\n"+msg.stack if msg.stack
     msg = " - #{msg}" if msg.length
     console.log "\n#{negate}ok #{++@count}#{msg}"
     console.log msg.stack if msg?.stack
