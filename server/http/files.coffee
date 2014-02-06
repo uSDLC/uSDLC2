@@ -90,7 +90,7 @@ module.exports = (exchange) ->
           if stats.isDirectory()
             json_list file_path, item.children = [], next
           else # ordinary file
-            next()
+            process.nextTick next
       
       doc_list = (sender) ->
         dirs.project_reader (projects) ->
@@ -119,10 +119,10 @@ module.exports = (exchange) ->
             html_item "<li>", file_path, file, "<ul>"
             html_list file_path, ->
               list.push '</ul></li>\n'
-              next()
+              process.nextTick next
           else # ordinary file
             html_item "<li>", file_path, file, "</li>\n"
-            next()
+            process.nextTick next
     
       autocomplete_list = (from, list, dir_read) ->
         read_dir from, dir_read,
@@ -135,7 +135,7 @@ module.exports = (exchange) ->
               label: file
               path: "#{from}/#{file}"
               category: category
-            next()
+            process.nextTick next
     
       switch type
         when 'autocomplete'
