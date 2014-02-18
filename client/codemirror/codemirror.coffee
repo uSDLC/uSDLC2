@@ -55,6 +55,7 @@ module.exports.initialise = (next) ->
       cm.setOption(name, value)
       opt = _.clone cm.options
       delete opt.value
+      delete opt[k] for k,v of opt when v instanceof RegExp
       localStorage['CodeMirrorOptions'] = JSON.stringify(opt)
     set_mode: (cm, mode) ->
       CodeMirror.commands.set_option(cm, 'keyMap', mode)
