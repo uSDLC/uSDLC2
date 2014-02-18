@@ -2,6 +2,8 @@
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
 dirs = require('dirs'); newer = require 'newer'
 npm = require 'npm'; streams = require 'streams'
+punct =
+  /(<.*?>|&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,\/\[\]])+/g
 
 decode = null
 
@@ -30,9 +32,9 @@ module.exports = (options, extraction_complete) ->
       for attr in attributes
         if attr[0..4] is 'type='
           script_content = []
-          script_name = "#{path.join headings...}.#{attr[6..-2]}"
-          script_name = script_name.replace(
-            /(&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,])+/g, '_')
+          headings = (h.replace(punct, '_') for h in headings)
+          script_name = path.join headings...
+          script_name += '.'+attr[6..-2]
           script_name = path.join gen, script_name
           break
     else if script_content? and name is 'br'
