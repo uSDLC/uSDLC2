@@ -1,8 +1,26 @@
 <html>
+  <script>
+    window.usdlc2 = { host: "localhost" };
+  </script>
   <script src="/support/instrument_browser.js"></script>
+  
+  <script>
+    function fill_results() {
+      table = document.getElementById('results');
+      ["line 1", "line two", "third line"].forEach(
+        function(row) {
+          table.innerHTML += "<tr><td>"+row+"</td?</tr>"
+        })
+    }
+  </script>
 <head>
 </head>
 <body>
   <h1>Testing Browser Instrumentation</h1>
+  <table id='results'>
+  </table>
+  <button id='List_Button' onclick="fill_results()">
+    Load
+  </button>
 </body>
 </html>

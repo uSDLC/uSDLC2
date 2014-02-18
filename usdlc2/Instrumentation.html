@@ -57,11 +57,7 @@ Then the result is an even number</pre>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
-<p> </p>
-
 <h5 style="">Checking Output by Substring</h5>
-
-<p> </p>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
@@ -100,7 +96,7 @@ Then the response includes 'uSDLC child output test'</pre>
 
 <p style="display: block;">Given/When/Then is a specific example of a code segment. For developers by developers, instrumentation will be by code examples rather than 'natural language'.</p>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
 <h3 style="display: block;">CoffeeScript/JavaScript</h3>
 
@@ -138,39 +134,39 @@ require('gwt').add -&gt;
 
 <h3>Other Languages</h3>
 
-<p>Anything is possible. If you are instrumenting with code, then your audience involves developers, so the code will either be libraries for them to use or low level components of the production system.</p>
+<p style="display: block;">Anything is possible. If you are instrumenting with code, then your audience involves developers, so the code will either be libraries for them to use or low level components of the production system.</p>
 
 <p style="display: block;">Where possible it is good to test code in isolation before integration. Other approaches include server integration, code injections and FICL.</p>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
 <h4>Library Instrumentation <span style="font-size:14px;">(<a href="http://www.screencast.com/t/SprHndAo">screencast</a>)</span></h4>
 
-<p><strong>Example</strong>:&nbsp;<a href="https://github.com/uSDLC/FICL"><em><strong>FICL</strong></em></a>&nbsp;(Fast Integrated Command Language)&nbsp;<em><strong>API</strong></em>&nbsp;- A library used to automate procedures in systems using compiled languages. Clone it and add it to uSDLC2. The document API is referenced below.</p>
+<p style="display: block;"><strong>Example</strong>:&nbsp;<a href="https://github.com/uSDLC/FICL"><em><strong>FICL</strong></em></a>&nbsp;(Fast Integrated Command Language)&nbsp;<em><strong>API</strong></em>&nbsp;- A library used to automate procedures in systems using compiled languages. Clone it and add it to uSDLC2. The document API is referenced below.</p>
 
 <p style="display: block;">For modules with few or well-defined dependencies it is possible to wrap a small command-line program around them.</p>
 
 <h5 style="display: block;">Scaffold</h5>
 
-<p>Many languages require a lot of support code for each instrumentation section. I place scaffolding code at the end of the page in a section with the same name. Scaffolding will instantiate the command and provide supporting code.</p>
+<p style="display: block;">Many languages require a lot of support code for each instrumentation section. I place scaffolding code at the end of the page in a section with the same name. Scaffolding will instantiate the command and provide supporting code.</p>
 
-<p>In the Java example it is an abstract parent class so that test code need only override <em>instrument()</em>. The support functions below print error messages on unexpected results and the program prints out an <em>Errors:</em> line when it is done so that <em><strong>uSDLC2</strong></em> knows to complete the section.</p>
+<p style="display: block;">In the Java example it is an abstract parent class so that test code need only override <em>instrument()</em>. The support functions below print error messages on unexpected results and the program prints out an <em>Errors:</em> line when it is done so that <em><strong>uSDLC2</strong></em> knows to complete the section.</p>
 
-<div class="metadata Ref">Ref: <span class="sections"><a href="javascript:usdlc.edit_source({value:'sections.coffee',path:'client/ckeditor/sections.coffee',category:'ckeditor'})">sections.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="edit_source"><a href="javascript:usdlc.edit_source({value:'edit_source.coffee',path:'client/edit_source.coffee',category:'client'})">edit_source.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="sections"><a href="javascript:usdlc.edit_source({value:'sections.coffee',path:'client/ckeditor/sections.coffee',category:'ckeditor'})">sections.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="bridge"><a href="javascript:usdlc.edit_source({value:'bridge.coffee',path:'client/ckeditor/bridge.coffee',category:'ckeditor'})">bridge.coffee</a></span><span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="edit_source"><a href="javascript:usdlc.edit_source({value:'edit_source.coffee',path:'client/edit_source.coffee',category:'client'})">edit_source.coffee</a></span></div>
 
 <h5 style="display: block;">Instrumentation</h5>
 
-<p>The intended audiences are developers - so the behavioral&nbsp;examples are in a target language for the library (code).</p>
+<p style="display: block;">The intended audiences are developers - so the behavioral&nbsp;examples are in a target language for the library (code).</p>
 
-<p>Look at section 4.2 in FICL/API for a good example.</p>
+<p style="display: block;">Look at section 4.2 in FICL/API for a good example.</p>
 
-<p>Java requires that the class name reflects the file-name, so use the section name replacing non-word characters with underscore. This restriction does not occur in most other languages.</p>
+<p style="display: block;">Java requires that the class name reflects the file-name, so use the section name replacing non-word characters with underscore. This restriction does not occur in most other languages.</p>
 
-<p>Note that we extend Scaffold and create a main method so the library can be run from the command line.</p>
+<p style="display: block;">Note that we extend Scaffold and create a main method so the library can be run from the command line.</p>
 
-<p>The heavy lifting is done in the <em><strong>instrument</strong></em> method. I have wrapped it in comments to make it stand out. In this example we are checking that shared storage can trigger a <em><strong>FICL</strong></em> word when data changes.</p>
+<p style="display: block;">The heavy lifting is done in the <em><strong>instrument</strong></em> method. I have wrapped it in comments to make it stand out. In this example we are checking that shared storage can trigger a <em><strong>FICL</strong></em> word when data changes.</p>
 
-<div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
 
 <h5 style="display: block;">Bridge</h5>
 
@@ -180,45 +176,45 @@ require('gwt').add -&gt;
 
 <h5 style="display: block;">Play</h5>
 
-<p><em><strong>uSDLC2</strong></em> records a pass or fail on a section based on the number of errors reported.</p>
+<p style="display: block;"><em><strong>uSDLC2</strong></em> records a pass or fail on a section based on the number of errors reported.</p>
 
 <h5 style="display: block;">Libraries with Side-Effects</h5>
 
 <p style="display: block;">For libraries with side-effects (such as connections to a database), then it may be better to use a REPL instrumentation approach.</p>
 
-<div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span></div>
 
 <h4>REPL Instrumentation <span style="font-size:14px;">(<a href="http://www.screencast.com/t/7KkYTEKnLs">screencast</a>)</span></h4>
 
 <p style="display: block;">Components can be instrumented in isolation using a REPL (read, execute, print, loop). Many systems, including Groovy, Python and Node-JS come standard with a REPL.</p>
 
-<p><strong>Example</strong>:&nbsp;<a href="https://github.com/uSDLC/FICL"><em><strong>FICL</strong></em></a>&nbsp;(Fast Integrated Command Language)&nbsp;<em><strong>Reference</strong></em>&nbsp;- A library used to automate procedures in systems using compiled languages. Clone it and add it to uSDLC2.</p>
+<p style="display: block;"><strong>Example</strong>:&nbsp;<a href="https://github.com/uSDLC/FICL"><em><strong>FICL</strong></em></a>&nbsp;(Fast Integrated Command Language)&nbsp;<em><strong>Reference</strong></em>&nbsp;- A library used to automate procedures in systems using compiled languages. Clone it and add it to uSDLC2.</p>
 
-<p><em><strong>FICL</strong></em> comes with a simple REPL specifically designed for USDLC2 testing. For other languages you will need to load a script to provide similar functionality.</p>
+<p style="display: block;"><em><strong>FICL</strong></em> comes with a simple REPL specifically designed for USDLC2 testing. For other languages you will need to load a script to provide similar functionality.</p>
 
-<p>The second section is the REPL itself - reading lines from the 'console' and executing them.</p>
+<p style="display: block;">The second section is the REPL itself - reading lines from the 'console' and executing them.</p>
 
-<p>The bridge is similar across languages instrumented though a REPL.</p>
+<p style="display: block;">The bridge is similar across languages instrumented though a REPL.</p>
 
-<ol>
+<ol style="display: block;">
 	<li>Make sure instrumented code is up to date</li>
 	<li>Recognise pass and fail conditions in console output</li>
 	<li>Load instrumentation scripts by file extension</li>
 </ol>
 
-<p>Playing sections starts the REPL and feeds it commands from the requested sections. Click ... to see the rest of the output.</p>
+<p style="display: block;">Playing sections starts the REPL and feeds it commands from the requested sections. Click ... to see the rest of the output.</p>
 
-<div class="metadata Ref">Ref: <span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.js',path:'templates/gwt.js',category:'templates'})">gwt.js</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.js',path:'templates/gwt.js',category:'templates'})">gwt.js</a></span></div>
 
 <h4>Server Integrated Instrumentation <span style="font-size:14px;">(<a href="http://www.screencast.com/t/vITHRFXP">screencast</a>)</span></h4>
 
-<p>Instrumenting a production system server requires instrumentation code on the server accessible over HTTP. First we need to be able to start and stop the server. The following code would normally be part of the bridge. The gwt object has a method for loading server support.</p>
+<p style="display: block;">Instrumenting a production system server requires instrumentation code on the server accessible over HTTP. First we need to be able to start and stop the server. The following code would normally be part of the bridge. The gwt object has a method for loading server support.</p>
 
 <pre title="coffee" type="coffee">
 gwt = require 'gwt'
 server = gwt.server()</pre>
 
-<p class="metadata Ref">We can now add one or more servers.</p>
+<p class="metadata Ref" style="display: block;">We can now add one or more servers.</p>
 
 <pre title="coffee" type="coffee">
 start = "./go.sh server config=debug port=9019"
@@ -231,15 +227,15 @@ server.add
     start_command: start
     <span data-scayt_word="stop_url" data-scaytid="17">stop_url</span>: stop</pre>
 
-<p class="metadata Ref">You can use <em>stop_command</em> or <em>stop_url</em>. Some servers have start and stop scripts, while others can easily be terminated except by internal process.</p>
+<p class="metadata Ref" style="display: block;">You can use <em>stop_command</em> or <em>stop_url</em>. Some servers have start and stop scripts, while others can easily be terminated except by internal process.</p>
 
-<p class="metadata Ref">The server also adds rules to start a server. In this example we attempt to start the server twice. The start command always checks to see if it is running before trying again.</p>
+<p class="metadata Ref" style="display: block;">The server also adds rules to start a server. In this example we attempt to start the server twice. The start command always checks to see if it is running before trying again.</p>
 
 <pre title="gwt" type="gwt">
 Given a running roaster server
 and we start a roaster server</pre>
 
-<p class="metadata Ref">To instrument a running server write response pages. For unprocessed output, use <em>bin</em> - providing it with the server address and an optional dictionary of arguments. It will pass or fail the rule depending on server response codes. The response data is saved in a gwt object with the same name as the request (without path or extension).</p>
+<p class="metadata Ref" style="display: block;">To instrument a running server write response pages. For unprocessed output, use <em>bin</em> - providing it with the server address and an optional dictionary of arguments. It will pass or fail the rule depending on server response codes. The response data is saved in a gwt object with the same name as the request (without path or extension).</p>
 
 <pre title="coffee" type="coffee">
 gwt.rules(
@@ -255,29 +251,29 @@ Given a running roaster server
 When we ask for /test/test_html.html
 Then it contains 'This is a Test'</pre>
 
-<p>&nbsp;As you control most instrumentation, use JSON to return information with <em>get</em>. If it contains an <em>error:true</em> member the the step will fail. Implicit checks are supported by providing a <em>next</em> call-back. This <em>next</em> method will need to call gwt.pass or fail.</p>
+<p style="display: block;">&nbsp;As you control most instrumentation, use JSON to return information with <em>get</em>. If it contains an <em>error:true</em> member the the step will fail. Implicit checks are supported by providing a <em>next</em> call-back. This <em>next</em> method will need to call gwt.pass or fail.</p>
 
 <pre title="coffee" type="coffee">
 gwt.rules(
-  /ask for (.*)/, (<span data-scayt_word="url" data-scaytid="27">url</span>) -&gt;
-    server.roaster.get <span data-scayt_word="url" data-scaytid="28">url</span>, question:'What is it?'
+  /ask for (.*)/, (url) -&gt;
+    server.roaster.get url, question:'Whatsit?'
   /question is '(.*)'/, (question) -&gt;
     response = server.roaster.last_response
     gwt.check response?.question, question
 )</pre>
 
-<p> </p>
+<p style="display: block;"> </p>
 
 <pre title="gwt" type="gwt">
 Given a running roaster server
-When we ask for /test/reflect.coffee?question=What is it?
+When we ask for /test/reflect.coffee?question=Whatsit?
 Then the question is 'What is it?'</pre>
 
-<p>Links to the instrumentation in the production code-base will display is the references at the end of the section - once they are accessed once inside <em><strong>uSDLC2</strong></em>.</p>
+<p style="display: block;">Links to the instrumentation in the production code-base will display is the references at the end of the section - once they are accessed once inside <em><strong>uSDLC2</strong></em>.</p>
 
-<p>For links to code outside the current project:</p>
+<p style="display: block;">For links to code outside the current project:</p>
 
-<ol>
+<ol style="display: block;">
 	<li>Switch to the other project</li>
 	<li>Select the bookshelf from the uSDLC tab (Alt-V).</li>
 	<li>Switch back to your own project</li>
@@ -286,13 +282,13 @@ Then the question is 'What is it?'</pre>
 	<li>A link will appear in the bottom of the section</li>
 </ol>
 
-<p>You will need to protect instrumentation in production deployments. If you want to use them in a production environment, check the calling IP and confirm it is localhost&nbsp;(127.0.0.0) before accepting. Otherwise exclude the instrumentation path in the production configuration.</p>
+<p style="display: block;">You will need to protect instrumentation in production deployments. If you want to use them in a production environment, check the calling IP and confirm it is localhost&nbsp;(127.0.0.0) before accepting. Otherwise exclude the instrumentation path in the production configuration.</p>
 
-<p>This section is unusual in that the code that is normally hidden in the bridge is on display. &nbsp;The bridge code accounts for this by loading Coffeescript before processing the GWT statements.</p>
+<p style="display: block;">This section is unusual in that the code that is normally hidden in the bridge is on display. &nbsp;The bridge code accounts for this by loading Coffeescript before processing the GWT statements.</p>
 
-<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="reflect"><a href="javascript:usdlc.edit_source({value:'reflect.coffee',path:'../roaster/test/reflect.coffee',category:'test'})">reflect.coffee</a></span><span class="test_html"><a href="javascript:usdlc.edit_source({value:'test_html.html',path:'../roaster/test/test_html.html',category:'test'})">test_html.html</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="rich_combo"><a href="javascript:usdlc.edit_source({value:'rich_combo.coffee',path:'client/ckeditor/rich_combo.coffee',category:'ckeditor'})">rich_combo.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span><span class="reflect"><a href="javascript:usdlc.edit_source({value:'reflect.coffee',path:'../roaster/test/reflect.coffee',category:'test'})">reflect.coffee</a></span><span class="test_html"><a href="javascript:usdlc.edit_source({value:'test_html.html',path:'../roaster/test/test_html.html',category:'test'})">test_html.html</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="rich_combo"><a href="javascript:usdlc.edit_source({value:'rich_combo.coffee',path:'client/ckeditor/rich_combo.coffee',category:'ckeditor'})">rich_combo.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span></div>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee">require './Server_Integrated_Instrumentation'</textarea></p>
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee">require './Server_Integrated_Instrumentation'</textarea></p>
 
 <h4>Code Injection</h4>
 
@@ -302,50 +298,180 @@ Then the question is 'What is it?'</pre>
 
 <p style="display: block;">Running injected code involves a security risk. This is easily mitigated with basic precautions - such that uSDLC must be running on the same computer as the target system.</p>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
-<div class="metadata Ref">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="script_extractor"><a href="javascript:usdlc.edit_source({value:'script_extractor.coffee',path:'server/script_extractor.coffee',category:'server'})">script_extractor.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="instrument_browser"><a href="javascript:usdlc.edit_source({value:'instrument_browser.js',path:'support/instrument_browser.js',category:'support'})">instrument_browser.js</a></span></div>
 
-<h5>Browser / JavaScript</h5>
+<h5>Browser / JavaScript <span style="font-size:11px;">(<a href="http://www.screencast.com/t/H755mWDkCLu">Screencast</a>)</span></h5>
 
-<p>The target page must include a script found at <em>support/instrument_browser.js</em>, or the 40-odd lines code can be replicated in the project under test. It opens a web-socket to uSDLC2 and waits for instructions. By default this socket is at <em>localhost:9009</em>, so it cannot be accessed by external means. You can change the uSDLC2 address by presetting the host.</p>
+<p style="display: block;"><em><strong>uSDLC2</strong></em> can instrument any browser client in a test-agnostic way by injecting JavaScript. This means you can use other client-side test frameworks if you so wish and just trigger then from <em><strong>uSDLC2</strong></em>.&nbsp;</p>
 
-<div style="background:#eee;border:1px solid #ccc;padding:5px 10px;"><code>&lt;script&gt;<br />
-&nbsp;&nbsp;<strong>window.usdlc2 = { host: "localhost:9019" name:"parker" };</strong><br />
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
+
+<h6>'Live' Browser</h6>
+
+<p style="display: block;">The target page must include a script found at <em>support/instrument_browser.js</em>, or replicate the code in the project under test. It opens a web-socket to uSDLC2 and waits for instructions. By default this socket is on&nbsp;<em>localhost</em>, so it cannot be accessed by external means. You can change the uSDLC2 address by presetting the host.</p>
+
+<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block;"><code>&lt;script&gt;<br />
+&nbsp;&nbsp;<strong>window.usdlc2 = { host: "localhost" };</strong><br />
 &lt;/script&gt;<br />
 &lt;script<br />
 &nbsp; src="http://localhost:9019/support/instrument_browser.js"&gt;<br />
 &lt;/script&gt;</code></div>
 
-<p>&nbsp;GWT provides a browser object with helper functions. Use it to &nbsp;open up a browser page. If a browser is not selected, the system default is used.</p>
+<p style="display: block;">&nbsp;GWT provides a browser object with helper functions. Use it to &nbsp;open up a browser page. If a browser is not selected, the system default is used. If retain is set true, then the browser window is left open - good for hybrid automatic and manual testing. The default is false.</p>
 
 <pre title="coffee" type="coffee">
 gwt = require 'gwt'
-browser = gwt.browser()</pre>
+browser = gwt.browser()
+host = "http://localhost:"
 
-<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser"><a href="javascript:usdlc.edit_source({value:'instrument_browser.js',path:'support/instrument_browser.js',category:'support'})">instrument_browser.js</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a>&nbsp; &nbsp;</span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+gwt.rules(
+  /server on port (\d{1,4})/, (@port) -&gt; @pass()
+  /base url of (\S+)/, (@base) -&gt; @pass()
+  /ask for a page (\S+)/, (@page) -&gt;
+    url = host+@port+'/'+@base+@page
+    @page = browser.page('live').open url, retain: false
+    @pass()
+  /get a connection/, -&gt;
+    @page.once 'open', =&gt; @pass()
+    @page.once 'error', =&gt; @fail()
+)</pre>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+<pre title="gwt" type="gwt">
+Given a server on port 9009
+  with a base url of support/
+When we ask for a page instrument_browser_sample.html
+Then we get a connection</pre>
+
+<p style="display: block;">&nbsp;Javascript can be sent to the waiting browser with <em>inject(js)</em>. Anything sent to console.log() will be piped to stdout, so you can use <em>expect(pass, fail, end)</em> to process the results.</p>
+
+<pre title="coffee" type="coffee">
+gwt.rules(
+  /ask for some console output/, -&gt;
+    @page.inject "console.log(window.location)"
+    @pass()
+  /receive the expected output back/, -&gt;
+    @expect /"port":"9009"/
+)</pre>
+
+<pre title="gwt" type="gwt">
+When we ask for some console output
+Then we receive the expected output back</pre>
+
+<p style="display: block;">&nbsp;Console logging functions with multiple parameters have them all sent space separated. Objects are sent in JSON format while strings and other primatives are sent as-is. The JSON format is different to a native console.log() function. The console functions include:</p>
+
+<ul style="display: block;">
+	<li><em>console.assert(bool, args...)</em> - acts like error() if bool is false</li>
+	<li><em>console.error(args...)</em> - same as log but includes a stack trace</li>
+	<li><em>console.log(args...)</em></li>
+</ul>
+
+<p style="display: block;">In the above example, if the expected text does not happen, gwt waits 30 seconds before failing the instrumentation. Synchronous tests can respond to pass and fail. Below is a typical hybrid. The example is a simple page section where pressing a "List" button causes a table to fill with data. Checking DOM elements is synchronous and will fail or pass immediately. Pressing a button and waiting for table contents (or any DOM element) to change is potentially asynchronous. If you are using a front-end framework like angular-js you may be able to register a callback or worker. Otherwise, gwt provides a <em>wait_for</em> function that will poll every second for 30 seconds or until the correct value is provided.</p>
+
+<pre title="coffee" type="coffee">
+gwt.rules(
+  /results table contains (\d+) entries/, (row_count) -&gt;
+    gwt.monitor_output =
+      pass: /^Passed:/m
+      fail: /^Failed:/m
+    @page.inject row_count, (row_count) -&gt;
+      table = document.getElementById('results')
+      return gwt.fail("No results table") if not table
+      gwt.wait_for -&gt;
+        rows = table.getElementsByTagName('tr')
+        return +row_count is rows.length
+  /click on the (\S+) Button/, (button_name) -&gt;
+    @page.inject button_name, (button_name) -&gt;
+      button =
+        document.getElementById("#{button_name}_Button")
+      return gwt.fail("No list button") if (not button)
+      button.click()
+      gwt.pass()
+)</pre>
+
+<pre title="gwt" type="gwt">
+Given the results table contains 0 entries
+When we click on the List Button
+Then the results table contains 3 entries</pre>
+
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.ini',path:'local/projects.ini',category:'local'})">projects.ini</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span></div>
+
+<h6>Headless Browser</h6>
+
+<p style="display: block;">The above will open the system default web browser. For continuous integration it makes sense to use a headless browser. Here is the same example using PhantomJS. Note that the visible bridge code here repeats all the tests for reference. In a live situation the common tests would reside in the bridge code for a parent section.</p>
+
+<pre title="coffee" type="coffee">
+gwt = require 'gwt'
+browser = gwt.browser()
+host = "http://localhost:"
+
+gwt.rules(
+  /server on port (\d{1,4})/, (@port) -&gt;
+    @page = browser.page('hdls')
+    @pass()
+  /a headless browser/, -&gt;
+    @page.platform 'phantomjs', -&gt; gwt.pass()
+  /base url of (\S+)/, (@base) -&gt; @pass()
+  /ask for a page (\S+)/, (@url) -&gt;
+    url = host+@port+'/'+@base+@url
+    @page.open url, retain: false
+    @page.once 'open', =&gt;
+      @pass("Opened #{@url}")
+    @page.once 'error', =&gt;
+      @fail("Failed to open #{@url}")
+  /click on the (\S+) Button/, (button_name) -&gt;
+    @expect /^Passed:/m, /^Failed:/m
+    @page.inject button_name, (button_name) -&gt;
+      button =
+        document.getElementById("#{button_name}_Button")
+      return gwt.fail("No list button") if (not button)
+      button.click()
+      gwt.pass("Clicked")
+  /results table contains (\d+) entries/, (row_count) -&gt;
+    @page.inject row_count, (row_count) -&gt;
+      table = document.getElementById('results')
+      return gwt.fail("No results table") if not table
+      gwt.wait_for -&gt;
+        rows = table.getElementsByTagName('tr')
+        if +row_count is rows.length
+          rows = (row.innerHTML for row in rows)
+          console.log rows.join('\n')
+          return true
+        return false
+)</pre>
+
+<pre title="gwt" type="gwt">
+Given a server on port 9009
+  and a headless browser
+  with a base url of support/
+When we ask for a page instrument_browser_sample.html
+  and we click on the List Button
+Then the results table contains 3 entries</pre>
+
+<p style="display: block;"> </p>
+
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser"><a href="javascript:usdlc.edit_source({value:'instrument_browser.js',path:'support/instrument_browser.js',category:'support'})">instrument_browser.js</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
 
 <h5>​Server / Roaster / Node-JS / Coffeescript</h5>
 
-<h5>FICL</h5>
+<h5>Mobile</h5>
 
 <p style="display: block;">Some systems are static and can't be easily rebuilt on-the-fly for instrumentation. This includes many large Java and .NET system as well as most mobile devices. For these environments we provide FICL (fast integrated configuration language) - a very lightweight system for injecting instrumentation. There are Java versions for Android and C versions for .NET and iOS.</p>
 
-<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block; background-position: initial initial; background-repeat: initial initial;"><span style="color:#FF0000;">Create an example from FICL/REFERENCE</span></div>
+<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block;"><span style="color:#FF0000;">Create an example from FICL/REFERENCE</span></div>
 
 <h2>The Bridge</h2>
 
 <p style="display: block;">The bridge is code that connects rules to the operational system and other external resources. It is recorded within the document and extracted to be run. Any&nbsp;GWT block can access bridge code from it's section and all connected parent sections.</p>
 
-<p>Every section can have associated bridge code. When played, the bridge for this section and all parents are available.</p>
+<p style="display: block;">Every section can have associated bridge code. When played, the bridge for this section and all parents are available.</p>
 
-<p>Bridge code is written in CoffeeScript, although any JavaScript variant can be made available.</p>
+<p style="display: block;">Bridge code is written in CoffeeScript, although any JavaScript variant can be made available.</p>
 
-<p>Call&nbsp;<em>gwt.rules</em>&nbsp;with paired parameters being a regular expression and code to execute. Complete a step and move on with</p>
+<p style="display: block;">Call&nbsp;<em>gwt.rules</em>&nbsp;with paired parameters being a regular expression and code to execute. Complete a step and move on with</p>
 
-<ul>
+<ul style="display: block;">
 	<li>@pass(message)</li>
 	<li>@fail(message)</li>
 	<li>@test(boolean, message) - pass or fail based on a boolean value</li>
@@ -358,7 +484,7 @@ browser = gwt.browser()</pre>
 	<li>@expect(pass, fail, end) - monitor output for conditional regex</li>
 </ul>
 
-<p>Setting&nbsp;<em>@expect_failure</em>&nbsp;will reverse the test results.</p>
+<p style="display: block;">Setting&nbsp;<em>@expect_failure</em>&nbsp;will reverse the test results.</p>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
@@ -366,7 +492,7 @@ browser = gwt.browser()</pre>
 
 <h3>Rule Cascade</h3>
 
-<p>If rules are to be common across sections, move them up to a parent that is available to both. If rules share common functionality, move that to a function and elevate it to a parent bridge.</p>
+<p style="display: block;">If rules are to be common across sections, move them up to a parent that is available to both. If rules share common functionality, move that to a function and elevate it to a parent bridge.</p>
 
 <h3>The&nbsp;<em>gwt</em>&nbsp;Object</h3>
 
@@ -374,11 +500,11 @@ browser = gwt.browser()</pre>
 
 <h4>Regular Expressions</h4>
 
-<p>The first regular expression that matches a statement is used. It can use braces to mark parameters to pass to the action.</p>
+<p style="display: block;">The first regular expression that matches a statement is used. It can use braces to mark parameters to pass to the action.</p>
 
 <h4>Actions</h4>
 
-<p>Each action counts as a test and must pass or fail before the instrumentation will continue. Most actions interact with production code through a REPL, an API, the browser or FICL.</p>
+<p style="display: block;">Each action counts as a test and must pass or fail before the instrumentation will continue. Most actions interact with production code through a REPL, an API, the browser or FICL.</p>
 
 <h3>Asynchronous Support</h3>
 
@@ -420,18 +546,18 @@ gwt.rules(
 
 <h2>Play Instrumentation</h2>
 
-<p>Playing the instrumentation brings up a screen and displays output as it comes. Groups that include failures are shaded red.</p>
+<p style="display: block;">Playing the instrumentation brings up a screen and displays output as it comes. Groups that include failures are shaded red.</p>
 
 <h3>Console Output</h3>
 
-<p>Details and console output are captured. Only the first line is displayed. Click on ... to see the rest.</p>
+<p style="display: block;">Details and console output are captured. Only the first line is displayed. Click on ... to see the rest.</p>
 
 <h3>TAP</h3>
 
-<p>This screen is a fancy formatting for the TAP (test anything protocol).</p>
+<p style="display: block;">This screen is a fancy formatting for the TAP (test anything protocol).</p>
 
 <h3>Command Line Execution</h3>
 
-<p>Copy the command at the top of the screen and run it in a terminal. It can also be used for testing during development and continuous integration.</p>
+<p style="display: block;">Copy the command at the top of the screen and run it in a terminal. It can also be used for testing during development and continuous integration.</p>
 </body>
 </html>
