@@ -113,7 +113,6 @@ module.exports = (exchange) ->
               code_editor.setOption 'gutters', []
               doc = $(editor.document.$)
               blur = =>
-                console.log "BLUR",@editing
                 return if not @editing
                 ed.hide()
                 @editing = false
@@ -123,12 +122,12 @@ module.exports = (exchange) ->
               editor.on 'dialogShow', blur
               editor.on 'resize', blur
               edit = =>
-                console.log "EDIT",@editing
                 return if @editing
                 @editing = true
                 ed.show()
                 usdlc.current_section = @element.$
                 fit()
+                code_editor.focus()
               @on 'select', edit
               @wrapper.on 'click', edit
               @on 'deselect', blur
