@@ -23,7 +23,7 @@ files.find = (name, next) ->
 update_bases = ->
   dirs.bases = []
   for name, data of projects
-    dirs.bases.push(path.resolve data.base)
+    dirs.bases.push(dirs.base(data.base))
 
 # this one is run once to load projects from disk
 do dirs.project_reader = (next = ->) ->
