@@ -171,7 +171,10 @@ class GWT extends EventEmitter
   clear_output: -> @output_array = []
   # Checking test output for telling signs
   monitor_output: pass: null, fail: null, end: null
-  expect: (pass,fail,end) -> @monitor_output = {pass,fail,end}
+  expect: (pass,fail,end) ->
+    @monitor_output.pass = pass if pass
+    @monitor_output.fail = pass if fail
+    @monitor_output.end = pass if end
   monitor: (chunk) ->
     # there is a small chance this will fail if the chunk
     # does not break on a line boundary
