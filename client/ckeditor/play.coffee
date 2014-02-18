@@ -3,13 +3,20 @@ dirs = require 'dirs'
 
 module.exports = (exchange) ->
   exchange.respond.client ->
+    punct = /(<.*?>|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,\/\[\]])+/g
+    uniqueify = new Date().getTime()
+    addIframe = (dlg, url) ->
+      dlg.html("<iframe src='#{url}' id=#{++uniqueify}/>")
+      dlg.iframe = $("##{uniqueify}")
+      dlg.iframe.height(dlg.height() - 10)
+      dlg.iframe.focus()
+      
     usdlc.play = ->
       usdlc.page_editor.metadata.add_bridge_and_play_ref()
       doc = usdlc.url.split('#')[0]
       doc = doc.split('/').slice(-1)[0]
       section_path = usdlc.section_path()
-      nz = (t) ->
-        t.replace /&quot;|[\s"'\(\)\*\+\^\$\?\\:;,]+/g, '_'
+      nz = (t) -> t.replace punct, '_'
       sp = (nz(section.title) for section in section_path)
       sections = ".*/#{sp.join('/')}([/\\.].*)*$"
 
@@ -30,15 +37,18 @@ module.exports = (exchange) ->
             name:   "Instrument"
             title:  "Play: #{section.title}"
             url:    url
-            fill:   (dlg) -> dlg.iframe.attr('src', url)
+            fill:   (dlg) -> addIframe(dlg, url)
+#               dlg.iframe.attr('id', uniqueify++)
+#               dlg.iframe.attr('src', url)#location.href = url
             after:  @next
             resizeStop: (dlg) -> onResize(dlg)
             dialog_options
             (dlg) -> usdlc.instrument_window = dlg
       
     init = (dlg) ->
-      dlg.append(dlg.iframe = $('<iframe/>'))
-      dlg.iframe.height(dlg.height() - 10)
+#       dlg.iframe = $('<iframe/>')
+#       dlg.append(dlg.iframe)
+#       dlg.iframe.height(dlg.height() - 10)
     dialog_options =
       width:      600
       height:     600
@@ -67,6 +77,3 @@ module.exports = (exchange) ->
     roaster.replay = ->
       return if not usdlc.instrument_window
       usdlc.instrument_window.dialog 'moveToTop'
-      iframe = usdlc.instrument_window.iframe
-      iframe.attr('src', iframe.attr('src'))
-      iframe.focus()
