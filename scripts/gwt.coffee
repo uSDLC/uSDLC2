@@ -19,7 +19,6 @@ forked_writer = (string, encoding, fd)  ->
   process.send string.toString()
 shelled_writer = (string, encoding, fd) ->
   stdout.call(process.stdout, string, encoding, fd)
-writer = shelled_writer
 
 help = -> console.log(
   "usage: ./go.sh gwt project=<project-path>
