@@ -23,8 +23,10 @@ class Process
     gwt.preactions.push =>
       @process.cmd cmd, (error) =>
         if gwt.finished onExit(error)
-        else gwt.cleanups.push -> onExit(error)
-      gwt.cleanups.unshift => @process.proc.stdin.end()
+        else gwt.cleanups.push (next) -> onExit(error); next()
+      gwt.cleanups.unshift (next) =>
+        @process.proc.stdin.end()
+        next()
       gwt.next()
     return @
 
