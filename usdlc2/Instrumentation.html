@@ -308,6 +308,8 @@ Then the question is 'What is it?'</pre>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
+<div class="metadata Ref" style="display: block;">Ref: <span class="project-init"><a href="javascript:usdlc.edit_source({value:'project-init.coffee',path:'boot/project-init.coffee',category:'boot'})">project-init.coffee</a></span><span class="processes"><a href="javascript:usdlc.edit_source({value:'processes.coffee',path:'server/gwt/processes.coffee',category:'gwt'})">processes.coffee</a></span><span class="sockets"><a href="javascript:usdlc.edit_source({value:'sockets.coffee',path:'server/gwt/sockets.coffee',category:'gwt'})">sockets.coffee</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a></span></div>
+
 <h6>'Live' Browser</h6>
 
 <p style="display: block;">The target page must include a script found at <em>support/instrument_browser.js</em>, or replicate the code in the project under test. It opens a web-socket to uSDLC2 and waits for instructions. By default this socket is on&nbsp;<em>localhost</em>, so it cannot be accessed by external means. You can change the uSDLC2 address by presetting the host.</p>
@@ -316,7 +318,7 @@ Then the question is 'What is it?'</pre>
 &nbsp;&nbsp;<strong>window.usdlc2 = { host: "localhost" };</strong><br />
 &lt;/script&gt;<br />
 &lt;script<br />
-&nbsp; src="http://localhost:9019/support/instrument_browser.js"&gt;<br />
+&nbsp; src="http://localhost:9009/support/usdlc2_browser.js"&gt;<br />
 &lt;/script&gt;</code></div>
 
 <p style="display: block;">&nbsp;GWT provides a browser object with helper functions. Use it to &nbsp;open up a browser page. If a browser is not selected, the system default is used. If retain is set true, then the browser window is left open - good for hybrid automatic and manual testing. The default is false.</p>
@@ -395,7 +397,9 @@ Given the results table contains 0 entries
 When we click on the List Button
 Then the results table contains 3 entries</pre>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.ini',path:'local/projects.ini',category:'local'})">projects.ini</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="init"><a href="javascript:usdlc.edit_source({value:'init.coffee',path:'init.coffee',category:'.'})">init.coffee</a></span><span class="projects"><a href="javascript:usdlc.edit_source({value:'projects.ini',path:'local/projects.ini',category:'local'})">projects.ini</a></span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a></span><span class="Usdlc2SocketClientSample"><a href="javascript:usdlc.edit_source({value:'Usdlc2SocketClientSample.java',path:'support/Usdlc2SocketClientSample.java',category:'support'})">Usdlc2SocketClientSample.java</a></span><span class="Usdlc2SocketClient"><a href="javascript:usdlc.edit_source({value:'Usdlc2SocketClient.java',path:'support/Usdlc2SocketClient.java',category:'support'})">Usdlc2SocketClient.java</a></span><span class="usdlc2_browser"><a href="javascript:usdlc.edit_source({value:'usdlc2_browser.js',path:'support/usdlc2_browser.js',category:'support'})">usdlc2_browser.js</a></span><span class="usdlc2_socket_client"><a href="javascript:usdlc.edit_source({value:'usdlc2_socket_client.coffee',path:'support/usdlc2_socket_client.coffee',category:'support'})">usdlc2_socket_client.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span></div>
+
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
 <h6>Headless Browser</h6>
 
@@ -451,15 +455,201 @@ Then the results table contains 3 entries</pre>
 
 <p style="display: block;"> </p>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser"><a href="javascript:usdlc.edit_source({value:'instrument_browser.js',path:'support/instrument_browser.js',category:'support'})">instrument_browser.js</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="usdlc2_browser_sample"><a href="javascript:usdlc.edit_source({value:'usdlc2_browser_sample.html',path:'support/usdlc2_browser_sample.html',category:'support'})">usdlc2_browser_sample.html</a></span></div>
+
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
 <h5>​Server / Roaster / Node-JS / Coffeescript</h5>
 
-<h5>Mobile</h5>
+<h5>Mobile - FICL</h5>
 
 <p style="display: block;">Some systems are static and can't be easily rebuilt on-the-fly for instrumentation. This includes many large Java and .NET system as well as most mobile devices. For these environments we provide FICL (fast integrated configuration language) - a very lightweight system for injecting instrumentation. There are Java versions for Android and C versions for .NET and iOS.</p>
 
-<div style="background-color: rgb(238, 238, 238); border: 1px solid rgb(204, 204, 204); padding: 5px 10px; display: block;"><span style="color:#FF0000;">Create an example from FICL/REFERENCE</span></div>
+<h5 style="display: block;">Mobile - Socket</h5>
+
+<p style="display: block;">In most cases even FICL can be over-kill. <em><strong>uSDLC2</strong></em> provides a simple socket server that can be easily accessed from any platform with a network connection. The support directory provides clients for Coffeescript (Node), Java and C, where the latter two will cover most platforms that need this approach. The default socket is 9089.</p>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee">socket_server = gwt.socket_server()
+clients = {}
+
+gwt.rules(
+  /socket server on port (\d*)/, (@port) -&gt;
+    @pass()
+  /start the sample (\w+) client called (\w+)/,
+  (type, name) -&gt;
+    gwt.repl gwt.run_client(), (failed) -&gt;
+
+    server = socket_server @port, (client_id, send) =&gt;
+      clients[client_id] = send
+      @test client_id is name
+  /send (\w+) a (\w+) command.* '(.*)'/, (id, cmd, msg) -&gt;
+    clients[id](cmd, msg)
+    @pass()
+  /(\w+) responds with '(.*)'/, (id, expected) -&gt;
+    @expect expected
+)</textarea></p>
+
+<h6 style="display: block;">Node Coffeescript Socket Client</h6>
+
+<pre title="coffee" type="coffee">
+gwt = require 'gwt'
+socket_server = gwt.socket_server()
+socket_client = require 'support/usdlc2_socket_client'
+clients = {}
+cmds =
+  count: (line) -&gt;
+    return "#{line.length} characters"
+
+gwt.rules(
+  /socket server on port (\d*)/, (@port) -&gt;
+    @pass()
+  /connection from a client named (\w+)/, (name) -&gt;
+    ########
+    client = socket_client name,'127.0.0.1',@port,cmds
+    ########
+    ########
+    server = socket_server @port, (client_id, send) =&gt;
+    ########
+      clients[client_id] = send
+      @test client_id is name
+  /send (\w+) a (\w+) command.* '(.*)'/, (id, cmd, m) -&gt;
+    clients[id](cmd, m)
+    @pass()
+  /(\w+) responds with '(.*)'/, (id, expected) -&gt;
+    @expect expected
+)</pre>
+
+<pre title="gwt" type="gwt">
+Given a socket server on port 9089
+When we receive a connection from a client named Fred
+and we send Fred a count command for 'the rain in spain'
+Then Fred responds with '17 characters'</pre>
+
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="socket_client"><a href="javascript:usdlc.edit_source({value:'socket_client.c',path:'support/socket_client.c',category:'support'})">socket_client.c</a></span><span class="socket_client_sample"><a href="javascript:usdlc.edit_source({value:'socket_client_sample.java',path:'support/socket_client_sample.java',category:'support'})">socket_client_sample.java</a></span><span class="SocketClient"><a href="javascript:usdlc.edit_source({value:'SocketClient.java',path:'support/SocketClient.java',category:'support'})">SocketClient.java</a></span><span class="SocketClientSample"><a href="javascript:usdlc.edit_source({value:'SocketClientSample.java',path:'support/SocketClientSample.java',category:'support'})">SocketClientSample.java</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span></div>
+
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
+
+<h6>Java Socket Client</h6>
+
+<p>Consists of a single class <em>Usdlc2SocketClient.java</em> that you can link in to your system. Most environments support the java.net library. Because it only connects to a specific host, it is possible to leave the client code in-place during development.</p>
+
+<p>This is a simple mock mobile device. In this case all it does is set up a uSDLC2 socket and respond to one command. In a real system, you would call&nbsp;<em>client.startCommandProcessor()</em> to run the tests on a separate thread.</p>
+
+<p>Commands are in a <em>Hashtable</em> keyed on command name. The value is an instance of&nbsp;<em>Usdlc2SocketClient.Command</em> with a <em>run()</em> method. It provides a list of parameters where the first is the command name.</p>
+
+<pre title="java" type="java">
+import java.util.*;
+
+class Java_Socket_Client {
+  
+  public static void main(String[] args) {
+    String name = "Tom";
+    String host = "127.0.0.1";
+    int port = 9089;
+    if (args.length &gt; 1) name = args[0];
+    if (args.length &gt; 2) {
+      port = Integer.parseInt(args[1]);
+    }
+    if (args.length &gt; 3) host = args[2];
+
+    Hashtable commands = new Hashtable();
+    
+    // make a socket connection to the uSDCL2 Server
+    final Usdlc2SocketClient client =
+      new Usdlc2SocketClient(name,host,port,commands);
+    
+    // Commands are a hastable of name against an
+    // innder class Usdlc2SocketClient.Command
+    commands.put("count",
+    new Usdlc2SocketClient.Command() {
+      public void run(String[] params) {
+        client.send(params[1].length() + " characters");
+      }
+    });
+    
+    // Read one line from the server and create a
+    // command to run. Normally use
+    // client.startCommandProcessor() to read and
+    // call commands on a separate thread.
+    while (!client.closing) client.commandProcessor();
+  }
+}
+</pre>
+
+<pre title="gwt" type="gwt">
+Given a socket server on port 9089
+When we start the sample Java client called Tom
+and we send Tom a count command for 'the rain in spain'
+Then Tom responds with '17 characters'</pre>
+
+<p> </p>
+
+<div class="metadata Ref">Ref: <span class="Usdlc2SocketClient"><a href="javascript:usdlc.edit_source({value:'Usdlc2SocketClient.java',path:'support/Usdlc2SocketClient.java',category:'support'})">Usdlc2SocketClient.java</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span></div>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee">java = gwt.java out: 'gen/classes'
+java.compile 'support/uSDLC2SocketClient.java'
+gwt.run_client = java.run_command</textarea></p>
+
+<h6>C Socket Client</h6>
+
+<p>The other common language for mobile and embedded systems is C or it's variants such as C++ and C#. The sample file to include, <em>usdlc_socket_client.c</em>&nbsp;is likely to need tweaking for different environments.</p>
+
+<pre title="c" type="c">
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;strings.h&gt;
+#include &lt;unistd.h&gt;
+#include "support/usdlc2_socket_client.h"
+
+char* cmdProc(char *cmd, char **params, int np, int fd) {
+  if (!strcmp(cmd, "count")) {
+    char result[64];
+    sprintf(result, "%lu characters",
+            strlen(params[1]));
+    return uSDLC2_send(fd, result);
+  }
+  return NULL;
+}
+
+int main(int argc, char *argv[]) {
+  char *name = "Harry", *host = "127.0.0.1";
+  char *last_rc = "";
+  int port = 9089;
+  if (argc &gt; 1) name = argv[1];
+  if (argc &gt; 2) port = atoi(argv[1]);
+  if (argc &gt; 3) host = argv[3];
+  sprintf("uSDLC2 Client %s opening on %s:%d\n",
+         name, host, port);
+  
+  // Calling as it is here will lock the program until
+  // the program exits on command from the server.
+  // In practice the call will be wrapped up and
+  // run in a thread - or spawned as a separate process
+  while (1) {
+    char *rc =
+    uSDLC2_socket_client(name, host, port, cmdProc);
+    if (rc) {
+      if (strcmp(rc, "__end__") == -1) break;
+      if (strcmp(rc, last_rc) != -1) printf("%s\n", rc);
+      last_rc = rc;
+      sleep(1);
+    }
+  }
+}</pre>
+
+<pre title="gwt" type="gwt">
+Given a socket server on port 9089
+When we start the sample C client called Harry
+and send Harry a count command for 'the rain in spain'
+Then Harry responds with '17 characters'</pre>
+
+<p> </p>
+
+<div class="metadata Ref">Ref: <span class="usdlc2_socket_client"><a href="javascript:usdlc.edit_source({value:'usdlc2_socket_client.c',path:'support/usdlc2_socket_client.c',category:'support'})">usdlc2_socket_client.c</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="compiler"><a href="javascript:usdlc.edit_source({value:'compiler.coffee',path:'server/gwt/compiler.coffee',category:'gwt'})">compiler.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="c"><a href="javascript:usdlc.edit_source({value:'c.coffee',path:'server/gwt/c.coffee',category:'gwt'})">c.coffee</a></span></div>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee">c = gwt.c out: 'gen/out'
+c.compile "support/usdlc2_socket_client.c"
+gwt.run_client = c.run_command</textarea></p>
 
 <h2>The Bridge</h2>
 
