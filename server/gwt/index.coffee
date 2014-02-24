@@ -172,9 +172,12 @@ class GWT extends EventEmitter
   # Checking test output for telling signs
   monitor_output: pass: null, fail: null, end: null
   expect: (pass,fail,end) ->
-    @monitor_output.pass = pass if pass
-    @monitor_output.fail = pass if fail
-    @monitor_output.end = pass if end
+    re = (re) ->
+      return new RegExp(re) if typeof re is "string"
+      return re
+    @monitor_output.pass = re(pass) if pass
+    @monitor_output.fail = re(fail) if fail
+    @monitor_output.end = re(end) if end
   monitor: (chunk) ->
     # there is a small chance this will fail if the chunk
     # does not break on a line boundary
@@ -284,8 +287,12 @@ class GWT extends EventEmitter
   java: (options) ->
     @java = require 'gwt/java'
     @java(options)
+  c: (options) ->
+    @c = require 'gwt/c'
+    @c(options)
   server: -> require 'gwt/server'
   browser: -> require 'gwt/browser'
+  socket_server: -> require 'gwt/socket_server'
   process: (type) ->
     require('gwt/processes')(type, @options.project)
   repl: (cmd, dir) -> @process().repl(cmd, dir)
