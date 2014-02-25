@@ -14,7 +14,7 @@ module.exports = (exchange) ->
         replace(/&nbsp;/g, ' ').
         replace(/&lt;/g, '<').
         replace(/&gt;/g, '>').
-        replace(/<[^>]+>/g, '')
+        replace(/<\w+\/?>/g, '')
     code_to_html = (code) ->
       return code
       div = $('<div>')
