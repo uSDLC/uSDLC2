@@ -50,7 +50,7 @@ class Compiler
                 from = "#{source}#{file}"
                 if @source_re.test(from)
                   to = @target(file, @target_ext)
-                  @prepare(name, to)
+                  @prepare(from, to)
                   next()
             else
               target = @target path.basename(source)
