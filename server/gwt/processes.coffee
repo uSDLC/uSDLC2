@@ -10,23 +10,27 @@ class Process
     @process = processes()
     @process.options.cwd = cwd
     
+  shell: (cmd, onExit = ->) ->
+    @process.cmd cmd, onExit
+    gwt.cleanup (next) =>
+      @process.proc.stdin.end()
+      @process.kill()
+      next()
+    return @
+    
   execute: (cmd) -> gwt.queue @, ->
     switch @exec_type
       when 'shell'
-        @process.cmd cmd, (error) =>
-          gwt.check_for_error(error)
+        @shell cmd, (error) => gwt.check_for_error(error)
       else
         gwt.fail "Bad exec type #{@exec_type} for '#{cmd}"
     return @
   
   repl: (cmd, onExit) ->
     gwt.preactions.push =>
-      @process.cmd cmd, (error) =>
+      @shell cmd, (error) =>
         if gwt.finished onExit(error)
-        else gwt.cleanups.push (next) -> onExit(error); next()
-      gwt.cleanups.unshift (next) =>
-        @process.proc.stdin.end()
-        next()
+        else gwt.cleanup (next) -> onExit(error); next()
       gwt.next()
     return @
 

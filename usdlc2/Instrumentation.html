@@ -477,11 +477,10 @@ gwt.rules(
     @pass()
   /start the sample (\w+) client called (\w+)/,
   (type, name) -&gt;
-    gwt.repl gwt.run_client(), (failed) -&gt;
-
+    gwt.shell gwt.run_client()
     server = socket_server @port, (client_id, send) =&gt;
       clients[client_id] = send
-      @test client_id is name
+      @check client_id, name
   /send (\w+) a (\w+) command.* '(.*)'/, (id, cmd, msg) -&gt;
     clients[id](cmd, msg)
     @pass()
@@ -590,7 +589,7 @@ Then Tom responds with '17 characters'</pre>
 java.compile 'support/uSDLC2SocketClient.java'
 gwt.run_client = java.run_command</textarea></p>
 
-<h6>C Socket Client</h6>
+<h6>C Socket Client for Threads</h6>
 
 <p>The other common language for mobile and embedded systems is C or it's variants such as C++ and C#. The sample file to include, <em>usdlc_socket_client.c</em>&nbsp;is likely to need tweaking for different environments.</p>
 
@@ -601,11 +600,11 @@ gwt.run_client = java.run_command</textarea></p>
 #include &lt;unistd.h&gt;
 #include "support/usdlc2_socket_client.h"
 
-char* cmdProc(char *cmd, char **params, int np, int fd) {
-  if (!strcmp(cmd, "count")) {
+char* cmdProc(char *cmd, char **prms, int np, int fd) {
+  if (strcmp(cmd, "count") == 0) {
     char result[64];
     sprintf(result, "%lu characters",
-            strlen(params[1]));
+            strlen(prms[1]));
     return uSDLC2_send(fd, result);
   }
   return NULL;
@@ -618,7 +617,7 @@ int main(int argc, char *argv[]) {
   if (argc &gt; 1) name = argv[1];
   if (argc &gt; 2) port = atoi(argv[1]);
   if (argc &gt; 3) host = argv[3];
-  sprintf("uSDLC2 Client %s opening on %s:%d\n",
+  printf("uSDLC2 Client %s opening on %s:%d\n",
          name, host, port);
   
   // Calling as it is here will lock the program until
@@ -629,8 +628,8 @@ int main(int argc, char *argv[]) {
     char *rc =
     uSDLC2_socket_client(name, host, port, cmdProc);
     if (rc) {
-      if (strcmp(rc, "__end__") == -1) break;
-      if (strcmp(rc, last_rc) != -1) printf("%s\n", rc);
+      if (strcmp(rc, "__end__") == 0) break;
+      if (strcmp(rc, last_rc) != 0) printf("%s\n", rc);
       last_rc = rc;
       sleep(1);
     }
@@ -645,11 +644,13 @@ Then Harry responds with '17 characters'</pre>
 
 <p> </p>
 
-<div class="metadata Ref">Ref: <span class="usdlc2_socket_client"><a href="javascript:usdlc.edit_source({value:'usdlc2_socket_client.c',path:'support/usdlc2_socket_client.c',category:'support'})">usdlc2_socket_client.c</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="compiler"><a href="javascript:usdlc.edit_source({value:'compiler.coffee',path:'server/gwt/compiler.coffee',category:'gwt'})">compiler.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="c"><a href="javascript:usdlc.edit_source({value:'c.coffee',path:'server/gwt/c.coffee',category:'gwt'})">c.coffee</a></span></div>
+<div class="metadata Ref">Ref: <span class="usdlc2_socket_client"><a href="javascript:usdlc.edit_source({value:'usdlc2_socket_client.c',path:'support/usdlc2_socket_client.c',category:'support'})">usdlc2_socket_client.c</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="compiler"><a href="javascript:usdlc.edit_source({value:'compiler.coffee',path:'server/gwt/compiler.coffee',category:'gwt'})">compiler.coffee</a></span><span class="c"><a href="javascript:usdlc.edit_source({value:'c.coffee',path:'server/gwt/c.coffee',category:'gwt'})">c.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span></div>
 
 <p><textarea readonly="readonly" source="true" type="gwt.coffee">c = gwt.c out: 'gen/out'
 c.compile "support/usdlc2_socket_client.c"
 gwt.run_client = c.run_command</textarea></p>
+
+<h6>C Socket Client for Events</h6>
 
 <h2>The Bridge</h2>
 

@@ -1,12 +1,12 @@
 /* Copyright (C) 2014 paul@marrington.net, see /GPL license */
 #include <stdio.h>
+#include <strings.h>
 #include <unistd.h>
 #include <sys/types.h> 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <errno.h>
 #include <netdb.h>
-#include <strings.h>
   
 char *uSDLC2_send(int fd, char *data) {
   if (write(fd, data, strlen(data)) < 0 ||
@@ -15,9 +15,10 @@ char *uSDLC2_send(int fd, char *data) {
     }
   return NULL;
 }
-  
-char* uSDLC2_socket_client( char *name, char *host, int port, 
-char* (*cmdProcessor)(char *cmd, char **params, int np, int fd)) {
+
+char* uSDLC2_socket_client
+  (char *name, char *host, int port, char* (*cmdProcessor)
+     (char *cmd, char **params, int np, int fd)) {
   int fd;
   
   fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,24 +47,25 @@ char* (*cmdProcessor)(char *cmd, char **params, int np, int fd)) {
   }
 
   // read commands and respond
-  while (1) { // per line
+  int eod = 0;
+  while (!eod) { // per line
     int np = 0, eol = 0;
     char buffer[8192], *params[32];
     char *buf = buffer, *top = buf + 8192;
     while (!eol) { // per word
-      char *word = buf;
-      while (1) { // per character
+      char *word = buf; int eow = 0;
+      while (!eow) { // per character
         char ch;
         int numRead = read(fd, &ch, 1);
         if (numRead == -1 && errno == EINTR) continue;
-        if (numRead <= 0) { *buf = '\0'; break; }
+        if (numRead <= 0) { ch = '\0'; eod = eol = 1; }
+        if (ch == '\n') { ch = '\0'; eol = 1; }
         if (buf < top) *buf++ = ch;
-        if (ch == '\n') eol = 1;    // eol
-        if (ch == '\0') break;
+        if (ch == '\0') eow = 1;
       }
       params[np++] = word;
     }
-    if (strcmp(params[0], "__end__")) return "__end__";
+    if (strcmp(params[0], "__end__") == 0) return "__end__";
     char *err =
     (*cmdProcessor)(params[0], params, np, fd);
     if (err != NULL) return err;
