@@ -27,7 +27,7 @@ class GWT extends EventEmitter
     # first we take control of stdout and stderr
     @stdout = process.stdout.write
     @stderr = process.stderr.write
-    @cleanups.push (next) ->
+    @cleanup (next) ->
       process.stdout.write = @stdout
       process.stderr.write = @stderr
       next()
@@ -282,6 +282,7 @@ class GWT extends EventEmitter
     do next_cleanup = =>
       return @finished = true if not @cleanups.length
       @cleanups.shift() next_cleanup
+  cleanup: (cleanup) -> @cleanups.unshift cleanup
 
   files: -> gwt.extend 'gwt/files'
   java: (options) ->
@@ -296,6 +297,7 @@ class GWT extends EventEmitter
   process: (type) ->
     require('gwt/processes')(type, @options.project)
   repl: (cmd, dir) -> @process().repl(cmd, dir)
+  shell: (cmd) -> @process().shell(cmd)
       
 module.exports =
   load: (@options) ->

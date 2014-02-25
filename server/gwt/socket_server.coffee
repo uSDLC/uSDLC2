@@ -12,9 +12,11 @@ module.exports = (port, on_connection) ->
       on_connection client_id, (cmd, params...) ->
         socket.write("#{cmd}\0#{params.join('\0')}\n")
     reader.on 'data', (line) -> read_line(line)
+    module.exports.close = ->
+      console.log "Closing socket client"
+      socket.end('__end__\n')
   server.on 'error', (error) ->
     console.log "Socker server #{port} error", error
   server.listen port, ->
     console.log "Socket server listening on #{port}"
-  gwt.cleanups.push (next) -> module.exports.close(); next()
-  module.exports.close = -> socket.write('__end__\n')
+  gwt.cleanup (next) -> module.exports.close(); next()

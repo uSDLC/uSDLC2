@@ -58,7 +58,7 @@ module.exports =
   require: (name) ->
     return require path.join @options.project, name
   # what to do when gwt has finished (close servers, etc)
-  on_exit: (func) -> @cleanups.unshift (next) ->
+  on_exit: (func) -> @cleanups.push (next) ->
     func()
     next()
   # check all output for included text
