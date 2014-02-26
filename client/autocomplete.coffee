@@ -48,7 +48,7 @@ module.exports.widget = widget =
       minLength:  0
       select:     select
       response:   (event, ui) =>
-        if not ui.content.length
+        if true or not ui.content.length
           val = input.val()
           ui.content.push label: val, value: val
   fill: (input, opts) ->

@@ -467,9 +467,9 @@ Then the results table contains 3 entries</pre>
 
 <h5 style="display: block;">Mobile - Socket</h5>
 
-<p style="display: block;">In most cases even FICL can be over-kill. <em><strong>uSDLC2</strong></em> provides a simple socket server that can be easily accessed from any platform with a network connection. The support directory provides clients for Coffeescript (Node), Java and C, where the latter two will cover most platforms that need this approach. The default socket is 9089.</p>
+<p style="display: block;">In most cases even FICL can be over-kill. <em><strong>uSDLC2</strong></em> provides a simple socket server that can be easily accessed from any platform with a network connection. The support directory provides clients for Coffeescript (Node), Java and C, where the latter two will cover most platforms that need this approach. The default socket is 9089. Other languages and platforms are easy to add since basic TCP sockets are available almost everywhere.</p>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee">socket_server = gwt.socket_server()
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee">socket_server = gwt.socket_server()
 clients = {}
 
 gwt.rules(
@@ -530,11 +530,11 @@ Then Fred responds with '17 characters'</pre>
 
 <h6>Java Socket Client</h6>
 
-<p>Consists of a single class <em>Usdlc2SocketClient.java</em> that you can link in to your system. Most environments support the java.net library. Because it only connects to a specific host, it is possible to leave the client code in-place during development.</p>
+<p style="display: block;">Consists of a single class <em>Usdlc2SocketClient.java</em> that you can link in to your system. Most environments support the java.net library. Because it only connects to a specific host, it is possible to leave the client code in-place during development.</p>
 
-<p>This is a simple mock mobile device. In this case all it does is set up a uSDLC2 socket and respond to one command. In a real system, you would call&nbsp;<em>client.startCommandProcessor()</em> to run the tests on a separate thread.</p>
+<p style="display: block;">This is a simple mock mobile device. In this case all it does is set up a uSDLC2 socket and respond to one command. In a real system, you would call&nbsp;<em>client.startCommandProcessor()</em> to run the tests on a separate thread.</p>
 
-<p>Commands are in a <em>Hashtable</em> keyed on command name. The value is an instance of&nbsp;<em>Usdlc2SocketClient.Command</em> with a <em>run()</em> method. It provides a list of parameters where the first is the command name.</p>
+<p style="display: block;">Commands are in a <em>Hashtable</em> keyed on command name. The value is an instance of&nbsp;<em>Usdlc2SocketClient.Command</em> with a <em>run()</em> method. It provides a list of parameters where the first is the command name.</p>
 
 <pre title="java" type="java">
 import java.util.*;
@@ -581,17 +581,17 @@ When we start the sample Java client called Tom
 and we send Tom a count command for 'the rain in spain'
 Then Tom responds with '17 characters'</pre>
 
-<p> </p>
+<p style="display: block;"> </p>
 
-<div class="metadata Ref">Ref: <span class="Usdlc2SocketClient"><a href="javascript:usdlc.edit_source({value:'Usdlc2SocketClient.java',path:'support/Usdlc2SocketClient.java',category:'support'})">Usdlc2SocketClient.java</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Usdlc2SocketClient"><a href="javascript:usdlc.edit_source({value:'Usdlc2SocketClient.java',path:'support/Usdlc2SocketClient.java',category:'support'})">Usdlc2SocketClient.java</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="java"><a href="javascript:usdlc.edit_source({value:'java.coffee',path:'server/gwt/java.coffee',category:'gwt'})">java.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span></div>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee">java = gwt.java out: 'gen/classes'
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee">java = gwt.java out: 'gen/classes'
 java.compile 'support/uSDLC2SocketClient.java'
 gwt.run_client = java.run_command</textarea></p>
 
 <h6>C Socket Client for Threads</h6>
 
-<p>The other common language for mobile and embedded systems is C or it's variants such as C++ and C#. The sample file to include, <em>usdlc_socket_client.c</em>&nbsp;is likely to need tweaking for different environments.</p>
+<p style="display: block;">The other common language for mobile and embedded systems is C or it's variants such as C++ and C#. The sample file to include, <em>usdlc_socket_client.c</em>&nbsp;is likely to need tweaking for different environments.</p>
 
 <pre title="c" type="c">
 #include &lt;stdio.h&gt;
@@ -642,11 +642,11 @@ When we start the sample C client called Harry
 and send Harry a count command for 'the rain in spain'
 Then Harry responds with '17 characters'</pre>
 
-<p> </p>
+<p style="display: block;"> </p>
 
-<div class="metadata Ref">Ref: <span class="usdlc2_socket_client"><a href="javascript:usdlc.edit_source({value:'usdlc2_socket_client.c',path:'support/usdlc2_socket_client.c',category:'support'})">usdlc2_socket_client.c</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="compiler"><a href="javascript:usdlc.edit_source({value:'compiler.coffee',path:'server/gwt/compiler.coffee',category:'gwt'})">compiler.coffee</a></span><span class="c"><a href="javascript:usdlc.edit_source({value:'c.coffee',path:'server/gwt/c.coffee',category:'gwt'})">c.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="usdlc2_socket_client"><a href="javascript:usdlc.edit_source({value:'usdlc2_socket_client.c',path:'support/usdlc2_socket_client.c',category:'support'})">usdlc2_socket_client.c</a></span><span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="compiler"><a href="javascript:usdlc.edit_source({value:'compiler.coffee',path:'server/gwt/compiler.coffee',category:'gwt'})">compiler.coffee</a></span><span class="c"><a href="javascript:usdlc.edit_source({value:'c.coffee',path:'server/gwt/c.coffee',category:'gwt'})">c.coffee</a></span><span class="socket_server"><a href="javascript:usdlc.edit_source({value:'socket_server.coffee',path:'server/gwt/socket_server.coffee',category:'gwt'})">socket_server.coffee</a></span><span class="rich_combo"><a href="javascript:usdlc.edit_source({value:'rich_combo.coffee',path:'client/ckeditor/rich_combo.coffee',category:'ckeditor'})">rich_combo.coffee</a></span><span class="code"><a href="javascript:usdlc.edit_source({value:'code.coffee',path:'client/ckeditor/code.coffee',category:'ckeditor'})">code.coffee</a></span><span class="autocomplete"><a href="javascript:usdlc.edit_source({value:'autocomplete.coffee',path:'client/autocomplete.coffee',category:'client'})">autocomplete.coffee</a></span></div>
 
-<p><textarea readonly="readonly" source="true" type="gwt.coffee">c = gwt.c out: 'gen/out'
+<p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee">c = gwt.c out: 'gen/out'
 c.compile "support/usdlc2_socket_client.c"
 gwt.run_client = c.run_command</textarea></p>
 
