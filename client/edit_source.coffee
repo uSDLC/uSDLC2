@@ -13,7 +13,7 @@ usdlc.edit_source = (item) ->
   read_contents = (next) ->
     roaster.request.data "/server/http/read.coffee?#{params}",
     (err, contents) ->
-      sessionStorage[item.key] = contents
+      usdlc.originals[item.key] = contents
       return next(contents) if contents.length
       type = path.extname(item.path).substring(1)
       template = "/client/templates/#{type}_template.coffee"

@@ -157,10 +157,10 @@ usdlc.raw_edit_page = (page, next = ->) ->
   insert_into_dom = (next) ->
     usdlc.projectStorage 'document', key
     if html.length
-      sessionStorage.page_html = html
+      usdlc.originals.page_html = html
     else
       html = new_document
-      sessionStorage.page_html = ''
+      usdlc.originals.page_html = ''
     usdlc.page_editor.config.baseHref = "/#{usdlc.project}/"
     usdlc.page_editor.setData html, next
 

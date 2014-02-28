@@ -4,7 +4,11 @@
 parent=${1:-.}
 cd $parent
 echo "Download roaster installation script"
-curl -sOL https://raw.github.com/uSDLC/roaster/master/install-roaster.sh
+if hash curl 2>/dev/null; then
+  curl -sOL https://raw.github.com/uSDLC/roaster/master/install-roaster.sh
+else
+  wget https://raw.github.com/uSDLC/roaster/master/install-roaster.sh
+fi
 chmod +x install-roaster.sh
 ./install-roaster.sh
 ./install-roaster.sh . uSDLC2
