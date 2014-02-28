@@ -7,7 +7,7 @@ echo "Download roaster installation script"
 if hash curl 2>/dev/null; then
   curl -sOL https://raw.github.com/uSDLC/roaster/master/install-roaster.sh
 else
-  wget https://raw.github.com/uSDLC/roaster/master/install-roaster.sh
+  wget -N https://raw.github.com/uSDLC/roaster/master/install-roaster.sh
 fi
 chmod +x install-roaster.sh
 ./install-roaster.sh
