@@ -1,6 +1,6 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 path = require 'path'
-window.usdlc = {}
+window.usdlc = {originals:{}}
 usdlc.seed = (new Date()).getTime()
 
 roaster.message = (msg) -> console.log msg
@@ -82,13 +82,13 @@ usdlc.save = (file_name, original_id, changed, next = ->) ->
   lockouts[file_name] = 1
   done = -> lockouts[file_name] = 0; next()
   roaster.message ''
-  original = sessionStorage[original_id]
+  original = usdlc.originals[original_id]
   return done() unless changed isnt original
   save_url = "/server/http/save.coffee?name=#{file_name}"
   roaster.clients '/common/patch.coffee', (patch) ->
     patch.create file_name, original, changed, (changes) ->
       xhr = $.post save_url, changes, (data, status, xhr) ->
-        sessionStorage[original_id] = changed
+        usdlc.originals[original_id] = changed
         roaster.message 'Saved'
         done()
       xhr.fail =>
