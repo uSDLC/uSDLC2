@@ -12,6 +12,7 @@ cat > uSDLC2.sh << EOF
 #bin/bash
 '$(pwd)/uSDLC2/go.sh' server
 EOF
+echo "Just run this script again to upgrade system"
 chmod +x uSDLC2.sh
 echo $(pwd)/uSDLC2.sh
 $(pwd)/uSDLC2.sh
