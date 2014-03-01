@@ -4,7 +4,7 @@ module.exports = (exchange) ->
   exchange.respond.client ->
     tree_options =
       title:      'Documents...'
-      position:   { my: "eft", at: "left+200", of: window }
+      position:   { my: "left", at: "left+200", of: window }
       closeOnEscape: true
       form: '#tree_docs'
       tree_action: ->

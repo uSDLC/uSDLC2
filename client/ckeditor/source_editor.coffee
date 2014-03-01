@@ -31,10 +31,11 @@ module.exports = (exchange) ->
         editor.setKeystroke(altV, 'source_editor')
         editor.on 'contentDom', ->
           editor.editable().on 'mouseup', (event) ->
-            return if not event.data.$.shiftKey
+            e = event.data.$
+            return if not e.shiftKey and not e.altKey
             return if not (a = $(event.data.$.target)).is('a')
             href = a.attr('href')
-          
+
             if /^javascript:/.test(href)
               roaster.clients '/client/edit_source.coffee',
               '/client/ckeditor/bridge.coffee', -> eval(href)
@@ -42,3 +43,4 @@ module.exports = (exchange) ->
               usdlc.edit_page(href)
             else
               window.open(href, '_blank')
+            event.cancel()
