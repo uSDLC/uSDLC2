@@ -12,6 +12,7 @@ fi
 chmod +x install-roaster.sh
 ./install-roaster.sh
 ./install-roaster.sh . uSDLC2
+
 cat > uSDLC2.sh << EOF
 #bin/bash
 '$(pwd)/uSDLC2/go.sh' server
