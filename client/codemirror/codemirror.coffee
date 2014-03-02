@@ -26,8 +26,8 @@ module.exports.initialise = (next) ->
     play_current: (cm) -> roaster.replay()
     
     file_manager: (cm) ->
-      roaster.clients '/client/tree_filer.coffee', (tree_filer) ->
-        tree_filer()
+      roaster.clients '/client/tree_filer.coffee',
+      (tree_filer) -> tree_filer()
       
     toggle_auto_complete: (cm) -> alert "Under Construction"
     
@@ -42,12 +42,12 @@ module.exports.initialise = (next) ->
       catch e
         javascript = "#{e}\n#{JSON.stringify(e.location)}"
 
-      roaster.clients '/client/codemirror/editor.coffee', (editor) ->
-        editor
-          name:     'Javascript'
-          title:    'Javascript'
-          source:
-            attr: (-> 'javascript'), text: (-> javascript)
+      roaster.clients '/client/codemirror/editor.coffee',
+      (editor) -> editor
+        name:     'Javascript'
+        title:    'Javascript'
+        source:
+          attr: (-> 'javascript'), text: (-> javascript)
     toggle_option: (cm, name) ->
       value = not cm.getOption(name)
       CodeMirror.commands.set_option(cm, name, value)
