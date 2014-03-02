@@ -9,8 +9,7 @@ module.exports = (name, host, port, commands) ->
       console.log "Client #{name} connected"
       client.send(name)
     client.send = (line) -> client.write(line+'\n')
-    reader = line_reader(client)
-    reader.on 'data', (line) ->
+    reader = line_reader client, (line) ->
       params = line.split("\0")
       cmd = params.shift()
       if cmd is '__end__'

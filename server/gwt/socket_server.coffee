@@ -6,12 +6,11 @@ module.exports = (port, on_connection) ->
   console.log "Starting socker server on #{port}"
   server = net.createServer (socket) ->
     console.log "Socker server #{port} connection made"
-    reader = line_reader(socket)
     read_line = (client_id) ->
       read_line = (line) -> console.log(line)
       on_connection client_id, (cmd, params...) ->
         socket.write("#{cmd}\0#{params.join('\0')}\n")
-    reader.on 'data', (line) -> read_line(line)
+    line_reader socket, (line) -> read_line(line)
     module.exports.close = ->
       console.log "Closing socket client"
       socket.end('__end__\n')
