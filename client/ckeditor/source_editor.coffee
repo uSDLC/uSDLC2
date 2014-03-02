@@ -30,9 +30,7 @@ module.exports = (exchange) ->
         altV = CKEDITOR.ALT + 86
         editor.setKeystroke(altV, 'source_editor')
         editor.on 'contentDom', ->
-          editor.editable().on 'mouseup', (event) ->
-            e = event.data.$
-            return if not e.shiftKey and not e.altKey
+          editor.editable().on 'click', (event) ->
             return if not (a = $(event.data.$.target)).is('a')
             href = a.attr('href')
 
@@ -43,4 +41,5 @@ module.exports = (exchange) ->
               usdlc.edit_page(href)
             else
               window.open(href, '_blank')
+            e.preventDefault?()
             event.cancel()
