@@ -15,6 +15,6 @@ module.exports = (name, host, port, commands) ->
       if cmd is '__end__'
         closing = true
         return client.close()
-      commands[cmd](params...)
+      console.log commands[cmd](params...)
     client.on 'close', ->
       setTimeout connect, 1000 if not closing
