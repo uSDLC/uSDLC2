@@ -1,4 +1,4 @@
-rem Copyright (C) 2013 paul@marrington.net, see uSDLC2/GPL for license
+rem Copyright (C) 2014 paul@marrington.net, see /GPL license
 
 @echo off
 $~d
