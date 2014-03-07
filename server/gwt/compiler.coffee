@@ -13,6 +13,8 @@ class Compiler
     gwt.preactions.push =>
       dirs.mkdirs @opts.out, -> gwt.next()
     @sources = []; @targets = []; @unchanged = []
+    @precompile = []
+    
     @prepare = (source, target) ->
       if newer(source, target)
         @sources.push source
@@ -38,25 +40,32 @@ class Compiler
       gwt.preactions.push =>
         console.log cmd = @link_command(@targets, @unchanged)
         @shell.cmd cmd, -> gwt.next()
-    
+            
   compile: (list...) ->
-    for source in list
-      ((source) =>
-        gwt.preactions.unshift =>
+    gwt.preactions.unshift =>
+      precompile = (next) =>
+        do go = =>
+          return next() if not @precompile.length
+          action = @precompile.shift()
+          action go
+      compile = (next) =>
+        do go = =>
+          return next() if not list.length
+          source = list.shift()
           files.is_dir source, (err, is_dir) =>
             if is_dir
-              done = -> gwt.next()
-              walk source, done, (file, stats, next) =>
+              walk source, go, (file, stats, next) =>
                 from = "#{source}#{file}"
                 if @source_re.test(from)
                   to = @target(file, @target_ext)
                   @prepare(from, to)
-                  next()
+                next()
             else
               target = @target path.basename(source)
               @prepare(source, target)
-              gwt.next()
-      )(source)
+              go()
+      precompile -> compile -> gwt.next()
+  
   # given a source relative to the current source base
   target: (source, ext = @target_ext) =>
     return path.join @opts.out, files.change_ext source, ext
