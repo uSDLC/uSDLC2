@@ -8,16 +8,15 @@ module.exports =
   pass: (msg = '') ->
     # pass can't really pass if there is more to do
     @pass_messages.push msg.toString() if msg.length
-    if not @next_test()
-      msg = @pass_messages.join(' - ')
-      @pass_messages = []
-      msg = " - #{msg}" if msg.length
-      if expect_failure
-        expect_failure = false
-        @fail(message) # because we did not fail???
-      else
-        console.log "\nok #{++@count}#{msg}"
-      @next()
+    msg = @pass_messages.join(' - ')
+    @pass_messages = []
+    msg = " - #{msg}" if msg.length
+    if expect_failure
+      expect_failure = false
+      @fail(message) # because we did not fail???
+    else
+      console.log "\nok #{++@count}#{msg}"
+    @next()
   # called if test fails
   fail: (msg = '') ->
     negate = 'not '
@@ -33,7 +32,6 @@ module.exports =
     console.log msg.stack if msg?.stack
     @skip.section('fail')
     @tests = []
-    @next_test()
     @next()
   # where we are testing for failures
   expect_failure: false

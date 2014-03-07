@@ -115,14 +115,7 @@ class GWT extends EventEmitter
         gwt.section script
         ext_name = path.extname(script)[1..]
         
-        gwt.tests = []; gwt.test_timer = null
-        gwt.queue = (owner..., step) ->
-          owner = owner[0] ? @
-          owner.q = @
-          gwt.tests.push -> (@context = step).apply(owner)
-          gwt.next_test() if not gwt.test_timer
         gwt.pass_messages = []
-        
         gwt.artifacts[ext_name] ?= []
         gwt.artifacts[ext_name].push script
         read_script()
@@ -148,14 +141,6 @@ class GWT extends EventEmitter
 
     extract_scripts -> read_scripts -> load_tests ->
       process_artifacts -> gwt.go()
-  # run the next test if there is one waiting
-  next_test: ->
-    clearTimeout @test_timer
-    @test_timer = null
-    return false if not @tests.length
-    failure = => @fail("Test failed to complete in time")
-    @test_timer = setTimeout failure,
-      gwt.options.maximum_step_time
   # done with load as it has already created an instance
   load: -> @
   # Code under test output control and display

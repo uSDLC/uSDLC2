@@ -18,7 +18,7 @@ class Process
       next()
     return @
     
-  execute: (cmd) -> gwt.queue @, ->
+  execute: (cmd) ->
     switch @exec_type
       when 'shell'
         @shell cmd, (error) => gwt.check_for_error(error)
