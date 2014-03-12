@@ -13,9 +13,11 @@ chmod +x install-roaster.sh
 ./install-roaster.sh
 ./install-roaster.sh . uSDLC2
 
+pwd=$(pwd)
+if [ "$pwd" == "/" ]; then pwd="" fi
 cat > uSDLC2.sh << EOF
 #bin/bash
-'$(pwd)/uSDLC2/go.sh' server
+'$pwd/uSDLC2/go.sh' server
 EOF
 chmod +x uSDLC2.sh
 
@@ -25,6 +27,6 @@ echo "The command below will start the server."
 echo
 echo "The first time a client is loaded there will be a delay for further libraries"
 echo
-echo $(pwd)/uSDLC2.sh
+echo $pwd/uSDLC2.sh
 read -p "Start server [Enter]..."
-$(pwd)/uSDLC2.sh
+$pwd/uSDLC2.sh
