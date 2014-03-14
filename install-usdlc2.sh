@@ -14,12 +14,20 @@ chmod +x install-roaster.sh
 ./install-roaster.sh . uSDLC2
 
 pwd=$(pwd)
-if [ "$pwd" == "/" ]; then pwd="" fi
+if [ "$pwd" = "/" ]
+then
+  pwd=""
+fi
 cat > uSDLC2.sh << EOF
 #bin/bash
 '$pwd/uSDLC2/go.sh' server
 EOF
 chmod +x uSDLC2.sh
+cat > uSDLC2.bat << EOF
+@echo off
+PATH=$pwd/bin;%PATH%
+bash '$pwd/uSDLC2/go.sh' server
+EOF
 
 echo "Just run this script again to upgrade system"
 echo
