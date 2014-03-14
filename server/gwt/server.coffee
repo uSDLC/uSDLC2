@@ -5,11 +5,6 @@ dirs = require 'dirs'; Internet = require 'internet'
 util = require 'util'; send = require 'send'
 strings = require 'common/strings'
 
-gwt.rules(
-  /a running (.*) server/, (name) -> gwt.server()[name].start()
-  /start a (.*) server/, (name) -> gwt.server()[name].start()
-)
-
 class Server
   constructor: (@name, options) ->
     _.extend @, options
@@ -52,7 +47,6 @@ class Server
   get: (cmd, args, next) ->
     key = cmd.split('/').slice(-1)[0].split('.')[0]
     @net.get_json cmd, query: args, (error, @last_response) =>
-      return gwt.fail(error) if error
       if not @last_response
         return gwt.fail("No JSON response for #{cmd}")
       if @last_response?.error
@@ -99,5 +93,5 @@ module.exports =
       module.exports[name] =
         module.exports[name.replace(/\s/g, '_')] =
           new Server name, options
-  start_command: "./go.sh server mode=gwt config=debug"
+  start_command: "./go.sh server mode=gwt terminate=allowed"
   stop_url: 'server/http/terminate.coffee?signal=SIGKILL'
