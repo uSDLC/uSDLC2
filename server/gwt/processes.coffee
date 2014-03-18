@@ -27,11 +27,10 @@ class Process
     return @
   
   repl: (cmd, onExit) ->
-    gwt.preactions.push =>
-      @shell cmd, (error) =>
-        if gwt.finished onExit(error)
-        else gwt.cleanup (next) -> onExit(error); next()
-      gwt.next()
+    console.log "REPL: "+cmd
+    @shell cmd, (error) =>
+      if gwt.finished then onExit(error)
+      else gwt.cleanup (next) -> onExit(error); next()
     return @
 
 module.exports = (type) -> new Process(type)
