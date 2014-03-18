@@ -1,7 +1,7 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'
-dirs = require 'dirs'; line_reader = require 'line_reader'
+line_reader = require 'line_reader'
 Rules = require 'common/rules'
 script_extractor = require 'script_extractor'
 require 'common/strings'
@@ -17,6 +17,7 @@ class GWT extends EventEmitter
       @options.project, "usdlc2/#{@options.document}.html")
     @options.script_path =
       path.join(@options.project, @options.script_path)
+    @all_scripts = []
     scripts = []; @preactions = []
     @actions = []; @test_count = 0
     @ruler = new Rules(@)
@@ -51,61 +52,19 @@ class GWT extends EventEmitter
     
     # list of files that are not bridge or gwt
     @artifacts = {}
-    @file_processor =
-      'gwt': (script, next) ->
-        reader = line_reader.for_file script, (statement) =>
-          return if not statement?
-          statement = statement.trim()
-          if statement.length and statement[0] isnt '#'
-            gwt.add (gwt) -> gwt.test_statement statement
-        reader.on 'end', next
-        
-      'coffee': (script, next) ->
-        parents = []
-        last_slash = script.lastIndexOf('/')
-        dot = script.indexOf('.', last_slash)
-        base = '.'
-        base = script[0..dot - 1]
-        if script.ends_with('.gwt.coffee')
-          ext_name = '.gwt.coffee'
-          while base.length > 10 and
-          base[-10..] isnt 'gen/usdlc2'
-            parents.push(base)
-            base = path.dirname(base)
-        else
-          ext_name = script[dot..]
-          parents = [base]
-          
-        do process = ->
-          return next() if not parents.length
-          script = parents.pop() + ext_name
-          return process() if gwt.processed_scripts[script]
-          gwt.processed_scripts[script] = script
-          try
-            script = path.resolve dirs.base(), script
-            actor = require(script)
-            if typeof actor is 'function'
-              if not actor.length
-                gwt.add actor
-              else
-                actor.call(gwt, process); return
-          catch err
-            if (err.code isnt 'MODULE_NOT_FOUND') or
-            (err.message.indexOf(script) == -1)
-              console.log err.stack
-          process()
 
     extract_scripts = (next) ->
       script_extractor gwt.options, next
-    read_scripts = (next) ->
+    read_scripts = (next) =>
       runner_file = gwt.options.runner_file
       reader = line_reader.for_file runner_file, (line) =>
         return next() if not line?
-        scripts.push line
-    load_tests = (next) ->
+        @all_scripts.push line
+    load_tests = (next) =>
       gwt.timer = timer pre: '# ', post: ''
       re = new RegExp(gwt.options.sections ? '')
-      scripts = (scr for scr in scripts when re.test scr)
+      scripts = (scr for scr in @all_scripts when re.test scr)
+      
       gwt.processed_scripts = {}
       do read_script = =>
         if not scripts.length
@@ -119,7 +78,7 @@ class GWT extends EventEmitter
         gwt.artifacts[ext_name] ?= []
         gwt.artifacts[ext_name].push script
         read_script()
-    process_artifacts = (next) ->
+    process_artifacts = (next) =>
       process_type = (ext, next) =>
         artifacts = gwt.artifacts[ext]
         do process_item = =>
@@ -143,33 +102,7 @@ class GWT extends EventEmitter
       process_artifacts -> gwt.go()
   # done with load as it has already created an instance
   load: -> @
-  # Code under test output control and display
-  gwt_out: (chunk, encoding, fd) ->
-    @output_array.push chunk
-    @stdout.call process.stdout, chunk, encoding, fd
-    @monitor chunk
-  gwt_err: (chunk, encoding, fd) ->
-    chunk = chunk.toString()
-    ls = ('#!! '+l for l in chunk.split('\n') when l.length)
-    @gwt_out ls.join('\n') + '\n', encoding, fd
-  output: -> (@output_array = [@output_array.join('')])[0]
-  clear_output: -> @output_array = []
-  # Checking test output for telling signs
-  monitor_output: pass: null, fail: null, end: null
-  expect: (pass,fail,end) ->
-    re = (re) ->
-      return new RegExp(re) if typeof re is "string"
-      return re
-    @monitor_output.pass = re(pass) if pass
-    @monitor_output.fail = re(fail) if fail
-    @monitor_output.end = re(end) if end
-  monitor: (chunk) ->
-    # there is a small chance this will fail if the chunk
-    # does not break on a line boundary
-    for line in chunk.toString().split('\n')
-      return @pass() if @monitor_output.pass?.test line
-      return @fail() if @monitor_output.fail?.test line
-  # add an actor to be run to create a test
+ # add an actor to be run to create a test
   add: (test_list...) ->
     for test in test_list
       @actions.push test
@@ -247,6 +180,7 @@ class GWT extends EventEmitter
         gwt did not resume in #{max_time} seconds
         increase gwt.options.maximum_step_time (seconds)"""
     @paused_timeout = setTimeout(overtime, max_time * 1000)
+    @monitor_output = pass: null, fail: null, end: null
     try act.call(gwt, gwt) if act = @actions.shift()
     catch err then return @fail err.stack
   # extend gwt with methods of interest to the current tests
@@ -287,6 +221,6 @@ class GWT extends EventEmitter
 module.exports =
   load: (@options) ->
     module.exports = global.gwt = gwt = new GWT @options
-    gwt.extend 'gwt/base'
+    gwt.extend 'gwt/tests', 'gwt/file_processor', 'gwt/io'
     require 'gwt/rules'
     return gwt
