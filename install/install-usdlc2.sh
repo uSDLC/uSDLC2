@@ -1,8 +1,8 @@
 #!/bin/bash
 # Copyright (C) 2012,14 paul@marrington.net, see GPL license
-parent=~/uSDLC2
-mkdir $parent 2>/dev/null
-cd $parent
+cd ~
+mkdir uSDLC2 2>/dev/null
+cd uSDLC2
 
 echo "Download roaster installation script"
 ins=https://raw.github.com/uSDLC/roaster/master/install/install-roaster.sh
