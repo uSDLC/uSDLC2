@@ -24,29 +24,33 @@ function bash() {
   cat > uSDLC2.sh << EOF
   #bin/bash
   '$pwd/uSDLC2/go.sh' server
-  EOF
+EOF
   chmod +x uSDLC2.sh
 }
 
+function cmd() {
+  cat > uSDLC2.bat << EOF
+  @echo off
+  PATH %HOMEPATH%\msys-bin;%PATH%
+  bash /uSDLC2/uSDLC2/server.sh
+EOF
+  cp uSDLC2.bat ../Desktop
+}
+
 os=$(uname)
-case $os in
+echo $os
+case "$os" in
   Darwin)
     bash
     ;;
-  MINGW32_NT)
-    cat > uSDLC2.bat << EOF
-    @echo off
-    PATH=%~dp0\bin;%PATH%
-    bash /uSDLC2/server.sh
-EOF
-    cp uSDLC2.bat ../Desktop
+  MINGW32*)
+    cmd
     ;;
   *)
     bash
     cp uSDLC2.sh ../Desktop
     ;;
 esac
-
 echo "Just run this script again to upgrade system"
 echo
 echo "The command below will start the server."
