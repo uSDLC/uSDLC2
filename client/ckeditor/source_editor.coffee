@@ -41,5 +41,5 @@ module.exports = (exchange) ->
               usdlc.edit_page(href)
             else
               window.open(href, '_blank')
-            e.preventDefault?()
+            event.preventDefault?()
             event.cancel()
