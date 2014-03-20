@@ -19,16 +19,33 @@ pwd=$(pwd)
 if [ "$pwd" = "/" ]; then
   pwd=""
 fi
-cat > uSDLC2.sh << EOF
-#bin/bash
-'$pwd/uSDLC2/go.sh' server
+
+function bash() {
+  cat > uSDLC2.sh << EOF
+  #bin/bash
+  '$pwd/uSDLC2/go.sh' server
+  EOF
+  chmod +x uSDLC2.sh
+}
+
+os=$(uname)
+case $os in
+  Darwin)
+    bash
+    ;;
+  MINGW32_NT)
+    cat > uSDLC2.bat << EOF
+    @echo off
+    PATH=%~dp0\bin;%PATH%
+    bash /uSDLC2/server.sh
 EOF
-chmod +x uSDLC2.sh
-cat > uSDLC2.bat << EOF
-@echo off
-PATH=%~dp0\bin;%PATH%
-bash /uSDLC2/server.sh
-EOF
+    cp uSDLC2.bat ../Desktop
+    ;;
+  *)
+    bash
+    cp uSDLC2.sh ../Desktop
+    ;;
+esac
 
 echo "Just run this script again to upgrade system"
 echo
