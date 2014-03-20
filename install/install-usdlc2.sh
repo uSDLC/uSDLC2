@@ -34,7 +34,26 @@ function cmd() {
   PATH %HOMEPATH%\msys-bin;%PATH%
   bash /uSDLC2/uSDLC2/server.sh
 EOF
-  cp uSDLC2.bat ../Desktop
+}
+
+function gnome() {
+if hash gnome-session 2>/dev/null ||
+   hash gnome-about 2>/dev/null ||
+   hash gnome-panel 2>/dev/null
+then
+cat > $HOME/Desktop/uSDLC2.desktop << EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=uSDLC2
+Comment=Unify the Software Development Lifecycle
+Exec=$HOME/uSDLC2/uSDLC2.sh
+Icon=utilities-terminal
+Terminal=true
+StartupNotify=false
+GenericName=uSDLC2
+EOF
+fi
 }
 
 os=$(uname)
@@ -42,13 +61,17 @@ echo $os
 case "$os" in
   Darwin)
     bash
+    mv uSDLC2.sh uSDLC2.command
+    cp uSDLC2.command ../Desktop
     ;;
   MINGW32*)
     cmd
+    cp uSDLC2.bat ../Desktop
     ;;
   *)
     bash
     cp uSDLC2.sh ../Desktop
+    gnome
     ;;
 esac
 echo "Just run this script again to upgrade system"
