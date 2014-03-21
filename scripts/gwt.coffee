@@ -12,7 +12,7 @@ default_options =
   document: 'Design'
   sections: '.*'
   script_path: 'gen/usdlc2'
-  maximum_step_time: 30
+  maximum_step_time: 5
 
 stdout = null
 forked_writer = (string, encoding, fd)  ->
