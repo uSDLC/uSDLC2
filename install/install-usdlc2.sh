@@ -61,7 +61,7 @@ echo $os
 case "$os" in
   Darwin)
     bash
-    mv uSDLC2.sh uSDLC2.command
+    cp uSDLC2.sh uSDLC2.command
     cp uSDLC2.command ../Desktop
     ;;
   MINGW32*)
