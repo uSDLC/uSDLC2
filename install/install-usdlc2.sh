@@ -81,5 +81,5 @@ echo
 echo "The first time a client is loaded there will be a delay for further libraries"
 echo
 echo $pwd/uSDLC2.sh
-read -p "Start server [Enter]..."
+#read -p "Start server [Enter]..."
 $pwd/uSDLC2.sh
