@@ -9,10 +9,23 @@
   src="/client/roaster.coffee?domain=client,library">
 </script>
 <script>
+var __startup_count__ = 0;
 function __startup__() {
+  var msgs = ["Installing....",
+             "Please don't close the browser......",
+             "First time install can take 5 minutes........",
+             "Thank you for your patience..........",
+             "Almost done............",
+             "My dependency sites are slow today..............",
+             "Is your Internet slow?................",
+             "OK, there <b>may</b> be a problem.................."]
   var loading = document.getElementById('loading')
   var text = loading.innerHTML
   if (text.length == 0) return
+  var index = Math.floor(++__startup_count__ / 2)
+  if ((__startup_count__ % 2) == 0 && index < msgs.length) {
+    text = msgs[index]
+  }
   loading.innerHTML = text + '.'
   setTimeout(__startup__, 5000)
 }
