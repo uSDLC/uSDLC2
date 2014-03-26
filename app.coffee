@@ -49,6 +49,9 @@ load_source_editor = (next) ->
       $('#loading').text('')
       pb.progressbar('destroy')
       pb.hide()
+      require '/client/faye.coffee', (faye) -> faye (faye) ->
+        usdlc.faye = faye.subscribe '/usdlc2', (data) ->
+          console.log data
   next()
 
 localStorage.url ?= '/uSDLC2/Index'
