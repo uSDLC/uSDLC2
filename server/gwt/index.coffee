@@ -13,10 +13,8 @@ class GWT extends EventEmitter
   constructor: (@options) ->
     gwt = @
     # initialise important variables
-    @options.document_path = path.join(
-      @options.project, "usdlc2/#{@options.document}.html")
-    @options.script_path =
-      path.join(@options.project, @options.script_path)
+    docpath = "usdlc2/#{@options.document}.html"
+    @options.document_path = docpath
     @all_scripts = []
     scripts = []; @preactions = []
     @actions = []; @test_count = 0
@@ -57,10 +55,12 @@ class GWT extends EventEmitter
       script_extractor gwt.options, next
     read_scripts = (next) =>
       runner_file = gwt.options.runner_file
+      console.log runner_file;
       reader = line_reader.for_file runner_file, (line) =>
         return next() if not line?
         @all_scripts.push line
     load_tests = (next) =>
+      console.log @all_scripts;
       gwt.timer = timer pre: '# ', post: ''
       re = new RegExp(gwt.options.sections ? '')
       scripts = (scr for scr in @all_scripts when re.test scr)
@@ -214,7 +214,7 @@ class GWT extends EventEmitter
   browser: -> require 'gwt/browser'
   socket_server: -> require 'gwt/socket_server'
   process: (type) ->
-    require('gwt/processes')(type, @options.project)
+    require('gwt/processes')(type)
   repl: (cmd, dir) -> @process().repl(cmd, dir)
   shell: (cmd) -> @process().shell(cmd)
       

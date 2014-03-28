@@ -18,5 +18,5 @@ module.exports = (exchange) ->
             console.log "***FAIL",changes
             return error "source differs from expected"
           fs.writeFile filename, html, 'utf8', (err) ->
-            return error(err.message) if err
+            error(err.message) if err
             exchange.response.end()

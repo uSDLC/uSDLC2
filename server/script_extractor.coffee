@@ -8,11 +8,8 @@ punct =
 decode = null
 
 module.exports = (options, extraction_complete) ->
-  gen = path.join options.project, "gen/usdlc2"
-  options.runner_file =
-    path.join gen, "#{options.document}.list"
-  input_path = path.join(
-    options.project, "usdlc2/#{options.document}.html")
+  options.runner_file = "gen/usdlc2/#{options.document}.list"
+  input_path = "usdlc2/#{options.document}.html"
 
   if newer(options.runner_file, options.document_path)
     return extraction_complete()
@@ -32,10 +29,9 @@ module.exports = (options, extraction_complete) ->
       for attr in attributes
         if attr[0..4] is 'type='
           script_content = []
-          headings = (h.replace(punct, '_') for h in headings)
           script_name = path.join headings...
           script_name += '.'+attr[6..-2]
-          script_name = path.join gen, script_name
+          script_name = path.join "gen/usdlc2", script_name
           break
     else if script_content? and name is 'br'
       script_content.push('\n')
@@ -52,7 +48,11 @@ module.exports = (options, extraction_complete) ->
     fs.appendFile options.runner_file, "#{script_name}\n", next
 
   sax.on 'closing_tag', (name, next) ->
-    in_heading = false if name[0] is 'h'
+    if name[0] is 'h' and not isNaN(+name[1])
+      h = headings[depth] = headings[depth].replace(punct, '_')
+      in_heading = false
+      return dirs.rmdirs("gen/usdlc2/#{h}", next) if depth is 0
+      return next()
     headings[depth] += "</#{name}>" if in_heading
     if not (name in ['pre','textarea']) or not script_content?
       return next()
@@ -68,5 +68,7 @@ module.exports = (options, extraction_complete) ->
   npm 'ent', (err, ent) ->
     throw err if err
     decode = ent.decode
-    dirs.rmdirs gen, ->
-      streams.pipe fs.createReadStream(input_path), sax, ->
+    streams.pipe fs.createReadStream(input_path), sax, (e) ->
+      return if not e
+      console.log e
+      extraction_complete e
