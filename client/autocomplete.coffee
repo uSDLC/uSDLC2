@@ -53,11 +53,5 @@ module.exports.widget = widget =
           ui.content.push label: val, value: val
   fill: (input, opts) ->
     input.catcomplete 'option', 'source', opts.source
-#     set_val = (source) ->
-#       input.val source[0]
     input.catcomplete 'search', ''
     setTimeout (-> input.focus().select()), 200
-#     if opts.source instanceof Function
-#       opts.source (->), (source) -> set_val(source)
-#     else
-#       set_val(opts.source)

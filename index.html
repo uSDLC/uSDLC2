@@ -11,14 +11,15 @@
 <script>
 var __startup_count__ = 0;
 function __startup__() {
-  var msgs = ["Installing....",
-             "Please don't close the browser......",
-             "First time install can take 5 minutes........",
-             "Thank you for your patience..........",
-             "Almost done............",
-             "My dependency sites are slow today..............",
-             "Is your Internet slow?................",
-             "OK, there <b>may</b> be a problem.................."]
+  var msgs = [
+    "Installing....",
+    "Please don't close the browser......",
+    "First time install can take 5 minutes........",
+    "Thank you for your patience..........",
+    "Almost done............",
+    "My dependency sites are slow today..............",
+    "Is your Internet slow?................",
+    "OK, there <b>may</b> be a problem.................."]
   var loading = document.getElementById('loading')
   var text = loading.innerHTML
   if (text.length == 0) return
@@ -48,12 +49,13 @@ function __startup__() {
             for="search_by_grep">Grep</label>
       </div>
       <div>
-        <input type="text" style='width:99%' autocomplete='true'
-          placeholder='pattern...' autofocus='true'
-          class="search_for"/>
+        <input type="text" style='width:99%'
+          autocomplete='true' placeholder='pattern...'
+          autofocus='true' class="search_for"/>
       </div>
       <div class='tree'></div>
-      <input type='checkbox', id='filter_tree' checked='checked'>
+      <input type='checkbox', id='filter_tree'
+             checked='checked'>
       <label>Enable Filter</label>
       <div class="clusions">
         <label>Include:</label>
