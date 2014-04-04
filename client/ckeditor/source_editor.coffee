@@ -7,21 +7,19 @@ module.exports = (exchange) ->
       icons: 'source_editor'
       init: (editor) ->
         editor.addCommand 'source_editor', exec: (editor) ->
-          a = $(usdlc.get_caret().$).parentsUntil('.Ref', 'a')
-          roaster.clients '/client/tree_filer.coffee', (tree_filer) ->
-            if a.length
-              eval(a.attr('href'))
-            else
-              tree_filer()
+          roaster.clients '/client/tree_filer.coffee',
+          (tree_filer) -> tree_filer()
+#           roaster.clients '/client/dir_tree.coffee',
+#           (dir_tree) -> dir_tree.project usdlc.project
           return true
 
         editor.ui.addButton 'source_editor',
-          label: 'Source Editor (Alt-V Shift-Click)'
+          label: 'Source Editor (Alt-V)'
           command: 'source_editor'
           toolbar: "uSDLC,#{order[0]}"
         usdlc.page_editor.addMenuGroup('uSDLC')
         editor.addMenuItem 'source_editor',
-          label:    'Source Editor (Alt-V Shift-Click)'
+          label:    'Source Editor (Alt-V)'
           command:  'source_editor'
           group:    'uSDLC'
           order:    order[1]
