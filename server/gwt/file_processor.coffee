@@ -33,7 +33,6 @@ module.exports = file_processor:
       return process() if gwt.processed_scripts[script]
       gwt.processed_scripts[script] = script
       try
-        script = path.resolve dirs.base(), script
         actor = require(script)
         if typeof actor is 'function'
           if not actor.length
