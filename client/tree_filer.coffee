@@ -71,26 +71,31 @@ module.exports = ->
     dtree.config.folderLinks = true
     dtree.config.useCookies = true
     
-    next_id = 0
+    next_id = 0; no_search = search_for.val().length is 0
     branch = (parent, item) ->
       id = ++next_id
-      is_dir = item.children?.length ? false
+      is_dir = item.children?
       item.path ?= '~'+usdlc.project
       item_data = "{value:'#{item.name}'," +
         "path:'#{item.path}',category:'#{item.category}',"+
         "is_dir:#{is_dir}, id:#{id - 1}}"
       path = "javascript:usdlc.tree_action(#{item_data})"
       # don't show empty branches
-      if not empty_branch(item)
+      if no_search or not empty_branch(item)
         dtree.add(id, parent, item.name, path)
-        branch(id, child) for child in item.children ? []
+        if is_dir
+          if item.children.length is 0
+            branch(id, name:'')
+          else
+            branch(id, child) for child in item.children
     branch(-1, name: usdlc.project, children: files)
     tree.html(dtree.toString())
     nodes = tree.find('div.dTreeNode a[id]')
     branches = tree.find('div.dTreeNode')
     usdlc.dtree.openAll() if search_type() is 'grep'
     branches.first().click -> usdlc.dtree.closeAll()
-    $('#tree_filer').find('a,input').attr('tabindex', '-1')
+    form.find('.tree_filer').
+      find('a,input').attr('tabindex', '-1')
     tree.contextmenu
       menu: '#tree_filer_menu'
       delegate: '.dTreeNode'
@@ -137,7 +142,7 @@ module.exports = ->
       return true
       
   fill_tree = ->
-    if form.find('#filter_tree:checked').length
+    if form.find('.filter_tree:checked').length
       exclude = cludes[1].val()
       include = cludes[0].val()
     else
@@ -164,13 +169,13 @@ module.exports = ->
             fill_tree()
         last_search = search_for.val()
         search_by = form.find('div.search_by').buttonset()
-        $('#search_by_name').click ->
+        form.find('.search_by_name').click ->
           search_for.val('')
           fill_tree()
         search_by.click ->
           setTimeout (-> search_for.focus()), 200
         tree = form.find('div.tree')
-        form.find('#filter_tree').change -> fill_tree()
+        form.find('.filter_tree').change -> fill_tree()
         cludes = form.find('div.clusions input')
         cludes = ($(input) for input in cludes)
         cludes[0].val usdlc.projectStorage('include') ? ''
