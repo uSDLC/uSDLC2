@@ -25,8 +25,12 @@ module.exports = (opts) -> preload (dialog) ->
     dialog
       title: opts.title
       name: opts.title
+      notes: opts.notes
       init: (dlg) ->
         dlg.append(dlg.input = $('<input>'))
+        if opts.notes
+          dlg.append(notes = $('<div>'))
+          notes.addClass("autocomplete_notes").html(opts.notes)
         module.exports.widget.init dlg.input, opts, (ev, ui) ->
           dlg.dialog 'close'
           usdlc.in_modal = false
