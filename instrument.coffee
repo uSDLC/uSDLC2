@@ -10,7 +10,7 @@ patterns = [
   /^# (\w\w\w \w\w\w \d\d 2\d\d\d .*)\s*$/, (date) ->
     @div('date', date)
   /^#!!\s*(.*)\s*$/, (comment) ->
-    @div('error', comment)
+    @output(comment, 'error')
   /^Error:\s+(.*)$/, (comment) ->
     @div('error', comment)
   /^#\s*(.*)\s*$/, (comment) ->
@@ -26,7 +26,8 @@ patterns = [
   /^(.+)\s*$/, (line) -> @output(line)
 ]
 _div = document.createElement('DIV')
-_br = document.createElement('BR')
+_span = document.createElement('SPAN')
+_pre = document.createElement('PRE')
 header_idx = 1
 
 document.onkeydown = (event) ->
@@ -48,7 +49,7 @@ class Instrument
   div: (className, text) ->
     div = _div.cloneNode()
     div.className = className
-    div.innerText = text
+    div.innerHTML = text
     @container[0].appendChild(div)
     return div
   html: (className, html) ->
@@ -60,12 +61,8 @@ class Instrument
     @viewport.appendChild(div)
   heading: (level, heading) ->
     @fix_level_one() if level is 1
-    if level > @level
-      @container.unshift(@div("heading-#{level}", heading))
-    else
-      @container.shift()
-      @container.shift() if level < @level
-      @container.unshift(@div("heading-#{level}", heading))
+    @container.shift() while level <= @level--
+    @container.unshift @div("heading-#{level}", heading)
     @level = level
   result: (title, className, ok, note) ->
     @ok and= ok
@@ -90,17 +87,23 @@ class Instrument
     contents.push("#{ok}% okay")
     div.innerHTML = contents.join(', ')
     @viewport.appendChild(div)
-  output: (line) ->
-    return if not @level
-    if @same_action
-      @last_div.appendChild(document.createTextNode(line))
-      @last_div.appendChild(_br.cloneNode())
-    else
+  output: (line, type) ->
+    add = (line, to) ->
+      container = to
+      if type
+        container = _span.cloneNode()
+        container.setAttribute 'class', type
+        to.appendChild(container)
+      container.appendChild(document.createTextNode(line))
+    if not @same_action
       hid = 'output_header_'+header_idx++
       header = @div('output_header '+hid, '')
-      @last_div = last_div = @div('hidden', '')
-      header.innerHTML = "#{line}<b>...</b>"
-      header.onclick = => toggle_hidden(last_div, hid)
+      div = @div('hidden', '')
+      @pre = _pre.cloneNode()
+      div.appendChild @pre
+      add line[0..32]+'...', header
+      header.onclick = => toggle_hidden(div, hid)
+    add line+'\n', @pre
   fix_level_one: ->
     className = if @ok then "ok" else "not_ok"
     level_1 = @container.slice(-2,-1)[0]
@@ -122,7 +125,7 @@ class Instrument
     @last_action = action[0]
     try action[0].apply(@, action[1]) catch err
       console.log action.toString()
-      console.log err.stack if err.stack
+      console.log err, err.stack if err.stack
     window.scrollTo(0,document.body.scrollHeight)
 
 window.instrument = ->
