@@ -42,6 +42,7 @@ module.exports = (args...) ->
     console.log "#: ./go.sh gwt '#{arg_string}'"
   else
     process.stdout.write = shelled_writer
+  process.stderr.write = process.stdout.write
 #   Load rules and start processing
   gwt = gwt.load(options)
   gwt.on_exit ->
