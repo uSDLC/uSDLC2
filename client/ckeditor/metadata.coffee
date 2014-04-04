@@ -19,7 +19,7 @@ class Links extends Metadata
   update: (options) ->
     @fetch @options.name, options.name, (item) ->
       item.html "<a href=\"#{options.url}\">"+
-        "#{options.name}</a>"
+        "#{options.name}</a> "
   
 types = { Links }; instances = {}; ref = null
 
