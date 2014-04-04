@@ -8,6 +8,7 @@ require 'common/strings'
 
 require.extensions['.gwt.coffee'] =
   require.extensions['.coffee']
+gwt = null
   
 class GWT extends EventEmitter
   constructor: (@options) ->
@@ -18,7 +19,7 @@ class GWT extends EventEmitter
     @all_scripts = []
     scripts = []; @preactions = []
     @actions = []; @test_count = 0
-    @ruler = new Rules(@)
+    @ruler = new Rules(gwt)
     @statement_skip = @section_skip = 0; @failures = 0
     @cleanups = []; @skipped = 0
     @after_sections = []; @paused_timeout = null
@@ -51,51 +52,50 @@ class GWT extends EventEmitter
     # list of files that are not bridge or gwt
     @artifacts = {}
 
-    extract_scripts = (next) ->
-      script_extractor gwt.options, next
+  instrument: ->
+    extract_scripts = (next) =>
+      script_extractor @options, next
     read_scripts = (next) =>
-      runner_file = gwt.options.runner_file
-      console.log runner_file;
+      runner_file = @options.runner_file
       reader = line_reader.for_file runner_file, (line) =>
         return next() if not line?
         @all_scripts.push line
     load_tests = (next) =>
-      console.log @all_scripts;
-      gwt.timer = timer pre: '# ', post: ''
-      re = new RegExp(gwt.options.sections ? '')
+      @timer = timer pre: '# ', post: ''
+      re = new RegExp(@options.sections ? '')
       scripts = (scr for scr in @all_scripts when re.test scr)
       
-      gwt.processed_scripts = {}
+      @processed_scripts = {}
       do read_script = =>
         if not scripts.length
-          gwt.section(); return next()
+          @section(); return next()
         script = scripts.shift()
         return read_script() if not script
-        gwt.section script
+        @section script
         ext_name = path.extname(script)[1..]
         
-        gwt.pass_messages = []
-        gwt.artifacts[ext_name] ?= []
-        gwt.artifacts[ext_name].push script
+        @pass_messages = []
+        @artifacts[ext_name] ?= []
+        @artifacts[ext_name].push script
         read_script()
     process_artifacts = (next) =>
       process_type = (ext, next) =>
-        artifacts = gwt.artifacts[ext]
+        artifacts = @artifacts[ext]
         do process_item = =>
           if not artifacts?.length
-            delete gwt.artifacts[ext] # only once
+            delete @artifacts[ext] # only once
             return next()
           name = artifacts.shift()
-          if proc = gwt.file_processor[ext]
+          if proc = @file_processor[ext]
             (@context = proc).call gwt, name, process_item
           else
             console.error "Unknown file type for #{name}"
-            gwt.next()
+            @next()
       process_types = (exts..., next) =>
         do process_items = =>
           return next() if not exts.length
           process_type exts.shift(), process_items
-      keys = (key for key, value of gwt.artifacts)
+      keys = (key for key, value of @artifacts)
       process_types 'coffee', keys..., next
 
     extract_scripts -> read_scripts -> load_tests ->
@@ -181,7 +181,7 @@ class GWT extends EventEmitter
         increase gwt.options.maximum_step_time (seconds)"""
     @paused_timeout = setTimeout(overtime, max_time * 1000)
     @monitor_output = pass: null, fail: null, end: null
-    try act.call(gwt, gwt) if act = @actions.shift()
+    try act.call(@, @) if act = @actions.shift()
     catch err then return @fail err.stack
   # extend gwt with methods of interest to the current tests
   extend: (modules...) ->
@@ -203,7 +203,7 @@ class GWT extends EventEmitter
       @cleanups.shift() next_cleanup
   cleanup: (cleanup) -> @cleanups.unshift cleanup
 
-  files: -> gwt.extend 'gwt/files'
+  files: -> @extend 'gwt/files'
   java: (options) ->
     @java = require 'gwt/java'
     @java(options)
@@ -213,8 +213,7 @@ class GWT extends EventEmitter
   server: -> require 'gwt/server'
   browser: -> require 'gwt/browser'
   socket_server: -> require 'gwt/socket_server'
-  process: (type) ->
-    require('gwt/processes')(type)
+  process: (type) -> require('gwt/processes')(type)
   repl: (cmd, dir) -> @process().repl(cmd, dir)
   shell: (cmd) -> @process().shell(cmd)
       
@@ -223,4 +222,5 @@ module.exports =
     module.exports = global.gwt = gwt = new GWT @options
     gwt.extend 'gwt/tests', 'gwt/file_processor', 'gwt/io'
     require 'gwt/rules'
+    gwt.instrument()
     return gwt
