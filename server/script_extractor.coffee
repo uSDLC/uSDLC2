@@ -68,7 +68,8 @@ module.exports = (options, extraction_complete) ->
   npm 'ent', (err, ent) ->
     throw err if err
     decode = ent.decode
-    streams.pipe fs.createReadStream(input_path), sax, (e) ->
-      return if not e
-      console.log e
-      extraction_complete e
+    dirs.rmdirs "gen/usdlc2", ->
+      streams.pipe fs.createReadStream(input_path), sax, (e) ->
+        return if not e
+        console.log e
+        extraction_complete e
