@@ -13,7 +13,7 @@ module.exports = (exchange) ->
       range.setStart(p = new CKEDITOR.dom.node(heading), 0)
       range.select() # set cursor
       [pathname,hash] = usdlc.url.split('#')
-      hash = heading.innerText
+      hash = heading.innerHTML
       usdlc.url = "#{pathname}##{hash}"
       # history.replaceState null, null, "#{pathname}?edit##{hash ? ''}"
 
