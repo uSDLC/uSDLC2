@@ -22,12 +22,15 @@ module.exports = (exchange) ->
         exchange.respond.json errmsg 'move', error
     when 'mk'
       if query.path[0] is '~'
-        console.log query.path[1..]
         query.path = dirs.projects[query.path[1..]].base
       files.join query.path, query.name, (filename) ->
-        fs.open filename, 'wx', (error, fd) ->
-          fs.close fd, ->
-          exchange.respond.json errmsg 'new', error
+        if query.name[-1..-1] is '/'
+          dirs.mkdirs filename, ->
+            exchange.respond.end()
+        else
+          fs.open filename, 'wx', (error, fd) ->
+            fs.close fd, ->
+            exchange.respond.json errmsg 'new', error
     else # ls
       type = query.type
       search = query.search
