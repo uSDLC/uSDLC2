@@ -57,7 +57,7 @@ module.exports = (exchange) ->
         return if done
         section_top = $(@).offset().top
         if section_top > top
-          window.location.hash = hash = @innerText
+          window.location.hash = hash = @innerHTML
           no_hash = usdlc.url.split('#')[0]
           usdlc.url = "#{no_hash}##{hash}"
           done = true
