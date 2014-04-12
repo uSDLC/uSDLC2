@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<!-- Copyright (C) 2013 paul@marrington.net,
+<!-- Copyright (C) 2013,4 paul@marrington.net,
      see /GPL for license -->
 <base href='/'>
 <title>uSDLC2</title>
@@ -19,7 +19,7 @@ function __startup__() {
     "Give it a little longer", "Almost done",
     "Watched pots take longer to boil",
     "My dependency sites are slow today",
-    "10", "9", "8", "7", "6", "5", "4", "3", "2", "1"
+    "10", "9", "8", "7", "6", "5", "4", "3", "2", "1",
     "OK, there <b>may</b> be a problem"]
   var loading = document.getElementById('loading')
   var text = loading.innerHTML
@@ -55,7 +55,7 @@ function __startup__() {
           autofocus='true' class="search_for"/>
       </div>
       <div class='tree'></div>
-      <input type='checkbox', id='filter_tree'
+      <input type='checkbox', name='filter_tree'
              checked='checked'>
       <label>Enable Filter</label>
       <div class="clusions">

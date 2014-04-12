@@ -6,86 +6,89 @@ dialog_options =
   minHeight:  50
   
 filer = "/server/http/files.coffee"
+usdlc.dtree = {}
   
 class DirTree
   constructor: (@id, @option_name) ->
+    my = @
+    @option_list =
+      Project:
+        dialog:
+          position: {
+            my:"left top", at:"left+610 top",of: window }
+          closeOnEscape: false
+        hide: []
+        name_hint: "pattern..."
+        on_select: (data) ->
+          if data.is_dir
+            my.dtree.o(data.id) if data.id
+          else
+            usdlc.edit_source(data)
+        on_keyup: ->
+          search = my.search_for.val()
+          return if (search) is my.last_search
+          my.filter_tree(my.last_search = search)
+      New_Project:
+        dialog:
+          title: 'New Project...'
+          closeOnEscape: true
+        hide: ['.search_by', '.filters']
+        name_hint: "project display name"
+        on_select: (data) ->
+          if (name = my.search_for.val()).length > 0
+            roaster.request.json \
+            "/client/ckeditor/projects.coffee?add="+
+            name+"&path="+data.path, ->
+              usdlc.setProject name.replace(/\s/g, '_')
+              usdlc.edit_page 'Index'
+            dialog_window.dialog 'close'
+          else
+            my.search_for.attr 'placeholder',
+              "Enter project name first!"
+        on_keyup: ->
+          
     @opt = @option_list[@option_name]
     roaster.packages 'dtree', =>
       roaster.clients "/client/edit_source.coffee",
         '/client/dialog.coffee', (params...) =>
-          @tree_action = @tree_actions.edit
+          @tree_action = @tree_action_edit
           @open_dialog params...
-  option_list:
-    Project:
-      dialog:
-        position: {
-          my:"left top", at:"left+610 top",of: window }
-        closeOnEscape: false
-      hide: []
-      name_hint: "pattern..."
-      on_select: (data) =>
-        if data.is_dir
-          @dtree.o(data.id)
-        else
-          usdlc.edit_source(data)
-      on_keyup: =>
-        search = @search_for.val()
-        return if (search) is @last_search
-        @filter_tree(@last_search = search)
-    New_Project:
-      dialog:
-        title: 'New Project...'
-        closeOnEscape: true
-      hide: ['.search_by', '.filters']
-      name_hint: "project display name"
-      on_select: (data) =>
-        if (name = @search_for.val()).length > 0
-          roaster.request.json \
-          "/client/ckeditor/projects.coffee?add="+
-          name+"&path="+data.path, ->
-            usdlc.setProject name.replace(/\s/g, '_')
-            usdlc.edit_page 'Index'
-          dialog_window.dialog 'close'
-        else
-          @search_for.attr 'placeholder',
-            "Enter project name first!"
-      on_keyup: =>
-        
-  tree_actions:
-    edit: (@data) => @opt.on_select @data
-    'delete': (@data) =>
-      url = "#{filer}?cmd=rm&path=#{data.path}"
-      roaster.request.json url, @fill_tree
-    move: (@data) =>
-      roaster.clients "/client/autocomplete.coffee",
-      (autocomplete) ->
-        tree_actions.url = @data.path
-        autocomplete
-          title: 'Move/Rename...'
-          source: (req, rsp) =>
-            if req.term
-              rsp [req.term, @data.value]
-            else
-              rsp [@data.value]
-          select: (selected) =>
-            url = "#{filer}?cmd=mv&from=#{@tree_actions.url}"+
-                  "&to=#{@selected.value}"
-            roaster.request.json url, @fill_tree
-    'new': (@data) =>
-      roaster.clients "/client/autocomplete.coffee",
-      (autocomplete) =>
-        autocomplete
-          title: 'New...'
-          source: (req, rsp) => rsp [req.term, @data.value]
-          select: (selected) =>
-            roaster.request.json "#{filer}?cmd=mk"+
-              "&path=#{@data.path}&name=#{@selected.value}",
-              @fill_tree
+ 
+  tree_action_edit: (@data) -> @opt.on_select @data
+  tree_action_delete: (@data) ->
+    url = "#{filer}?cmd=rm&path=#{data.path}"
+    roaster.request.json url, @fill_tree
+  tree_action_move: (@data) ->
+    roaster.clients "/client/autocomplete.coffee",
+    (autocomplete) ->
+      @tree_action_url = @data.path
+      autocomplete
+        title: 'Move/Rename...'
+        source: (req, rsp) =>
+          if req.term
+            rsp [req.term, @data.value]
+          else
+            rsp [@data.value]
+        select: (selected) =>
+          url = "#{filer}?cmd=mv&from=#{@tree_action_url}"+
+                "&to=#{@selected.value}"
+          roaster.request.json url, @fill_tree
+  tree_action_new: (@data) ->
+    roaster.clients "/client/autocomplete.coffee",
+    (autocomplete) =>
+      autocomplete
+        title: 'New...'
+        source: (req, rsp) => rsp [req.term, @data.value]
+        select: (selected) =>
+          roaster.request.json "#{filer}?cmd=mk"+
+            "&path=#{@data.path}&name=#{@selected.value}",
+            @fill_tree
+            
   search_type: ->
     @search_by.find(':radio:checked').attr('id')[-4..]
         
   build_tree: ->
-    @dtree = new dTree('usdlc.dtree.'+@id)
+    usdlc.dtree[@id] = @dtree = new dTree('usdlc.dtree.'+@id)
     for key, path of @dtree.icon
       @dtree.icon[key] = "/ext/dtree/#{path}"
     @dtree.config.inOrder = true
@@ -103,7 +106,7 @@ class DirTree
       instance = "usdlc.dir_trees['#{@id}']"
       path = "javascript:#{instance}.tree_action(#{item_data})"
       # don't show empty branches
-      if no_search or not empty_branch(item)
+      if no_search or not @empty_branch(item)
         @dtree.add(id, parent, item.name, path)
         if is_dir
           if item.children.length is 0
@@ -115,16 +118,16 @@ class DirTree
     @nodes = @tree.find('div.dTreeNode a[id]')
     @branches = @tree.find('div.dTreeNode')
     @dtree.openAll() if @search_type() is 'grep'
-    @branches.first().click -> @dtree.closeAll()
+    @branches.first().click => @dtree.closeAll()
     @form.find('.tree_filer').
       find('a,input').attr('tabindex', '-1')
     @tree.contextmenu
       menu: '#tree_filer_menu'
       delegate: '.dTreeNode'
-      select: (event, ui) ->
-        @tree_action = @tree_actions[ui.cmd]
+      select: (event, ui) =>
+        @tree_action = @['tree_action_'+ui.cmd]
         ui.target.context.click()
-        @tree_action = @tree_actions.edit
+        @tree_action = @tree_action_edit
   
   empty_branch: (item) ->
     return false if not item.children?
@@ -159,6 +162,7 @@ class DirTree
     first = true
     @dtree.closeAll()
     @branches.addClass('hidden')
+    my = @
     @nodes.each (index) ->
       div = (node = $(@)).parent()
       parents = div.parents('div.clip').prev()
@@ -166,12 +170,12 @@ class DirTree
         div.removeClass('hidden')
         parents.removeClass('hidden')
         id = node.attr('id').match(/\d+/)[0]
-        @dtree.openTo(id, first)
+        my.dtree.openTo(id, first)
         first = false
       return true
       
   fill_tree: ->
-    if @form.find('.filter_tree:checked').length
+    if @form.find('[name=filter_tree]:checked').length
       exclude = @cludes[1].val()
       include = @cludes[0].val()
     else
@@ -198,13 +202,12 @@ class DirTree
             @grep = @search_for.val()
             @fill_tree()
         @last_search = @search_for.val()
-        @search_by = @form.find('div.search_by').buttonset()
-        @form.find('.search_by_name').click ->
+        @search_by = @form.find('div.search_by')#.buttonset()
+        @search_by.click =>
           @search_for.val('')
           @fill_tree()
-        @search_by.click =>
           setTimeout (=> @search_for.focus()), 200
-        @form.find('.filter_tree').change -> @fill_tree()
+        @form.find('[name=filter_tree]').change => @fill_tree()
         @cludes = @form.find('div.clusions input')
         @cludes = ($(input) for input in @cludes)
         @cludes[0].val usdlc.projectStorage('include') ? ''

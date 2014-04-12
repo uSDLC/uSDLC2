@@ -7,10 +7,8 @@ module.exports = (exchange) ->
       icons: 'source_editor'
       init: (editor) ->
         editor.addCommand 'source_editor', exec: (editor) ->
-          roaster.clients '/client/tree_filer.coffee',
-          (tree_filer) -> tree_filer()
-#           roaster.clients '/client/dir_tree.coffee',
-#           (dir_tree) -> dir_tree.project usdlc.project
+          roaster.clients '/client/dir_tree.coffee',
+          (dir_tree) -> dir_tree.project usdlc.project
           return true
 
         editor.ui.addButton 'source_editor',

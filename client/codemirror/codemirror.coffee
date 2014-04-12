@@ -26,8 +26,8 @@ module.exports.initialise = (next) ->
     play_current: (cm) -> roaster.replay()
     
     file_manager: (cm) ->
-      roaster.clients '/client/tree_filer.coffee',
-      (tree_filer) -> tree_filer()
+      roaster.clients '/client/dir_tree.coffee',
+      (dir_tree) -> dir_tree.project usdlc.project
       
     toggle_auto_complete: (cm) -> alert "Under Construction"
     
