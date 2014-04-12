@@ -120,12 +120,12 @@ class GWT extends EventEmitter
       if name and not name.ends_with('.gwt') and
       not @sections_completed[name]
         @sections_completed[name] = true
-        console.log "#1 Section: #{name}"
+        @print "#1 Section: #{name}"
       do func = =>
         return @next() unless @after_sections.length
         section = @after_sections.shift()
         try section(func) catch error
-          console.log section.toString()
+          console.error section.toString()
           throw error
       @timer.elapsed()
   sections_completed: {}
@@ -144,7 +144,7 @@ class GWT extends EventEmitter
   rules: (patterns...) ->
     @ruler.add(patterns...)
   # display a test line title
-  title: (text) -> console.log "#2    #{text}"
+  title: (text) -> @print "#2    #{text}"
   # run code level tests
   code_tests: (code...) -> c.apply(@) for c in code
 
@@ -152,15 +152,16 @@ class GWT extends EventEmitter
   go: -> @next()
   next: ->
     if @test_count
-      console.log """
+      @print """
                   TAP version 13
                   1..#{@test_count}"""
       @count = 0
       @actions = [@preactions..., @actions...]
       @next = @next_next
+      @passes_required = 0
       @next()
     else
-      console.log "# No tests"
+      @print "# No tests"
       @exit()
   no_next: ->
   next_next: ->
@@ -170,11 +171,13 @@ class GWT extends EventEmitter
       @next = @no_next
       passes = @test_count - @failures - @skipped
       percent = Math.floor(passes * 100 / @test_count)
-      console.log "Failed #{@failures}/#{@test_count}, "+
+      @print "Failed #{@failures}/#{@test_count}, "+
         "#{@skipped} skipped, #{percent}% okay"
       @timer.total()
       @exit()
-    max_time = @options.maximum_step_time
+    max_time = gwt.maximum_step_time ?
+               @options.maximum_step_time
+    gwt.maximum_step_time = null
     overtime = =>
       @fail """
         gwt did not resume in #{max_time} seconds

@@ -12,6 +12,9 @@ module.exports =
     @gwt_out ls.join('\n') + '\n', encoding, fd
   output: -> (@output_array = [@output_array.join('')])[0]
   clear_output: -> @output_array = []
+  # for immediate display
+  print: (args...) ->
+    @stdout.call process.stdout, args.join(' ')+'\n'
   # Checking test output for telling signs
   monitor_output: pass: null, fail: null, end: null
   expect: (pass,fail,end) ->

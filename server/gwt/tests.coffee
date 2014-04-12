@@ -4,10 +4,14 @@ path = require 'path'; timer = require 'common/timer'
 dirs = require 'dirs'
 
 module.exports =
+  constraint: -> @passes_required++
   # called if test passes
-  pass: (msg = '') ->
+  pass: (msg) ->
     # pass can't really pass if there is more to do
-    @pass_messages.push msg.toString() if msg.length
+    return if @passes_required-- > 0
+    @passes_required = 0
+
+    @pass_messages.push msg.toString() if msg
     msg = @pass_messages.join(' - ')
     @pass_messages = []
     msg = " - #{msg}" if msg.length
@@ -15,7 +19,7 @@ module.exports =
       expect_failure = false
       @fail(message) # because we did not fail???
     else
-      console.log "\nok #{++@count}#{msg}"
+      @print "\nok #{++@count}#{msg}"
     @next()
   # called if test fails
   fail: (msg = '') ->
@@ -32,6 +36,7 @@ module.exports =
     console.log msg.stack if msg?.stack
     @skip.section('fail')
     @tests = []
+    @passes_required = 0
     @next()
   # where we are testing for failures
   expect_failure: false
