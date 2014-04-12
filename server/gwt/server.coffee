@@ -18,14 +18,18 @@ class Server
       return gwt.pass("#{@name} already running")
     dirs.in_directory @dir, =>
       @running_instance = processes().cmd @start_command, =>
-    check = =>
-      @net.read_response => gwt.pass()
-      @net.get @ping ? '', (error) =>
-        if error
-          @running_instance = null
-          return gwt.fail \
-          "Server #{@name} did not start (#{error})"
-    setTimeout check, 2000
+    if @ready
+      gwt.maximum_step_time = 300
+      gwt.expect @ready
+    else
+      check = =>
+        @net.read_response => gwt.pass()
+        @net.get @ping ? '', (error) =>
+          if error
+            @running_instance = null
+            return gwt.fail \
+            "Server #{@name} did not start (#{error})"
+      setTimeout check, 2000
     gwt.on_exit (next) =>
       return if not @running_instance
       if @stop_url and @stop_url[0] isnt '#'
