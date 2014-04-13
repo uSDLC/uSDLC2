@@ -1,0 +1,13 @@
+.vertical {
+    background-color: #e0e0e0;
+    min-width: 10px;
+    max-width: 350px;
+    resize:    horizontal;
+}
+
+.horizontal {
+  min-height: 100px;
+  max-height: 80%;
+  overflow: auto;
+  resize:   vertical;
+}

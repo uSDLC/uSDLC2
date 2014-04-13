@@ -57,10 +57,10 @@ class DirTree
   tree_action_edit: (@data) -> @opt.on_select @data
   tree_action_delete: (@data) ->
     url = "#{filer}?cmd=rm&path=#{data.path}"
-    roaster.request.json url, @fill_tree
+    roaster.request.json url, => @fill_tree()
   tree_action_move: (@data) ->
     roaster.clients "/client/autocomplete.coffee",
-    (autocomplete) ->
+    (autocomplete) =>
       @tree_action_url = @data.path
       autocomplete
         title: 'Move/Rename...'
@@ -71,19 +71,18 @@ class DirTree
             rsp [@data.value]
         select: (selected) =>
           url = "#{filer}?cmd=mv&from=#{@tree_action_url}"+
-                "&to=#{@selected.value}"
-          roaster.request.json url, @fill_tree
+                "&to=#{selected.value}"
+          roaster.request.json url, => @fill_tree()
   tree_action_new: (@data) ->
     roaster.clients "/client/autocomplete.coffee",
-    (autocomplete) =>
-      autocomplete
-        title: 'New...'
-        source: (req, rsp) => rsp [req.term, @data.value]
-        select: (selected) =>
-          roaster.request.json "#{filer}?cmd=mk"+
-            "&path=#{@data.path}&name=#{@selected.value}",
-            @fill_tree
-            
+    (autocomplete) => autocomplete
+      title: 'New...'
+      source: (req, rsp) => rsp [req.term, @data.value]
+      select: (selected) =>
+        roaster.request.json "#{filer}?cmd=mk"+
+          "&path=#{@data.path}&name=#{selected.value}",
+          => @fill_tree()
+
   search_type: ->
     @search_by.find(':radio:checked').attr('id')[-4..]
         
