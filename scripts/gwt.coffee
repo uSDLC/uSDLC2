@@ -13,6 +13,7 @@ default_options =
   sections: '.*'
   script_path: 'gen/usdlc2'
   maximum_step_time: 5
+  host: "http://localhost:9009"
 
 stdout = null
 forked_writer = (string, encoding, fd)  ->
@@ -36,7 +37,7 @@ module.exports = (args...) ->
   # if we are formed from uSDLC2, send stdout/stderr back
   # via messages
   stdout = process.stdout.write; stderr = process.stderr.write
-  if options.forked
+  if process.send
     process.stdout.write = forked_writer
     arg_string = args[0..-2].join("' '")
     console.log "#: ./go.sh gwt '#{arg_string}'"
