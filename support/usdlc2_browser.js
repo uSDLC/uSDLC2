@@ -1,13 +1,22 @@
 /* Copyright (C) 2014 paul@marrington.net, see GPL license */
 (function() {
-  var handle = location.host + location.pathname;
-  var retain = /usdlc2-retain-page/.exec(location.search);
-  var opened = 0;
   if (!window.usdlc2) {
-    window.usdlc2 = {
-      host: "localhost"
-    };
+    window.usdlc2 = {};
   }
+  function param(name, def) {
+    var re = new RegExp(name+"=([^&]+)");
+    var value = re.exec(location.search);
+    if (value !== null  &&  value.length == 2) return value[1];
+    if (usdlc2[name]) return usdlc2[name]
+    return def;
+  }
+  var retain = param('usdlc2-retain-page', false);
+  var handle = param('usdlc2-name',location.host+location.pathname);
+  var host = param('usdlc2-host', 'localhost')
+  var port = param('usdlc2-port', 0);
+  if (port === 0) return; // don't drive if no port specified
+  
+  var opened = 0;
   window.gwt = window.usdlc2;
   function open() {
     usdlc2.ws = new WebSocket(usdlc2.url);
@@ -46,7 +55,7 @@
     console.debug = console.dir = console.info = console.log;
     console.exception = console.error;
     usdlc2.ws.onclose = function(event) {
-      setTimeout(open, 1000);
+      setTimeout(open, 5000);
       if (opened) {
         opened--;
         console.log("uSDLC2 connection closed for "+handle);
@@ -54,6 +63,7 @@
       }
     };
     usdlc2.fail = function(msg) {
+      if (msg && msg.stack) msg = msg.message+'\n'+msg.stack
       console.log("Failed: "+(msg ? msg : ''));
     };
     usdlc2.pass = function(msg) {
@@ -67,7 +77,7 @@
       }
     };
     usdlc2.check = function(left, right) {
-      usdlc2.test(left != right, left+" isn't "+right);
+      usdlc2.test(left == right, left+" isn't "+right);
     };
     usdlc2.wait_for = function(checker, interval) {
       if (!interval) interval = 2000;
@@ -81,22 +91,7 @@
       full_check();
     };
   }
-  
-  if (!usdlc2.name) {
-    var name = /usdlc2-name=([^&]+)/.exec(location.search);
-    if (name === null || name.length != 2) {
-      console.log("uSDCL2 Instrumentation requires a name");
-      name = ['', location.host+location.pathname];
-      console.log("Using: "+name);
-    }
-    usdlc2.name = name[1];
-  }
-  var port = /usdlc2-port=(\d+)/.exec(location.search);
-  if (port === null || port.length != 2) {
-    console.log("uSDLC2 Instrumentation requires a port");
-  } else {
-    usdlc2.url = "ws://"+usdlc2.host+":"+port[1]+
-      "/server/gwt/browser.coffee?name="+usdlc2.name;
-    open();
-  }
+  usdlc2.url = "ws://"+host+":"+port+
+    "/server/gwt/browser.coffee?name="+handle;
+  open();
 })();
