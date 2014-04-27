@@ -81,6 +81,12 @@ class GWT extends EventEmitter
     process_artifacts = (next) =>
       process_type = (ext, next) =>
         artifacts = @artifacts[ext]
+        return next() if not artifacts?.length
+        last = artifacts.pop()
+        if last.indexOf('.gwt.') is -1
+          artifacts.push last
+        else
+          artifacts.unshift last # put bridge at start
         do process_item = =>
           if not artifacts?.length
             delete @artifacts[ext] # only once
@@ -89,7 +95,6 @@ class GWT extends EventEmitter
           if proc = @file_processor[ext]
             (@context = proc).call gwt, name, process_item
           else
-            console.error "Unknown file type for #{name}"
             @next()
       process_types = (exts..., next) =>
         do process_items = =>
