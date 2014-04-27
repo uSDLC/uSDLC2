@@ -37,8 +37,8 @@ module.exports = file_processor:
         if typeof actor is 'function'
           if not actor.length
             gwt.add actor
-          else
-            actor.call(gwt, process); return
+#           else
+#             actor.call(gwt, process); return
       catch err
         if (err.code isnt 'MODULE_NOT_FOUND') or
         (err.message.indexOf(script) == -1)
