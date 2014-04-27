@@ -72,7 +72,7 @@ Then the result is an even number</pre>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
-<div class="metadata Ref">Ref: <span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="dir_tree"><a href="javascript:usdlc.edit_source({value:'dir_tree.coffee',path:'client/dir_tree.coffee',category:'client'})">dir_tree.coffee</a></span><span class="codemirror"><a href="javascript:usdlc.edit_source({value:'codemirror.coffee',path:'client/codemirror/codemirror.coffee',category:'codemirror'})">codemirror.coffee</a> </span><span class="body"><a href="javascript:usdlc.edit_source({value:'body.css',path:'client/body.css',category:'client'})">body.css</a> </span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.html',path:'index.html',category:'.'})">index.html</a> </span><span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a> </span></div>
+<div class="metadata Ref">Ref: <span class="source_editor"><a href="javascript:usdlc.edit_source({value:'source_editor.coffee',path:'client/ckeditor/source_editor.coffee',category:'ckeditor'})">source_editor.coffee</a></span><span class="dir_tree"><a href="javascript:usdlc.edit_source({value:'dir_tree.coffee',path:'client/dir_tree.coffee',category:'client'})">dir_tree.coffee</a></span><span class="codemirror"><a href="javascript:usdlc.edit_source({value:'codemirror.coffee',path:'client/codemirror/codemirror.coffee',category:'codemirror'})">codemirror.coffee</a> </span><span class="body"><a href="javascript:usdlc.edit_source({value:'body.css',path:'client/body.css',category:'client'})">body.css</a> </span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.html',path:'index.html',category:'.'})">index.html</a> </span><span class="app"><a href="javascript:usdlc.edit_source({value:'app.coffee',path:'app.coffee',category:'.'})">app.coffee</a> </span><span class="tests"><a href="javascript:usdlc.edit_source({value:'tests.coffee',path:'server/gwt/tests.coffee',category:'gwt'})">tests.coffee</a> </span></div>
 
 <h4 style="">Given a Shell, Fork or Spawn</h4>
 
@@ -358,8 +358,8 @@ host = "http://localhost:"
 gwt.rules(
   /server on port (\d{1,4})/, (@port) -&gt; @pass()
   /base url of (\S+)/, (@base) -&gt; @pass()
-  /ask for a page (\S+)/, (@page) -&gt;
-    url = host+@port+'/'+@base+@page
+  /ask for a page (\S+)/, (page) -&gt;
+    url = host+@port+'/'+@base+page
     @page = browser.page('live').open url, retain: false
     @pass()
   /get a connection/, -&gt;
@@ -424,7 +424,7 @@ Given the results table contains 0 entries
 When we click on the List Button
 Then the results table contains 3 entries</pre>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="instrument_browser_sample"><a href="javascript:usdlc.edit_source({value:'instrument_browser_sample.html',path:'support/instrument_browser_sample.html',category:'support'})">instrument_browser_sample.html</a></span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a></span><span class="usdlc2_browser_sample"><a href="javascript:usdlc.edit_source({value:'usdlc2_browser_sample.html',path:'support/usdlc2_browser_sample.html',category:'support'})">usdlc2_browser_sample.html</a> </span><span class="usdlc2_browser"><a href="javascript:usdlc.edit_source({value:'usdlc2_browser.js',path:'support/usdlc2_browser.js',category:'support'})">usdlc2_browser.js</a> </span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a> </span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a> </span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'scripts/gwt.coffee',category:'scripts'})">gwt.coffee</a> </span><span class="tests"><a href="javascript:usdlc.edit_source({value:'tests.coffee',path:'server/gwt/tests.coffee',category:'gwt'})">tests.coffee</a> </span><span class="io"><a href="javascript:usdlc.edit_source({value:'io.coffee',path:'server/gwt/io.coffee',category:'gwt'})">io.coffee</a> </span><span class="file_processor"><a href="javascript:usdlc.edit_source({value:'file_processor.coffee',path:'server/gwt/file_processor.coffee',category:'gwt'})">file_processor.coffee</a> </span><span class="document_link"><a href="javascript:usdlc.edit_source({value:'document_link.coffee',path:'client/ckeditor/document_link.coffee',category:'ckeditor'})">document_link.coffee</a> </span></div>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee"></textarea></p>
 
