@@ -28,5 +28,5 @@ module.exports =
     # there is a small chance this will fail if the chunk
     # does not break on a line boundary
     for line in chunk.toString().split('\n')
-      return @pass() if @monitor_output.pass?.test line
-      return @fail() if @monitor_output.fail?.test line
+      return @pass(line) if @monitor_output.pass?.test line
+      return @fail(line) if @monitor_output.fail?.test line
