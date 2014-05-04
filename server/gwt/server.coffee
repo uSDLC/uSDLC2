@@ -23,7 +23,7 @@ class Server
       gwt.expect @ready
     else
       check = =>
-        @net.read_response => gwt.pass()
+        @net.once 'finish', => gwt.pass()
         @net.get @ping ? '', (error) =>
           if error
             @running_instance = null
@@ -47,24 +47,31 @@ class Server
         next()
   # retrieve or infer port number
   port: -> url.parse(@url).port
+  
+  check_response: (error, @last_response, next) ->
+    if not @last_response
+      return gwt.fail("No JSON response for #{cmd}")
+    if @last_response?.error
+      return gwt.fail(@last_response.error)
+    return next(@last_response) if next
+    gwt.pass(strings.from_map(@last_response))
 
   get: (cmd, args, next) ->
-    key = cmd.split('/').slice(-1)[0].split('.')[0]
-    @net.get_json cmd, query: args, (error, @last_response) =>
-      if not @last_response
-        return gwt.fail("No JSON response for #{cmd}")
-      if @last_response?.error
-        return gwt.fail(@last_response.error)
-      return next(@last_response) if next
-      gwt.pass(strings.from_map(@last_response))
-
+    @net.get_json cmd, query: args, (err, response) =>
+      @check_response err, response, next
+  
+  post: (cmd, args, object, next) ->
+    @net.post_json cmd, object, query: args, (err, resp) =>
+      try @check_response err, JSON.parse(resp), next
+      catch err then gwt.fail err
+      
   bin: (cmd, args) ->
-    key = cmd.split('/').slice(-1)[0].split('.')[0]
-    @net.get_response cmd, query: args,
-    (err, @last_response) =>
+    @net.read_response (err, @last_response) =>
       return gwt.fail(err) if err
       gwt.pass(cmd)
+    @net.get cmd, query: args, ->
 
+      
   check_get: (contents, against) ->
     result = []
     for key, value of against
