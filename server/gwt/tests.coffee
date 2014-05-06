@@ -43,16 +43,38 @@ module.exports =
   # test and show message on failure
   test: (test, msg = '') ->
     if test then @pass msg else @fail msg
+    return test
+  failed: (test, msg = '') ->
+    return true if test
+    @fail msg
+    return false
   # parse err and fail if it exists
   check_for_error: (err, msg = '') ->
     if err then @fail err else @pass msg
     return err
   # test and provide a message if not as expected
   check: (value, to_be) ->
-    if value is to_be
-      @pass "'#{value}' correct"
+    valstr = JSON.stringify(value)
+    if @cmp(value, to_be)
+      @pass "'#{valstr}' correct"; return true
     else
-      @fail "'#{value}' isn't '#{to_be}'"
+      @fail "#{valstr} isn't #{JSON.stringify(to_be)}"
+      return false
+  cmp: (x, y) -> # detailed object comparison
+    return true if x is y
+    return false if not x instanceof Object
+    return false if not y instanceof Object
+    return false if x.constructor isnt y.constructor
+    for p in x
+      continue if not x.hasOwnProperty(p)
+      return false if not y.hasOwnProperty(p)
+      continue if x[p] is y[p]
+      return false if typeof x[p] isnt "object"
+      return false if not cmp(x[p], y[p])
+    for p in y
+      if y.hasOwnProperty(p) and not x.hasOwnProperty(p)
+        return false
+    return true
   # call if test is not yet created
   todo: (msg) -> @fail "# TODO #{msg ? 'under construction'}"
   # call if test is not valid in the current setting
