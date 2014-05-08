@@ -18,8 +18,8 @@ class GWT extends EventEmitter
     @options.document_path = docpath
     @all_scripts = []
     scripts = []; @preactions = []
-    @actions = []; @test_count = 0
-    @ruler = new Rules(gwt)
+    @actions = [-> @count = 0; @next()]; @count = -1
+    @test_count = 0; @ruler = new Rules(gwt)
     @statement_skip = @section_skip = 0; @failures = 0
     @cleanups = []; @skipped = 0
     @after_sections = []; @paused_timeout = null
@@ -108,7 +108,13 @@ class GWT extends EventEmitter
   # done with load as it has already created an instance
   load: -> @
  # add an actor to be run to create a test
-  add: (test_list...) ->
+  add: (title, test_list...) ->
+    if typeof title is "string" then do ->
+      actor = test_list[0]
+      test_list[0] = ->
+        console.log '#2 '+title
+        actor.call gwt
+        
     for test in test_list
       @actions.push test
       @test_count++
@@ -160,7 +166,7 @@ class GWT extends EventEmitter
       @print """
                   TAP version 13
                   1..#{@test_count}"""
-      @count = 0
+      @count = -1
       @actions = [@preactions..., @actions...]
       @next = @next_next
       @passes_required = 0
