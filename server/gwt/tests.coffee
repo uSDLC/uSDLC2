@@ -18,23 +18,26 @@ module.exports =
     if expect_failure
       expect_failure = false
       @fail(message) # because we did not fail???
-    else
+    else if @count >= 0
       @print "\nok #{++@count}#{msg}"
     @next()
   # called if test fails
   fail: (msg = '') ->
     negate = 'not '
+    msg = msg.toString()
     if expect_failure
       expect_failure = false
       negate = ''
-    else
+    else if @count >= 0
       @failures++
-    msg = msg.toString()
+      msg = (++@count)+' '+msg
+      @skip.section('fail')
+    else
+      @skip.all('fail on pre')
     msg += "\n"+msg.stack if msg.stack
     msg = " - #{msg}" if msg.length
-    console.log "\n#{negate}ok #{++@count}#{msg}"
+    console.log "\n#{negate}ok #{msg}"
     console.log msg.stack if msg?.stack
-    @skip.section('fail')
     @tests = []
     @passes_required = 0
     @next()
@@ -45,9 +48,9 @@ module.exports =
     if test then @pass msg else @fail msg
     return test
   failed: (test, msg = '') ->
-    return true if test
+    return false if not test
     @fail msg
-    return false
+    return true
   # parse err and fail if it exists
   check_for_error: (err, msg = '') ->
     if err then @fail err else @pass msg
