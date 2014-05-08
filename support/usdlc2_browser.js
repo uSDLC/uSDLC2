@@ -7,12 +7,12 @@
     var re = new RegExp(name+"=([^&]+)");
     var value = re.exec(location.search);
     if (value !== null  &&  value.length == 2) return value[1];
-    if (usdlc2[name]) return usdlc2[name]
+    if (usdlc2[name]) return usdlc2[name];
     return def;
   }
   var retain = param('usdlc2-retain-page', false);
   var handle = param('usdlc2-name',location.host+location.pathname);
-  var host = param('usdlc2-host', 'localhost')
+  var host = param('usdlc2-host', 'localhost');
   var port = param('usdlc2-port', 0);
   if (port === 0) return; // don't drive if no port specified
   
@@ -43,7 +43,8 @@
         for (var i = 0; i < arguments.length; i++) {
           var arg = arguments[i];
           if (typeof arg == "object") {
-            arg = JSON.stringify(arg);          
+            try { arg = JSON.stringify(arg); }
+            catch (e) { arg = arg.toString(); }
           }
           args.push(arg);
         }
@@ -63,7 +64,7 @@
       }
     };
     usdlc2.fail = function(msg) {
-      if (msg && msg.stack) msg = msg.message+'\n'+msg.stack
+      if (msg && msg.stack) msg = msg.message+'\n'+msg.stack;
       console.log("Failed: "+(msg ? msg : ''));
     };
     usdlc2.pass = function(msg) {
