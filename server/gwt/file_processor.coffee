@@ -35,8 +35,8 @@ module.exports = file_processor:
       try
         actor = require(script)
         if typeof actor is 'function'
-          if not actor.length
-            gwt.add actor
+          if not actor.length and not actor.name.length
+            gwt.add actor # no params and not prototype
 #           else
 #             actor.call(gwt, process); return
       catch err
