@@ -48,7 +48,7 @@ class Server
   # retrieve or infer port number
   port: -> url.parse(@url).port
   
-  check_response: (error, @last_response, next) ->
+  check_response: (cmd, error, @last_response, next) ->
     if not @last_response
       return gwt.fail("No JSON response for #{cmd}")
     if @last_response?.error
@@ -56,13 +56,13 @@ class Server
     return next(@last_response) if next
     gwt.pass(strings.from_map(@last_response))
 
-  get: (cmd, args, next) ->
-    @net.get_json cmd, query: args, (err, response) =>
-      @check_response err, response, next
+  get: (cmd, args..., next) ->
+    @net.get_json cmd, query: args[0], (err, response) =>
+      @check_response cmd, err, response, next
   
-  post: (cmd, args, object, next) ->
-    @net.post_json cmd, object, query: args, (err, resp) =>
-      try @check_response err, JSON.parse(resp), next
+  post: (cmd, args..., object, next) ->
+    @net.post_json cmd, object, query: args[0], (err, resp) =>
+      try @check_response cmd, err, JSON.parse(resp), next
       catch err then gwt.fail err
       
   bin: (cmd, args) ->
