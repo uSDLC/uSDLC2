@@ -1,8 +1,7 @@
 /* Copyright (C) 2014 paul@marrington.net, see GPL license */
 (function() {
-  if (!window.usdlc2) {
-    window.usdlc2 = {};
-  }
+  if (!window.usdlc2) { window.usdlc2 = {}; }
+  
   function param(name, def) {
     var re = new RegExp(name+"=([^&]+)");
     var value = re.exec(location.search);
@@ -28,6 +27,7 @@
     usdlc2.ws.onmessage = function(event) {
       eval(event.data);
     };
+    original_console = window.console;
     window.console = {
       assert: function() {
         var args = Array.prototype.slice.call(arguments, 0);
@@ -48,7 +48,11 @@
           }
           args.push(arg);
         }
-        usdlc2.ws.send(args.join(' ')+'\n');
+        try { usdlc2.ws.send(args.join(' ')+'\n'); }
+        catch (e) {
+          window.console = original_console;
+          window.console.log.apply(window, arguments);
+        }
       },
       group: function() {}, groupEnd: function() {},
       groupCollapsed: function() {}
@@ -59,6 +63,7 @@
       setTimeout(open, 5000);
       if (opened) {
         opened--;
+        window.console = original_console;
         console.log("uSDLC2 connection closed for "+handle);
         if (!retain) window.close();
       }
