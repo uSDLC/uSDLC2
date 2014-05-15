@@ -10,10 +10,8 @@ class Compiler
     @opts.out ?= '.'
     @shell = processes()
     @shell.options.cwd = @opts.dir
-    gwt.preactions.push =>
-      dirs.mkdirs @opts.out, -> gwt.next()
     @sources = []; @targets = []; @unchanged = []
-    @precompile = []
+    @precompile = [ (next) => dirs.mkdirs @opts.out, next ]
     
     @prepare = (source, target) ->
       if newer(source, target)
@@ -28,43 +26,42 @@ class Compiler
       @prepare(name, main)
       next()
       
-    gwt.preactions.push =>
-      return gwt.next() if not @sources.length
+    @building = [ (next) =>
+      return next() if not @sources.length
       cmds = @compile_commands @sources, @targets
       do compile = =>
-        return gwt.next() if not cmds.length
+        return next() if not cmds.length
         console.log cmd = cmds.shift()
         @shell.cmd cmd, compile
+    ]
         
     if @link_command
-      gwt.preactions.push =>
-        console.log cmd = @link_command(@targets, @unchanged)
-        @shell.cmd cmd, -> gwt.next()
+      @building.push (next) =>
+        cmd = @link_command(@targets, @unchanged)
+        @shell.cmd cmd, next
             
-  compile: (list...) ->
-    gwt.preactions.unshift =>
-      precompile = (next) =>
-        do go = =>
-          return next() if not @precompile.length
-          action = @precompile.shift()
-          action go
-      compile = (next) =>
-        do go = =>
-          return next() if not list.length
-          source = list.shift()
-          files.is_dir source, (err, is_dir) =>
-            if is_dir
-              walk source, go, (file, stats, next) =>
-                from = "#{source}#{file}"
-                if @source_re.test(from)
-                  to = @target(file, @target_ext)
-                  @prepare(from, to)
-                next()
-            else
-              target = @target path.basename(source)
-              @prepare(source, target)
-              go()
-      precompile -> compile -> gwt.next()
+  compile: (list..., next) ->
+    do go = =>
+      return next() if not list.length
+      source = list.shift()
+      files.is_dir source, (err, is_dir) =>
+        if is_dir
+          walk source, go, (file, stats, next) =>
+            from = "#{source}#{file}"
+            if @source_re.test(from)
+              to = @target(file, @target_ext)
+              @prepare(from, to)
+            next()
+        else
+          target = @target path.basename(source)
+          @prepare(source, target)
+          go()
+          
+  build: (done) ->
+    @precompile.push @building...
+    do go = =>
+      return done() if not @precompile.length
+      @precompile.shift()(go)
   
   # given a source relative to the current source base
   target: (source, ext = @target_ext) =>
