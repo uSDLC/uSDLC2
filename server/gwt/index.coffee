@@ -114,6 +114,7 @@ class GWT extends EventEmitter
       test_list[0] = ->
         console.log '#2 '+title
         actor.call gwt
+    else test_list.unshift title
         
     for test in test_list
       @actions.push test
@@ -176,8 +177,8 @@ class GWT extends EventEmitter
       @exit()
   no_next: ->
   next_next: ->
-    clearTimeout @paused_timeout
     if not @actions.length
+      clearTimeout @paused_timeout
       # all done - clean up
       @next = @no_next
       passes = @test_count - @failures - @skipped
@@ -186,17 +187,20 @@ class GWT extends EventEmitter
         "#{@skipped} skipped, #{percent}% okay"
       @timer.total()
       @exit()
-    max_time = gwt.maximum_step_time ?
+    @step_timer gwt.maximum_step_time ?
                @options.maximum_step_time
-    gwt.maximum_step_time = null
-    overtime = =>
-      @fail """
-        gwt did not resume in #{max_time} seconds
-        increase gwt.options.maximum_step_time (seconds)"""
-    @paused_timeout = setTimeout(overtime, max_time * 1000)
     @monitor_output = pass: null, fail: null, end: null
     try act.call(@, @) if act = @actions.shift()
     catch err then return @fail err.stack
+  step_timer: (seconds) ->
+    clearTimeout @paused_timeout
+    gwt.maximum_step_time = null
+    overtime = =>
+      @fail """
+        gwt did not resume in #{seconds} seconds
+        increase gwt.options.maximum_step_time before,
+        or call gwt.step_timer(seconds) within the step"""
+    @paused_timeout = setTimeout(overtime, seconds * 1000)
   # extend gwt with methods of interest to the current tests
   extend: (modules...) ->
     for ext in modules
