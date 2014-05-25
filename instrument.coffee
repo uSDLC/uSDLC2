@@ -3,8 +3,10 @@
 patterns = [
   /^#:\s*(.*)\s*$/, (command) ->
     @div('command', command)
-  /^#p\s*(.*)\s*$/, (prompt) ->
-    @prompt(prompt)
+  /^#pause\s*(.*)\s*$/, (prompt) ->
+    @pause(prompt)
+  /^#ask\s*(.*)\s*$/, (prompt) ->
+    @ask(prompt)
   /^#(\d)\s*(.*)\s*$/, (level, heading) ->
     @heading(level, heading)
   /^#\s+(\d\d):(\d\d) seconds total\s*$/, (minutes, seconds) ->
@@ -130,8 +132,10 @@ class Instrument
       console.log action.toString()
       console.log err, err.stack if err.stack
     window.scrollTo(0,document.body.scrollHeight)
-  prompt: (prompt) ->
+  ask: (prompt) ->
     @ws.send "gwt.test(#{confirm prompt}, '#{prompt}');"
+  pause: (prompt) ->
+    @ws.send "if (#{not confirm prompt})gwt.fail('#{prompt}');"
 
 window.instrument = ->
   loc = window.location

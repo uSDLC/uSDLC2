@@ -20,4 +20,5 @@ gwt.rules(
       @next()
       
   /[Aa]sk '(.*)'/, (prompt) -> @ask prompt
+  /[Pp]ause for '(.*)'/, (prompt) -> @pause prompt
 )
