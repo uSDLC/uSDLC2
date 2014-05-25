@@ -19,5 +19,5 @@ gwt.rules(
       @actions.push actions...
       @next()
       
-  /Ask '(.*)'/, (prompt) -> @ask prompt
+  /[Aa]sk '(.*)'/, (prompt) -> @ask prompt
 )
