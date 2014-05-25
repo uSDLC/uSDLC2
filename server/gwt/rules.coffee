@@ -18,4 +18,6 @@ gwt.rules(
     @file_processor.gwt scripts[0], =>
       @actions.push actions...
       @next()
+      
+  /Ask '(.*)'/, (prompt) -> @ask prompt
 )

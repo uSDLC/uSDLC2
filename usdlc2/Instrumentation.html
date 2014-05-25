@@ -733,7 +733,7 @@ A rule with steps
 A rule that would fail mid-step if we permitted it
 </pre>
 
-<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span></div>
+<div class="metadata Ref" style="display: block;">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a></span><span class="Play"><a href="javascript:usdlc.play()">Play</a></span><span class="base"><a href="javascript:usdlc.edit_source({value:'base.coffee',path:'server/gwt/base.coffee',category:'gwt'})">base.coffee</a></span><span class="index"><a href="javascript:usdlc.edit_source({value:'index.coffee',path:'server/gwt/index.coffee',category:'gwt'})">index.coffee</a></span><span class="files"><a href="javascript:usdlc.edit_source({value:'files.coffee',path:'server/http/files.coffee',category:'http'})">files.coffee</a></span><span class="io"><a href="javascript:usdlc.edit_source({value:'io.coffee',path:'server/gwt/io.coffee',category:'gwt'})">io.coffee</a> </span><span class="tests"><a href="javascript:usdlc.edit_source({value:'tests.coffee',path:'server/gwt/tests.coffee',category:'gwt'})">tests.coffee</a> </span></div>
 
 <p style="display: block;"><textarea readonly="readonly" source="true" style="display: none;" type="gwt.coffee">count = 0
 
@@ -761,6 +761,28 @@ gwt.rules(
     heartbeat 5
     heartbeat 2
 )</textarea></p>
+
+<h2>Operator Assisted Instrumentation</h2>
+
+<p>Not all tests can be fully automated. Manual testing can be made more effective with uSDLC2 support.&nbsp;</p>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
+
+<div class="metadata Ref">Ref: <span class="usdlc2_browser"><a href="javascript:usdlc.edit_source({value:'usdlc2_browser.js',path:'support/usdlc2_browser.js',category:'support'})">usdlc2_browser.js</a> </span><span class="browser"><a href="javascript:usdlc.edit_source({value:'browser.coffee',path:'server/gwt/browser.coffee',category:'gwt'})">browser.coffee</a> </span></div>
+
+<h3>Ask</h3>
+
+<p>The core approach is to ask the operator to either do something or to report back a result.</p>
+
+<pre title="gwt" type="gwt">
+Ask 'Are you happy today'
+Ask 'nothing'</pre>
+
+<p>&nbsp;The operator can pass or fail the question. This gwt statement is available everywhere. It can also be called from instrumentation with <em>gwt.ask('Are you happy today')</em>.</p>
+
+<div class="metadata Ref">Ref: <span class="Bridge"><a href="javascript:usdlc.bridge_editor()">Bridge</a> </span><span class="Play"><a href="javascript:usdlc.play()">Play</a> </span><span class="rules"><a href="javascript:usdlc.edit_source({value:'rules.coffee',path:'server/gwt/rules.coffee',category:'gwt'})">rules.coffee</a></span><span class="index">&nbsp;</span><span class="interactive"><a href="javascript:usdlc.edit_source({value:'interactive.coffee',path:'server/gwt/interactive.coffee',category:'gwt'})">interactive.coffee</a> </span><span class="play"><a href="javascript:usdlc.edit_source({value:'play.coffee',path:'client/ckeditor/play.coffee',category:'ckeditor'})">play.coffee</a> </span><span class="instrument"><a href="javascript:usdlc.edit_source({value:'instrument.coffee',path:'instrument.coffee',category:'.'})">instrument.coffee</a>&nbsp;</span><span class="gwt"><a href="javascript:usdlc.edit_source({value:'gwt.coffee',path:'server/http/gwt.coffee',category:'http'})">gwt.coffee</a> </span><span class="server"><a href="javascript:usdlc.edit_source({value:'server.coffee',path:'server/gwt/server.coffee',category:'gwt'})">server.coffee</a> </span></div>
+
+<p><textarea readonly="readonly" source="true" type="gwt.coffee"></textarea></p>
 
 <h2>Play Instrumentation</h2>
 

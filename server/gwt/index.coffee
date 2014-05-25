@@ -234,6 +234,9 @@ class GWT extends EventEmitter
   process: (type) -> require('gwt/processes')(type)
   repl: (cmd, dir) -> @process().repl(cmd, dir)
   shell: (cmd) -> @process().shell(cmd)
+  ask: (prompt) ->
+    @extend 'gwt/interactive'
+    @ask prompt
       
 module.exports =
   load: (@options) ->

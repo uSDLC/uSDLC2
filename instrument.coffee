@@ -3,6 +3,8 @@
 patterns = [
   /^#:\s*(.*)\s*$/, (command) ->
     @div('command', command)
+  /^#p\s*(.*)\s*$/, (prompt) ->
+    @prompt(prompt)
   /^#(\d)\s*(.*)\s*$/, (level, heading) ->
     @heading(level, heading)
   /^#\s+(\d\d):(\d\d) seconds total\s*$/, (minutes, seconds) ->
@@ -29,7 +31,7 @@ _div = document.createElement('DIV')
 _span = document.createElement('SPAN')
 _pre = document.createElement('PRE')
 header_idx = 1
-
+ 
 document.onkeydown = (event) ->
   if event.keyCode is 80 # P
     window.location.href =  window.location.href
@@ -41,7 +43,7 @@ toggle_hidden = (element, class_name) ->
     element.className = 'hidden'
 
 class Instrument
-  constructor: ->
+  constructor: (@ws) ->
     @viewport = document.getElementById('viewport')
     @container = [@viewport]
     @same_action = false; @last_action = null
@@ -118,6 +120,7 @@ class Instrument
         return [action = patterns[index + 1], parameters]
     return null
   display: (line) ->
+    line = line.trim()
     return if not line?.length
     action = @find line
     return false if not action
@@ -127,26 +130,15 @@ class Instrument
       console.log action.toString()
       console.log err, err.stack if err.stack
     window.scrollTo(0,document.body.scrollHeight)
+  prompt: (prompt) ->
+    @ws.send "gwt.test(#{confirm prompt}, '#{prompt}');"
 
 window.instrument = ->
-  instrument = new Instrument()
-  url = "/server/http/gwt.coffee#{window.location.search}"
+  loc = window.location
+  ws = new WebSocket "ws://#{loc.hostname}:#{loc.port}"+
+    "/server/http/gwt.coffee#{loc.search}"
+  ws.onmessage = (event) -> instrument.display(event.data)
+  ws.onclose = ->  instrument.display("Connection closed")
+  instrument = new Instrument(ws)
   instrument.html('again',
     "<a href='#{window.location.href}'>again</a>")
-  request = new XMLHttpRequest()
-  previous_length = 0
-  request.onreadystatechange = ->
-    return if request.readyState <= 2
-    try
-      text = request.responseText.substring(previous_length)
-      previous_length = request.responseText.length
-    catch e then text = ''
-    error = null
-    if is_complete = (request.readyState is 4)
-      if request.status isnt 200
-        error = "#{request.statusText} (#{request.status})"
-        instrument.display "Return code: #{error}"
-    for line in text.split(/\s*\r*\n/)
-      instrument.display(line)
-  request.open 'GET', url, true
-  request.send null

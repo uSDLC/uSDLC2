@@ -1,4 +1,4 @@
-# Copyright (C) 2012,13 paul@marrington.net, see GPL license
+# Copyright (C) 2012-14 paul@marrington.net, see GPL license
 
 # This script expects a base directory, query string, hash
 # It will run Setup.coffee from the base directory,
@@ -39,6 +39,7 @@ module.exports = (args...) ->
   stdout = process.stdout.write; stderr = process.stderr.write
   if process.send
     process.stdout.write = forked_writer
+    process.on 'message', (cmd) -> eval cmd
     arg_string = args[0..-2].join("' '")
     console.log "#: ./go.sh gwt '#{arg_string}'"
   else
