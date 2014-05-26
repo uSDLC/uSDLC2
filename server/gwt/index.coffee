@@ -117,7 +117,9 @@ class GWT extends EventEmitter
     else test_list.unshift title
         
     for test in test_list
-      @actions.push test
+      @actions.push ->
+         return @skip('', @statement_skip--) if @statement_skip
+         test.call @, @
       @test_count++
     return @
 
@@ -143,7 +145,6 @@ class GWT extends EventEmitter
   sections_completed: {}
 
   test_statement: (statement) ->
-    return @skip('', @statement_skip--) if @statement_skip
     @title statement
     if not @ruler.run(statement)
       @fail """
