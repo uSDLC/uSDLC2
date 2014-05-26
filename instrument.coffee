@@ -30,6 +30,7 @@ patterns = [
   /^(.+)\s*$/, (line) -> @output(line)
 ]
 _div = document.createElement('DIV')
+_button = document.createElement('BUTTON')
 _span = document.createElement('SPAN')
 _pre = document.createElement('PRE')
 header_idx = 1
@@ -43,6 +44,8 @@ toggle_hidden = (element, class_name) ->
     element.className = class_name
   else
     element.className = 'hidden'
+
+buttons = []
 
 class Instrument
   constructor: (@ws) ->
@@ -64,11 +67,13 @@ class Instrument
     div.innerHTML = "<b>#{min}:#{sec}</b> minutes total"
     @viewport.appendChild(div)
   heading: (level, heading) ->
+    @remove_buttons()
     @fix_level_one() if level is 1
     @container.shift() while level <= @level--
     @container.unshift @div("heading-#{level}", heading)
     @level = level
   result: (title, className, ok, note) ->
+    @remove_buttons()
     @ok and= ok
     div = _div.cloneNode()
     div.className = className
@@ -132,10 +137,26 @@ class Instrument
       console.log action.toString()
       console.log err, err.stack if err.stack
     window.scrollTo(0,document.body.scrollHeight)
+  interact: (prompt, titles..., action) ->
+    div = @div 'prompt', "#{prompt}<br>"
+    add_button = (title, polarity) =>
+      buttons.push button = _button.cloneNode()
+      button.innerHTML = title ? 'Fail'
+      button.onclick = =>
+        @remove_buttons()
+        @ws.send action(polarity)
+      div.appendChild button
+    add_button titles[0], true
+    add_button titles[1], false
+  remove_buttons: ->
+    b.parentNode.removeChild(b) for b in buttons
+    buttons = []
   ask: (prompt) ->
-    @ws.send "gwt.test(#{confirm prompt}, '#{prompt}');"
+    @interact prompt, "Pass", (ok) ->
+      "gwt.test(#{ok}, '#{prompt}');"
   pause: (prompt) ->
-    @ws.send "if (#{not confirm prompt})gwt.fail('#{prompt}');"
+    @interact prompt, "OK", (ok) ->
+      "if (#{not ok})gwt.fail('#{prompt}');"
 
 window.instrument = ->
   loc = window.location
