@@ -1,4 +1,4 @@
-# Copyright (C) 2013 paul@marrington.net, see /GPL for license
+# Copyright (C) 2013-4 paul@marrington.net, see /GPL for license
 
 patterns = [
   /^#:\s*(.*)\s*$/, (command) ->
@@ -127,7 +127,7 @@ class Instrument
         return [action = patterns[index + 1], parameters]
     return null
   display: (line) ->
-    line = line.trim()
+    #line = line.trim()
     return if not line?.length
     action = @find line
     return false if not action
@@ -162,7 +162,9 @@ window.instrument = ->
   loc = window.location
   ws = new WebSocket "ws://#{loc.hostname}:#{loc.port}"+
     "/server/http/gwt.coffee#{loc.search}"
-  ws.onmessage = (event) -> instrument.display(event.data)
+  ws.onmessage = (event) ->
+    for line in event.data.split('\n')
+      instrument.display(line)
   ws.onclose = ->  instrument.display("Connection closed")
   instrument = new Instrument(ws)
   instrument.html('again',
