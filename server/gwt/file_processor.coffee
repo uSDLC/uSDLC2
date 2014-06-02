@@ -5,11 +5,18 @@ dirs = require 'dirs'
 
 module.exports = file_processor:
   'gwt': (script, next) ->
+    accumulator = []
     reader = line_reader.for_file script, (statement) =>
       return next() if not statement?
       statement = statement.trim()
       if statement.length and statement[0] isnt '#'
-        gwt.add (gwt) -> gwt.test_statement statement
+        if statement.ends_with('\\')
+          accumulator.push statement[0..-2].trim()+' '
+        else
+          statement = accumulator.join('') + statement
+          accumulator = []
+          gwt.add (gwt) ->
+            gwt.test_statement statement
 
   'coffee': (script, next) ->
     parents = []
