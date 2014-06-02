@@ -19,6 +19,7 @@ gwt.rules(
       @actions.push actions...
       @next()
       
-  /[Aa]sk '(.*)'/, (prompt) -> @ask prompt
-  /[Pp]ause for '(.*)'/, (prompt) -> @pause prompt
+  /[Aa]sk '(.*)'/, (prompt) -> @ask prompt; @pass()
+  /[Pp]rompt '(.*)'/, (prompt) -> @prompt prompt
+  /[Ee]xpect '(.*)'/, (re) -> @expect re
 )

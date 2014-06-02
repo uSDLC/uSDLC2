@@ -120,6 +120,7 @@ class GWT extends EventEmitter
       @actions.push ->
          return @skip('', @statement_skip--) if @statement_skip
          test.call @, @
+         @prompt @asking if @asking
       @test_count++
     return @
 
@@ -193,6 +194,7 @@ class GWT extends EventEmitter
     @monitor_output = pass: null, fail: null, end: null
     try act.call(@, @) if act = @actions.shift()
     catch err then return @fail err.stack
+    @asking = null
   step_timer: (seconds) ->
     clearTimeout @paused_timeout
     gwt.maximum_step_time = null

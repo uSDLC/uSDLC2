@@ -18,12 +18,15 @@ module.exports =
   # Checking test output for telling signs
   monitor_output: pass: null, fail: null, end: null
   expect: (pass,fail,end) ->
+    prompt = []
     re = (re) ->
+      return prompt.push re.toString()
       return new RegExp(re) if typeof re is "string"
       return re
     @monitor_output.pass = re(pass) if pass
     @monitor_output.fail = re(fail) if fail
     @monitor_output.end = re(end) if end
+    @prompt 'Expecting '+prompt.join(' // ') if not @asking
   monitor: (chunk) ->
     # there is a small chance this will fail if the chunk
     # does not break on a line boundary
