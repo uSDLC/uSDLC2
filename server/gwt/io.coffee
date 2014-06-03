@@ -20,7 +20,7 @@ module.exports =
   expect: (pass,fail,end) ->
     prompt = []
     re = (re) ->
-      return prompt.push re.toString()
+      prompt.push re.toString()
       return new RegExp(re) if typeof re is "string"
       return re
     @monitor_output.pass = re(pass) if pass
