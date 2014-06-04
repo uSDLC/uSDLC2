@@ -13,5 +13,5 @@ module.exports = (ws) ->
   query = gwt.decode_query ws.url.query
   query.push "host=#{host}"
   gwt.node query..., -> ws.close()
-  gwt.proc.on 'message', (data) -> ws.send data
+  gwt.proc.on 'message', (data) -> try ws.send data catch
   ws.on 'message', (data) -> gwt.proc.send data
