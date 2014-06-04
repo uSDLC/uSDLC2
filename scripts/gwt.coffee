@@ -17,7 +17,8 @@ default_options =
 
 stdout = null
 forked_writer = (string, encoding, fd)  ->
-  process.send string.toString()
+  try process.send string.toString()
+  catch e then shelled_writer(string, encoding, fd)
 shelled_writer = (string, encoding, fd) ->
   stdout.call(process.stdout, string, encoding, fd)
 
