@@ -6,12 +6,12 @@ util = require 'util'; send = require 'send'
 strings = require 'common/strings'
 
 class Server
-  constructor: (@name, options) ->
+  constructor: (@name, @options) ->
     _.extend @, options
     # helper to get to internet for the server
-    @net = new Internet(options.url)
     @start_command ?= module.exports.start_command
     @stop_url ?= module.exports.stop_url
+  net: -> new Internet(@options.url)
   # start the active or named server
   start: ->
     if @running_instance
@@ -23,8 +23,8 @@ class Server
       gwt.expect @ready
     else
       check = =>
-        @net.once 'finish', => gwt.pass()
-        @net.get @ping ? '', (error) =>
+        (net = @net()).once 'finish', => gwt.pass()
+        net.get @ping ? '', (error) =>
           if error
             @running_instance = null
             return gwt.fail \
@@ -36,7 +36,7 @@ class Server
         @running_instance.on 'exit', =>
           @running_instance = null
           next()
-        @net.get @stop_url, ->
+        @net().get @stop_url, ->
           "Server did not exit as anticipated"
       else if @stop_command
         processes().cmd @stop_command, =>
@@ -57,38 +57,36 @@ class Server
     gwt.pass(strings.from_map(@last_response))
 
   get: (cmd, args..., next) ->
-    @net.get_json cmd, query: args[0], (err, response) =>
+    @net().get_json cmd, query: args[0], (err, response) =>
       @check_response cmd, err, response, next
   
   post: (cmd, args..., object, next) ->
-    @net.post_json cmd, object, query: args[0], (err, resp) =>
+    @net().post_json cmd, object, query: args[0], (err, resp) =>
       try @check_response cmd, err, JSON.parse(resp), next
       catch err then gwt.fail err
       
   bin: (cmd, args) ->
-    @net.read_response (err, @last_response) =>
-      return gwt.fail(err) if err
-      gwt.pass(cmd)
-    @net.get cmd, query: args, ->
+    (net = @net()).read_response (err, @last_response) =>
+      if err then gwt.fail(err) else gwt.pass(cmd)
+    net.get cmd, query: args, ->
 
-      
-  check_get: (contents, against) ->
-    result = []
-    for key, value of against
-      switch key
-        when 'size'
-          bytes = contents.length
-          if bytes < value[0] or bytes > value[1]
-            result.push "Size #{bytes} outside range #{value}"
-        when 'ext'
-          ext = @net.response.headers['content-type']
-          value = ".#{value}" if value.indexOf('.') is -1
-          expecting = send.mime.lookup value
-          if ext isnt expecting
-            result.push \
-              "Expecting type #{expecting}, received #{ext}"
-    return gwt.pass() if not result.length
-    gwt.fail result.join '\n'
+#   check_get: (contents, against) ->
+#     result = []
+#     for key, value of against
+#       switch key
+#         when 'size'
+#           bytes = contents.length
+#           if bytes < value[0] or bytes > value[1]
+#             result.push "Size #{bytes} outside range #{value}"
+#         when 'ext'
+#           ext = @net().response.headers['content-type']
+#           value = ".#{value}" if value.indexOf('.') is -1
+#           expecting = send.mime.lookup value
+#           if ext isnt expecting
+#             result.push \
+#               "Expecting type #{expecting}, received #{ext}"
+#     return gwt.pass() if not result.length
+#     gwt.fail result.join '\n'
 
 module.exports =
   # dictionary of known servers accessed by name.
