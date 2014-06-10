@@ -65,18 +65,19 @@ module.exports =
       return false
   cmp: (x, y) -> # detailed object comparison
     return true if x is y
-    return false if not x instanceof Object
-    return false if not y instanceof Object
+    return false if x not instanceof Object
+    return false if y not instanceof Object
     return false if x.constructor isnt y.constructor
-    for p in x
-      continue if not x.hasOwnProperty(p)
-      return false if not y.hasOwnProperty(p)
-      continue if x[p] is y[p]
-      return false if typeof x[p] isnt "object"
-      return false if not cmp(x[p], y[p])
-    for p in y
-      if y.hasOwnProperty(p) and not x.hasOwnProperty(p)
-        return false
+    for k,v of x
+      #continue if not x.hasOwnProperty(p)
+      #return false if not y.hasOwnProperty(p)
+      continue if v is y[k]
+      return false if typeof v isnt "object"
+      return false if not @cmp(v, y[k])
+    for k,v of y
+      #if y.hasOwnProperty(p) and not x.hasOwnProperty(p)
+      #  return false
+      return false if x[k] isnt v
     return true
   # call if test is not yet created
   todo: (msg) -> @fail "# TODO #{msg ? 'under construction'}"

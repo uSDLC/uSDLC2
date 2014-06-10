@@ -152,11 +152,13 @@ class Instrument
     b.parentNode.removeChild(b) for b in buttons
     buttons = []
   ask: (prompt) ->
+    text = prompt.replace /<.*?>/g, ''
     @interact prompt, "Pass", (ok) ->
-      "gwt.test(#{ok}, '#{prompt}');"
+      "gwt.test(#{ok}, '#{text}');"
   pause: (prompt) ->
+    text = prompt.replace /<.*?>/g, ''
     @interact prompt, "OK", (ok) ->
-      "if (#{not ok})gwt.fail('#{prompt}');"
+      "if (#{not ok})gwt.fail('#{text}');"
 
 window.instrument = ->
   loc = window.location
