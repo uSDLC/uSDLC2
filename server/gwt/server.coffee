@@ -49,6 +49,7 @@ class Server
   port: -> url.parse(@url).port
   
   check_response: (cmd, error, @last_response, next) ->
+    return gwt.fail(error.toString()) if error
     if not @last_response
       return gwt.fail("No JSON response for #{cmd}")
     if @last_response?.error

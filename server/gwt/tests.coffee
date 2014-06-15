@@ -7,11 +7,12 @@ module.exports =
   constraint: -> @passes_required++
   # called if test passes
   pass: (msg) ->
+    msg = @stringify msg
     # pass can't really pass if there is more to do
     return if @passes_required-- > 0
     @passes_required = 0
 
-    @pass_messages.push msg.toString() if msg
+    @pass_messages.push msg if msg
     msg = @pass_messages.join(' - ')
     @pass_messages = []
     msg = " - #{msg}" if msg.length
@@ -22,9 +23,9 @@ module.exports =
       @print "\nok #{++@count}#{msg}"
     @next()
   # called if test fails
-  fail: (msg = '') ->
+  fail: (msg) ->
+    msg = @stringify msg
     negate = 'not '
-    msg = msg.toString()
     if expect_failure
       expect_failure = false
       negate = ''
@@ -41,27 +42,34 @@ module.exports =
     @tests = []
     @passes_required = 0
     @next()
+  # make messages the most readable
+  stringify: (msg = '') ->
+    if msg instanceof Object
+      return "->\n" + JSON.stringify msg, null, 2
+    else
+      return msg.toString()
   # where we are testing for failures
   expect_failure: false
   # test and show message on failure
-  test: (test, msg = '') ->
+  test: (test, msg) ->
     if test then @pass msg else @fail msg
     return test
-  failed: (test, msg = '') ->
+  failed: (test, msg) ->
     return false if not test
     @fail msg
     return true
   # parse err and fail if it exists
-  check_for_error: (err, msg = '') ->
+  check_for_error: (err, msg) ->
     if err then @fail err else @pass msg
     return err
   # test and provide a message if not as expected
-  check: (value, to_be) ->
-    valstr = JSON.stringify(value)
+  check: (value, to_be, msg) ->
+    msg = @stringify msg
+    valstr = @stringify value
     if @cmp(value, to_be)
-      @pass "'#{valstr}' correct"; return true
+      @pass "'#{valstr}'\n#{msg}"; return true
     else
-      @fail "#{valstr} isn't #{JSON.stringify(to_be)}"
+      @fail "#{valstr}\nisn't\n#{@stringify(to_be)}\n#{msg}"
       return false
   cmp: (x, y) -> # detailed object comparison
     return true if x is y
@@ -82,7 +90,7 @@ module.exports =
   # call if test is not yet created
   todo: (msg) -> @fail "# TODO #{msg ? 'under construction'}"
   # call if test is not valid in the current setting
-  skip: (msg = '') -> @pass "# SKIP #{msg}"
+  skip: (msg) -> @pass "# SKIP #{msg}"
   # require a file from the project under test
   require: (name) ->
     return require path.join @options.project, name
