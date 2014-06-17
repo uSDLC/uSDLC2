@@ -11,7 +11,11 @@ class Server
     # helper to get to internet for the server
     @start_command ?= module.exports.start_command
     @stop_url ?= module.exports.stop_url
-  net: -> new Internet(@options.url)
+  net: ->
+    cookies = @internet?.cookies
+    @internet = new Internet(@options.url)
+    @internet.cookies = cookies
+    return @internet
   # start the active or named server
   start: ->
     if @running_instance
