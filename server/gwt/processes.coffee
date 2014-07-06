@@ -2,7 +2,7 @@
 processes = require 'processes'; fs = require 'fs'
 
 gwt.rules(
-  /execute '(.*)'/, (cmd) -> @process.execute(cmd)
+  /execute '(.*)'/, (cmd) -> @process().execute(cmd)
 )
 
 class Process

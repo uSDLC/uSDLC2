@@ -9,7 +9,7 @@ gwt.rules(
   /response matches \/(.*)\//, (re) ->
     @test @matches = @matches_text(re)
   
-  /'(.*)' from above/, (title) ->
+  /'(.*)' from (above|below)/, (title) ->
     re = new RegExp("/#{title.replace(/\W+/g, '.+')}\.gwt$")
     [actions,@actions] = [@actions,[]]
     scripts = (scr for scr in @all_scripts when re.test scr)

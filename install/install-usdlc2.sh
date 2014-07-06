@@ -82,4 +82,7 @@ echo "The first time a client is loaded there will be a delay for further librar
 echo
 echo $pwd/uSDLC2.sh
 #read -p "Start server [Enter]..."
-$pwd/uSDLC2.sh
+if [ "$1" != "update" ]
+then
+  $pwd/uSDLC2.sh
+fi
