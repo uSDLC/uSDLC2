@@ -31,7 +31,7 @@ EOF
 function cmd() {
   cat > uSDLC2.bat << EOF
   @echo off
-  PATH %HOMEPATH%\msys-bin;%PATH%
+  PATH %HOMEPATH%\bin;%PATH%
   bash /uSDLC2/uSDLC2/server.sh
 EOF
 }
