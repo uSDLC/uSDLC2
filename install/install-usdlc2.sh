@@ -66,6 +66,7 @@ case "$os" in
     ;;
   MINGW32*)
     cmd
+    bash
     cp uSDLC2.bat ../Desktop
     ;;
   *)
