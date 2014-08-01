@@ -14,7 +14,7 @@ module.exports =
       setTimeout ( ->
         return if Object.keys(environment.faye.clients).length
         npm 'open', (error, open) =>
-          open "http://localhost:#{environment.port}"
+          #open "http://localhost:#{environment.port}"
       ), 5000
       console.log "\nReady... "+
       "(http://localhost:#{environment.port})\n"
