@@ -66,7 +66,7 @@ module.exports = (exchange) ->
     
       read_dir = (from, dir_read, processor) ->
         process_file = (file, next) ->
-          file_path = path.join(from, file)
+          file_path = path.join(from, file).replace(/\\/g, '/')
           if file[0] is '.' or excluded(file_path)
             return next()
           grep file_path, (found) ->
