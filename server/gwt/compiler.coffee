@@ -67,8 +67,8 @@ class Compiler
   target: (source, ext = @target_ext) =>
     return path.join @opts.out, files.change_ext source, ext
   
-  run: (main, args...) -> gwt.add =>
-    @opts.main = main
-    @shell.cmd @run_command(args...), ->
+  run: (args..., finished) ->
+    console.log cmd = @run_command(args...)
+    @shell.cmd cmd, finished
   
 module.exports = Compiler

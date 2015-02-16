@@ -2,7 +2,7 @@
 module.exports = (exchange) ->
   exchange.respond.client ->
     usdlc.user = ->
-      users = localStorage.users ?= []
+      users = localStorage.users ?= [] # won't work
       source = [localStorage.user_name ? 'guest']
       form = $('#user_management')
       name_fld = form.find('input.user_name')

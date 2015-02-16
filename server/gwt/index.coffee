@@ -226,11 +226,9 @@ class GWT extends EventEmitter
 
   files: -> @extend 'gwt/files'
   java: (options) ->
-    @java = require 'gwt/java'
-    @java(options)
+    @java = require 'gwt/java'; return @java(options)
   c: (options) ->
-    @c = require 'gwt/c'
-    @c(options)
+    @c = require 'gwt/c'; return @c(options)
   server: -> require 'gwt/server'
   browser: -> require 'gwt/browser'
   socket_server: -> require 'gwt/socket_server'

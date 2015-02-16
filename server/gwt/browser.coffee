@@ -64,18 +64,16 @@ ws_server_ready = wait_for (started) ->
 class Browser extends EventEmitter
   constructor: (@name) ->
     @platform_open = @browser_open
-  platform: (@platform_name, next) ->
+  platform: (@platform_name) ->
     switch @platform_name
       when 'phantomjs'
         gwt.options.maximum_step_time = 360000
         @platform_open = (url) =>
           phantom = new Phantom url, =>
           phantom.onClose = => @onClose()
-        next()
       else
         @platform_name = null if @platform_name is 'default'
         @platform_open = @browser_open
-        next()
   open: (url, options) ->
     ws_server_ready (error) =>
       @emit 'error', error if error
@@ -94,6 +92,6 @@ class Browser extends EventEmitter
 
 # start up the specified browser (defaults to system)
 # Returns a browser object for further instrumentation
-module.exports.page = (name) ->
+module.exports.page = (name, platform) ->
   gwt.browsers[name] ?= new Browser(name)
   return gwt.browsers[name]
