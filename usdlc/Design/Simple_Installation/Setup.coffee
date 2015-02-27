@@ -72,7 +72,7 @@ gwt.rules( # Rules used by child pages
   /download from github project '(.*)'/,
     (all, project) =>
       gwt.pause()
-      projectName = project.split('/').pop()
+      projectName = dirs.normalise(project.split('/')).pop()
       temp_directory = path.join os.tmpDir(), projectName
       fs.mkdir temp_directory, =>
         old_file_name = file_name

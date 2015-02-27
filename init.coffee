@@ -63,7 +63,7 @@ dirs.add_project = (name, data) ->
 # Assume file starts with name of project...
 files.find_in_project = (name, next) ->
   # break up into project/page pattern
-  page = 'Index'; project = name
+  page = 'Index'; project = dirs.normalise name
   if (slash = project.indexOf('/')) isnt -1
     page = project[slash+1..]
     project = project[0...slash]

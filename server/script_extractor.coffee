@@ -32,6 +32,7 @@ module.exports = (options, extraction_complete) ->
           script_name = path.join headings...
           script_name += '.'+attr[6..-2]
           script_name = path.join "gen/usdlc2", script_name
+          script_name = dirs.normalise script_name
           break
     else if script_content? and name is 'br'
       script_content.push('\n')

@@ -24,7 +24,7 @@ module.exports = (exchange) ->
       if query.path[0] is '~'
         query.path = dirs.projects[query.path[1..]].base
       files.join query.path, query.name, (filename) ->
-        if query.name[-1..-1] is '/'
+        if dirs.normalise(query.name[-1..-1]) is '/'
           dirs.mkdirs filename, ->
             exchange.respond.json dir: filename
         else

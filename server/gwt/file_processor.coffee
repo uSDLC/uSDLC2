@@ -20,6 +20,7 @@ module.exports = file_processor:
 
   'coffee': (script, next) ->
     parents = []
+    script = dirs.normalise script
     last_slash = script.lastIndexOf('/')
     dot = script.indexOf('.', last_slash)
     base = '.'

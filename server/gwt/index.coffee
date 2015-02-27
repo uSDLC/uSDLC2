@@ -2,7 +2,7 @@
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'
 line_reader = require 'line_reader'
-Rules = require 'common/rules'
+Rules = require 'common/rules'; dirs = require 'dirs'
 script_extractor = require 'script_extractor'
 require 'common/strings'
 
@@ -211,7 +211,7 @@ class GWT extends EventEmitter
         for name, func of ext
           GWT::[name] = func
       else # a list of modules containing extensions
-        ext = ext.replace /\s/g, '_'
+        ext = dirs.normalise ext.replace /\s/g, '_'
         if ext[0] is '/'
           ext = path.join @options.script_path, ext
           ext = path.resolve ext
