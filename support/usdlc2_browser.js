@@ -49,10 +49,13 @@
             }
             args.push(arg);
           }
-          try { usdlc2.ws.send(args.join(' ')+'\n'); }
-          catch (e) {
+          args = args.join(' ')+'\n'
+          try {
+            if (usdlc2.ws.readyState !== usdlc2.ws.OPEN) throw new Error
+            usdlc2.ws.send(args);
+          } catch (e) {
             window.console = original_console;
-            window.console.log.apply(window, arguments);
+            window.console.log(args);
           }
         },
         group: function() {}, groupEnd: function() {},
@@ -61,12 +64,12 @@
       console.debug = console.dir = console.info = console.log;
       console.exception = console.error;
       usdlc2.ws.onclose = function(event) {
-        setTimeout(open, 5000);
+        if (!retain) return window.close();
         if (opened) {
           opened--;
           window.console = original_console;
           console.log("uSDLC2 connection closed for "+handle);
-          if (!retain) window.close();
+          setTimeout(open, 5000);
         }
       };
       usdlc2.fail = function(msg) {
