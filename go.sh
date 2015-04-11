@@ -1,4 +1,5 @@
 #!/bin/bash 
-# Copyright (C) 2013 paul@marrington.net, see /GPL for license
+# Copyright (C) 2013-5 paul@marrington.net, see /GPL for license
 cd "$(cd $(dirname "$0"); pwd)"
-../roaster/go.sh "$@"
+cl=${@:-server}
+../roaster/go.sh "$cl"

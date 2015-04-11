@@ -2,7 +2,8 @@
 querystring = require 'querystring'
 processes = require 'processes'; stream = require 'stream'
 
-host = "http://#{require('system').hosts()[0]}:"
+#host = "http://#{require('system').hosts()[0]}:"
+host = "http://localhost:"
 host += process.environment.port
 
 procs = {}

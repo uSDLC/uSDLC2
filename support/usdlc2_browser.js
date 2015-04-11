@@ -41,6 +41,7 @@
         },
         log: function() {
           var args = [];
+          original_console.log.apply(original_console, arguments);
           for (var i = 0; i < arguments.length; i++) {
             var arg = arguments[i];
             if (typeof arg == "object") {
