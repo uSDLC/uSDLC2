@@ -52,7 +52,7 @@ module.exports.initialise = (next) ->
         position: 'absolute'
       return true
     setTimeout (->
-      usdlc.page_editor.document.$.body.onkeydown =
+      usdlc.page_editor.document.$.onkeydown =
       window.onkeydown), 300
     next()
   roaster.clients '/client/ckeditor/metadata.coffee',

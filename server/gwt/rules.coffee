@@ -1,4 +1,4 @@
-# Copyright (C) 2013 paul@marrington.net, see GPL for license
+# Copyright (C) 2013-5 paul@marrington.net, see GPL for license
 gwt.rules(
   /Given a (shell|fork|spawn)/, (type) ->
     @process = @process(type); @pass()
@@ -10,12 +10,13 @@ gwt.rules(
     @test @matches = @matches_text(re)
   
   /'(.*)' from (above|below)/, (title) ->
-    re = new RegExp("/#{title.replace(/\W+/g, '.+')}\.gwt$")
+    re = new RegExp("/#{title.replace(/\W+/g, '.+')}")
     [actions,@actions] = [@actions,[]]
     scripts = (scr for scr in @all_scripts when re.test scr)
     return fail("no matching section") if not scripts.length
     @test_count -= 1
-    @file_processor.gwt scripts[0], =>
+    artifacts = @collect_artifacts_from scripts
+    @process_artifacts artifacts, =>
       @actions.push actions...
       @next()
       

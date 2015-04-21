@@ -9,6 +9,7 @@ class Process
   constructor: (@exec_type = 'shell', cwd = '.') ->
     @process = processes()
     @process.options.cwd = cwd
+    cmdc
     
   shell: (cmd, onExit = ->) ->
     @process.cmd cmd, onExit

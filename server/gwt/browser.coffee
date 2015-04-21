@@ -74,17 +74,18 @@ class Browser extends EventEmitter
       else
         @platform_name = null if @platform_name is 'default'
         @platform_open = @browser_open
-  open: (url, options) ->
+  open: (@url, options) ->
     ws_server_ready (error) =>
       @emit 'error', error if error
-      sep = if url.indexOf('?') == -1 then '?' else '&'
-      url += sep+"usdlc2-name=#{@name}&usdlc2-port=#{port}"
+      sep = if @url.indexOf('?') == -1 then '?' else '&'
+      url = @url+sep+"usdlc2-name=#{@name}&usdlc2-port=#{port}"
       url += "&usdlc2-instrumentation=#{gwt.options.host}"
       url += "&usdlc2-retain-page=true" if options?.retain
       @platform_open url
     return @ # for page = gwt.browser().page(name).open(url)
   send: (message) -> # filled in on connection
   onClose: ->
+    @url = null
   # Internal
   browser_open: (url) ->
     npm 'open', (error, open) =>
@@ -95,3 +96,12 @@ class Browser extends EventEmitter
 module.exports.page = (name, platform) ->
   gwt.browsers[name] ?= new Browser(name)
   return gwt.browsers[name]
+  
+module.exports.open = (url, opts={retain:false}) -> gwt.preactions.push ->
+  return @current_page if @current_page.url is url
+  @current_page = module.exports.page('live')
+  #instance.platform 'Google Chrome Canary'
+  @current_page.open url, opts
+  @current_page.once 'open', => @next()
+  @current_page.once 'error', => @fail()
+  return @current_page

@@ -7,24 +7,27 @@ strings = require 'common/strings'
 
 class Server
   constructor: (@name, @options) ->
-    _.extend @, options
     # helper to get to internet for the server
-    @start_command ?= module.exports.start_command
-    @stop_url ?= module.exports.stop_url
+    @options.start_command ?= module.exports.start_command
+    @options.stop_url ?= module.exports.stop_url
   net: ->
     cookies = @internet?.cookies
     @internet = new Internet(@options.url)
     @internet.cookies = cookies
     return @internet
   # start the active or named server
-  start: ->
+  start: (options = {}) ->
+    @options[k] = v for k,v of options
     if @running_instance
       return gwt.pass("#{@name} already running")
-    dirs.in_directory @dir, =>
-      @running_instance = processes().cmd @start_command, =>
-    if @ready
+    dirs.in_directory @options.dir, =>
+      # always use bash - as uSDLC2 windows has a version in the path
+      cmd = ["bash", "-lc", "#{@options.start_command}"]
+      @running_instance = processes().spawn cmd..., =>
+        
+    if @options.ready
       gwt.maximum_step_time = 300
-      gwt.expect @ready
+      gwt.expect @options.ready
     else
       check = =>
         (net = @net()).once 'finish', => gwt.pass()
@@ -36,21 +39,21 @@ class Server
       setTimeout check, 2000
     gwt.on_exit (next) =>
       return if not @running_instance
-      if @stop_url and @stop_url[0] isnt '#'
+      if @options.stop_url and @options.stop_url[0] isnt '#'
         @running_instance.on 'exit', =>
           @running_instance = null
           next()
-        @net().get @stop_url, ->
+        @net().get @options.stop_url, ->
           "Server did not exit as anticipated"
-      else if @stop_command
-        processes().cmd @stop_command, =>
+      else if @options.stop_command
+        processes().cmd @options.stop_command, =>
           @running_instance = null
           next()
       else
         @running_instance.kill()
         next()
   # retrieve or infer port number
-  port: -> url.parse(@url).port
+  port: -> url.parse(@options.url).port
   
   check_response: (cmd, error, @last_response, next) ->
     return gwt.fail(error.toString()) if error
@@ -75,24 +78,6 @@ class Server
       if err then gwt.fail(err) else gwt.pass(cmd)
     net.get cmd, query: args, ->
 
-#   check_get: (contents, against) ->
-#     result = []
-#     for key, value of against
-#       switch key
-#         when 'size'
-#           bytes = contents.length
-#           if bytes < value[0] or bytes > value[1]
-#             result.push "Size #{bytes} outside range #{value}"
-#         when 'ext'
-#           ext = @net().response.headers['content-type']
-#           value = ".#{value}" if value.indexOf('.') is -1
-#           expecting = send.mime.lookup value
-#           if ext isnt expecting
-#             result.push \
-#               "Expecting type #{expecting}, received #{ext}"
-#     return gwt.pass() if not result.length
-#     gwt.fail result.join '\n'
-
 module.exports =
   # dictionary of known servers accessed by name.
   # Each record has:
@@ -104,8 +89,9 @@ module.exports =
   # add to the list of known servers
   add: (servers) ->
     for name, options of servers
-      module.exports[name] =
-        module.exports[name.replace(/\s/g, '_')] =
-          new Server name, options
+      if not module.exports[name]
+        module.exports[name] =
+          module.exports[name.replace(/\s/g, '_')] =
+            new Server name, options
   start_command: "./go.sh server mode=gwt terminate=allowed"
   stop_url: 'server/http/terminate.coffee?signal=SIGKILL'

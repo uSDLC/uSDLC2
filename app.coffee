@@ -195,7 +195,7 @@ roaster.dialog_position = ->
   of: window
 
 new_document = """<html><head>
-<link href='document.css' rel='stylesheet' type='text/css'>
+<link href='usdlc.css' rel='stylesheet' type='text/css'>
 </head><body></body></html>"""
 
 usdlc.source = (header) ->

@@ -64,47 +64,42 @@ class GWT extends EventEmitter
       @timer = timer pre: '# ', post: ''
       re = new RegExp(@options.sections ? '')
       scripts = (scr for scr in @all_scripts when re.test scr)
-      
       @processed_scripts = {}
-      do read_script = =>
-        if not scripts.length
-          @section(); return next()
-        script = scripts.shift()
-        return read_script() if not script
-        @section script
-        ext_name = path.extname(script)[1..]
-        
-        @pass_messages = []
-        @artifacts[ext_name] ?= []
-        @artifacts[ext_name].push script
-        read_script()
+      @section script for script in scripts when script
+      @pass_messages = []
+      @artifacts = @collect_artifacts_from scripts
+      @section()
+      next()
     process_artifacts = (next) =>
-      process_type = (ext, next) =>
-        artifacts = @artifacts[ext]
-        return next() if not artifacts?.length
-        last = artifacts.pop()
-        if last.indexOf('.gwt.') is -1
-          artifacts.push last
-        else
-          artifacts.unshift last # put bridge at start
-        do process_item = =>
-          if not artifacts?.length
-            delete @artifacts[ext] # only once
-            return next()
-          name = artifacts.shift()
-          if proc = @file_processor[ext]
-            (@context = proc).call gwt, name, process_item
-          else
-            @next()
-      process_types = (exts..., next) =>
-        do process_items = =>
-          return next() if not exts.length
-          process_type exts.shift(), process_items
-      keys = (key for key, value of @artifacts)
-      process_types 'coffee', keys..., next
+      @process_artifacts @artifacts, next
 
     extract_scripts -> read_scripts -> load_tests ->
       process_artifacts -> gwt.go()
+  # sort scripts by type for ordered processing
+  collect_artifacts_from: (scripts) ->
+    artifacts = {}
+    for script in scripts when script
+      ext_name = path.extname(script)[1..]
+      artifacts[ext_name] ?= []
+      artifacts[ext_name].push script
+    return artifacts
+  # extract and deal with gwt and bridge functions
+  process_artifacts: (artifacts, next) =>
+    actions = []
+    process_ext = (ext) =>
+      filenames = artifacts[ext]
+      delete artifacts[ext] # only once
+      return if not filenames?.length or not (processor = @file_processor[ext])  
+      if filenames[filenames.length - 1].indexOf('.gwt.') isnt -1
+        filenames.unshift filenames.pop() # put bridge at start
+      actions.push [processor, filename] for filename in filenames
+    process_ext 'coffee'
+    process_ext ext for ext of artifacts
+    
+    do process_action = =>
+      return next() if not actions.length
+      action = actions.shift()
+      (@context = action[0]).call gwt, action[1], process_action
   # done with load as it has already created an instance
   load: -> @
  # add an actor to be run to create a test
