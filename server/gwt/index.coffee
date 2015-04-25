@@ -63,7 +63,7 @@ class GWT extends EventEmitter
     load_tests = (next) =>
       @timer = timer pre: '# ', post: ''
       re = new RegExp(@options.sections ? '')
-      scripts = (scr for scr in @all_scripts when re.test scr)
+      scripts = (scr for scr in @all_scripts when re.test(scr) and not @active[scr])
       @processed_scripts = {}
       @section script for script in scripts when script
       @pass_messages = []
@@ -75,10 +75,13 @@ class GWT extends EventEmitter
 
     extract_scripts -> read_scripts -> load_tests ->
       process_artifacts -> gwt.go()
+  # dictionary of scripts that will be/have been run
+  active: {}
   # sort scripts by type for ordered processing
   collect_artifacts_from: (scripts) ->
     artifacts = {}
     for script in scripts when script
+      @active[script] = true
       ext_name = path.extname(script)[1..]
       artifacts[ext_name] ?= []
       artifacts[ext_name].push script
@@ -108,7 +111,7 @@ class GWT extends EventEmitter
       actor = test_list[0]
       test_list[0] = ->
         console.log '#2 '+title
-        actor.call gwt
+        actor.call gwt                   
     else test_list.unshift title
         
     for test in test_list
@@ -150,15 +153,18 @@ class GWT extends EventEmitter
                    @todo 'implement'
                )"""
   # called by instrumentation scripts to set up rules for gwt
-  rules: (patterns...) ->
-    @ruler.add(patterns...)
+  rules: (patterns...) -> @ruler.add(patterns...)
+  # methods to be called before rules are processed
+  prepare: (preaction) -> @preactions.push preaction
   # display a test line title
   title: (text) -> @print "#2    #{text}"
   # run code level tests
   code_tests: (code...) -> c.apply(@) for c in code
 
   # go to next script without marking pass or failure
-  go: -> @next()
+  go: ->
+    @phase = "Instrumenting"
+    @next()
   next: ->
     if @test_count
       @print """
@@ -183,6 +189,7 @@ class GWT extends EventEmitter
       @print "Failed #{@failures}/#{@test_count}, "+
         "#{@skipped} skipped, #{percent}% okay"
       @timer.total()
+      @phase = "Exiting"
       @exit()
     @step_timer gwt.maximum_step_time ?
                @options.maximum_step_time
@@ -190,11 +197,13 @@ class GWT extends EventEmitter
     try act.call(@, @) if act = @actions.shift()
     catch err then return @fail err.stack
     @asking = null
+  phase: "Initialisation"
   step_timer: (seconds) ->
     clearTimeout @paused_timeout
     gwt.maximum_step_time = null
     overtime = =>
       @fail """
+        Phase: #{@phase}
         gwt did not resume in #{seconds} seconds
         increase gwt.options.maximum_step_time before,
         or call gwt.step_timer(seconds) within the step"""
@@ -217,6 +226,7 @@ class GWT extends EventEmitter
     do next_cleanup = =>
       return @finished = true if not @cleanups.length
       @cleanups.shift() next_cleanup
+  # all function to clean up after Instrumenting is complete
   cleanup: (cleanup) -> @cleanups.unshift cleanup
 
   files: -> @extend 'gwt/files'
@@ -225,6 +235,7 @@ class GWT extends EventEmitter
   c: (options) ->
     @c = require 'gwt/c'; return @c(options)
   server: -> require 'gwt/server'
+  servers: {}
   browser: -> require 'gwt/browser'
   socket_server: -> require 'gwt/socket_server'
   process: (type) -> require('gwt/processes')(type)
