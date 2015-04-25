@@ -7,7 +7,7 @@ module.exports = file_processor:
   'gwt': (script, next) ->
     accumulator = []
     reader = line_reader.for_file script, (statement) =>
-      return next() if not statement?
+      return next() if not statement? # EOF
       statement = statement.trim()
       if statement.length and statement[0] isnt '#'
         if statement.ends_with('\\')
