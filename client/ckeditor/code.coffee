@@ -47,14 +47,20 @@ module.exports = (exchange) ->
       icons: 'code',
       init: (editor) ->
         editor.addCommand 'code', exec: (editor) ->
-          roaster.clients "/client/autocomplete.coffee",
-          (autocomplete) ->
-            autocomplete
-              title: 'Type...'
-              source: list
-              select: (selected) ->
-                list_update(selected.value)
-                insert selected.value
+          selected = editor.getSelection()?.getSelectedText()
+          if selected
+            editor.applyStyle new CKEDITOR.style
+              element:    'span'
+              attributes: class: 'instrumentation'
+          else
+            roaster.clients "/client/autocomplete.coffee",
+            (autocomplete) ->
+              autocomplete
+                title: 'Type...'
+                source: list
+                select: (selected) ->
+                  list_update(selected.value)
+                  insert selected.value
         editor.ui.addButton 'code',
           label:    'GWT, Code or Data... (Alt-G)'
           command:  'code'
