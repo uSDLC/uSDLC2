@@ -9,10 +9,20 @@ class Process
   constructor: (@exec_type = 'shell', cwd = '.') ->
     @process = processes()
     @process.options.cwd = cwd
-    cmdc
     
   shell: (cmd, onExit = ->) ->
     @process.cmd cmd, onExit
+    return @cleanup()
+    
+  spawn: (cmd..., onExit = ->) ->
+    @process.spawn cmd..., onExit
+    return @cleanup()
+    
+  kill: -> @process.kill()
+  
+  on: (event, action) -> @process.proc.on event, action
+
+  cleanup: ->
     gwt.cleanup (next) =>
       @process.proc.stdin.end()
       @process.kill()
