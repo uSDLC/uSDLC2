@@ -5,37 +5,17 @@ EventEmitter = require('events').EventEmitter
 url = require 'url'; files = require 'files'
 system = require 'system'
 gwt.browsers = {}; port = 19008
-# convert variables into a static parameter liste
-parameterise = (params...) ->
-  result = []
-  for param in params
-    switch typeof param
-      when 'string'
-        result.push '"'+param.replace(/"/g, '\\"')+'"'
-      when 'function'
-        result.push "#{param.toString()}"
-      when 'object'
-        result.push JSON.stringify(param)
-      else
-        result.push param.toString()
-  return result.join(',')
 # This is called by the system under test
 module.exports = (ws) ->
   name = ws.url.query.name
   return if not name or not gwt.browsers[name]
   host = gwt.browsers[name]
   ws._events = host._events # event proxy
-  host.inject = (params..., data) ->
-    switch typeof data
-      when 'string' then ws.send data
-      when 'function'
-        params = parameterise(params...)
-        ws.send "(#{data.toString()})(#{params});"
-      when 'object' then ws.send JSON.stringify(data)
-      else ws.send data.toString()
-  host.test = (params..., data) ->
+  host.inject = (func) ->
+    ws.send "(#{func.toString()}).call(gwt);"
+  host.test = (data) ->
     gwt.expect /^Passed: /, /^Failed: /
-    host.inject params..., data
+    host.inject data
   host.on 'message', (message) ->
     process.stdout.write message
   host.emit 'open'
@@ -78,10 +58,10 @@ class Browser extends EventEmitter
     ws_server_ready (error) =>
       @emit 'error', error if error
       sep = if @url.indexOf('?') == -1 then '?' else '&'
-      url = @url+sep+"usdlc2-name=#{@name}&usdlc2-port=#{port}"
-      url += "&usdlc2-instrumentation=#{gwt.options.host}"
-      url += "&usdlc2-retain-page=true" if options?.retain
-      @platform_open url
+      full_url = @url+sep+"usdlc2-name=#{@name}&usdlc2-port=#{port}"
+      full_url += "&usdlc2-instrumentation=#{gwt.options.host}"
+      full_url += "&usdlc2-retain-page=true" if options?.retain
+      @platform_open full_url
     return @ # for page = gwt.browser().page(name).open(url)
   send: (message) -> # filled in on connection
   onClose: ->
@@ -94,14 +74,14 @@ class Browser extends EventEmitter
 # start up the specified browser (defaults to system)
 # Returns a browser object for further instrumentation
 module.exports.page = (name, platform) ->
-  gwt.browsers[name] ?= new Browser(name)
-  return gwt.browsers[name]
+  instance = gwt.browsers[name] ?= new Browser(name)
+  instance.platform(platform) if platform
+  return instance
   
-module.exports.open = (url, opts={retain:false}) -> gwt.preactions.push ->
-  return @current_page if @current_page.url is url
+module.exports.open = (url, opts={retain:false}) ->
+  return @current_page if @current_page?.url is url
   @current_page = module.exports.page('live')
-  #instance.platform 'Google Chrome Canary'
   @current_page.open url, opts
-  @current_page.once 'open', => @next()
-  @current_page.once 'error', => @fail()
+  @current_page.once 'open',  -> gwt.pass()
+  @current_page.once 'error', -> gwt.fail()
   return @current_page
