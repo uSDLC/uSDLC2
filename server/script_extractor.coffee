@@ -15,25 +15,31 @@ module.exports = (options, extraction_complete) ->
     return extraction_complete()
   
   script_content = null; script_name = ''
-  depth = 0; in_heading = false; headings = []
+  depth = tag_match = script_tag = 0; in_heading = false; headings = []
+  
+  set_script = (type) ->
+    script_tag = tag_match
+    script_content = []
+    script_name = path.join headings...
+    script_name += '.' + type
+    script_name = path.join "gen/usdlc2", script_name
+    script_name = dirs.normalise script_name
 
   sax = new Sax()
 
   sax.on 'opening_tag', (name, attributes..., next) ->
+    tag_match++
     if in_heading
       headings[depth] += "<#{name} #{attributes.join(' ')}>"
     else if name[0] is 'h' and not isNaN(depth = +name[1])
       in_heading = true
       headings[headings.length = --depth] = ''
     else if (name is 'pre' or name is 'textarea')
-      for attr in attributes
-        if attr[0..4] is 'type='
-          script_content = []
-          script_name = path.join headings...
-          script_name += '.'+attr[6..-2]
-          script_name = path.join "gen/usdlc2", script_name
-          script_name = dirs.normalise script_name
-          break
+      attributes = sax.attributes_to_dictionary(attributes)
+      set_script(attributes.type) if attributes.type
+    else if (name is 'span')
+      attributes = sax.attributes_to_dictionary(attributes)
+      set_script("gwt") if attributes["class"] is 'instrumentation'
     else if script_content? and name is 'br'
       script_content.push('\n')
     next()
@@ -55,14 +61,19 @@ module.exports = (options, extraction_complete) ->
       return dirs.rmdirs("gen/usdlc2/#{h}", next) if depth is 0
       return next()
     headings[depth] += "</#{name}>" if in_heading
-    if not (name in ['pre','textarea']) or not script_content?
+    
+    gwt_span =  (name is "span" and script_tag is tag_match)
+    code_section = name in ['pre','textarea']
+    
+    if script_content? and (gwt_span or code_section)
+      content = decode script_content.join '\n'
+      script_content = null
+      dirs.mkdirs path.dirname(script_name), ->
+        fs.appendFile script_name, content+'\n', ->
+          add_to_runner script_name, next
+    else
       return next()
-    console.log "#: Build #{script_name}"
-    content = decode script_content.join ''
-    script_content = null
-    dirs.mkdirs path.dirname(script_name), ->
-      fs.appendFile script_name, content, ->
-        add_to_runner script_name, next
+    tag_match--
 
   sax.on 'finish', extraction_complete
 
