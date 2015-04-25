@@ -1,5 +1,5 @@
 # Copyright (C) 2013 paul@marrington.net, see GPL for license
-_ = require 'underscore'; processes = require 'processes'
+_ = require 'underscore'; processes = require './processes'
 gwt = require 'gwt'; url = require 'url'
 dirs = require 'dirs'; Internet = require 'internet'
 util = require 'util'; send = require 'send'
@@ -46,7 +46,7 @@ class Server
         @net().get @options.stop_url, ->
           "Server did not exit as anticipated"
       else if @options.stop_command
-        processes().cmd @options.stop_command, =>
+        processes().shell @options.stop_command, =>
           @running_instance = null
           next()
       else
@@ -89,9 +89,9 @@ module.exports =
   # add to the list of known servers
   add: (servers) ->
     for name, options of servers
-      if not module.exports[name]
-        module.exports[name] =
-          module.exports[name.replace(/\s/g, '_')] =
+      if not gwt.servers[name]
+        gwt.servers[name] =
+          gwt.servers[name.replace(/\s/g, '_')] =
             new Server name, options
   start_command: "./go.sh server mode=gwt terminate=allowed"
   stop_url: 'server/http/terminate.coffee?signal=SIGKILL'
