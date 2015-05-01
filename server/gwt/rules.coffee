@@ -1,11 +1,14 @@
 # Copyright (C) 2013-5 paul@marrington.net, see GPL for license
 
-gwt.instrument_section = (name) -> gwt.prepare ->
-  re = new RegExp("/#{title.replace(/\W+/g, '.+')}")
+gwt.instrument_section = (name) -> gwt.once name, ->
+  [actions,@actions] = [@actions,[]]
+  re = new RegExp("/#{name.replace(/\W+/g, '.+')}")
   scripts = (scr for scr in @all_scripts when re.test scr)
   return fail("no matching section for #{name}") if not scripts.length
   artifacts = @collect_artifacts_from scripts
-  @process_artifacts artifacts, => @next()
+  @process_artifacts artifacts, =>
+    @actions.push actions...
+    @next()
 
 gwt.rules(
   /Given a (shell|fork|spawn)/, (type) ->

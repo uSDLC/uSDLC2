@@ -1,4 +1,4 @@
-# Copyright (C) 2013 paul@marrington.net, see GPL for license
+# Copyright (C) 20135 paul@marrington.net, see GPL for license
 EventEmitter = require('events').EventEmitter
 path = require 'path'; timer = require 'common/timer'
 line_reader = require 'line_reader'
@@ -74,7 +74,7 @@ class GWT extends EventEmitter
       @process_artifacts @artifacts, next
 
     extract_scripts -> read_scripts -> load_tests ->
-      process_artifacts -> gwt.go()
+      process_artifacts -> gwt.start_instrumentation()
   # dictionary of scripts that will be/have been run
   active: {}
   # sort scripts by type for ordered processing
@@ -105,22 +105,26 @@ class GWT extends EventEmitter
       (@context = action[0]).call gwt, action[1], process_action
   # done with load as it has already created an instance
   load: -> @
- # add an actor to be run to create a test
-  add: (title, test_list...) ->
-    if typeof title is "string" then do ->
-      actor = test_list[0]
-      test_list[0] = ->
-        console.log '#2 '+title
-        actor.call gwt                   
-    else test_list.unshift title
-        
-    for test in test_list
-      @actions.push ->
-         return @skip('', @statement_skip--) if @statement_skip
-         test.call @, @
-         @prompt @asking if @asking
-      @test_count++
-    return @
+  
+  # Only add a manual action to be run once
+  once: (title, action) ->
+    return if @already_added[title]
+    @already_added[title] = true
+    @add(title, action)
+  already_added: {}
+  # print title and add an actor to be run to create a test
+  add: (title, action) ->
+    return @add_action title if not action # no title
+    @add_action ->
+      console.log '#2 '+title
+      action.call @     
+  # add an action without the title        
+  add_action: (action) ->
+    @actions.push ->
+       return @skip('', @statement_skip--) if @statement_skip
+       action.call @
+       @prompt @asking if @asking
+    @test_count++
 
   # call to separate sections
   section: (name) ->
@@ -161,25 +165,22 @@ class GWT extends EventEmitter
   # run code level tests
   code_tests: (code...) -> c.apply(@) for c in code
 
-  # go to next script without marking pass or failure
-  go: ->
+  # preparation done, not for instrumentation
+  start_instrumentation: ->
     @phase = "Instrumenting"
-    @next()
-  next: ->
     if @test_count
       @print """
                   TAP version 13
                   1..#{@test_count}"""
       @count = -1
       @actions = [@preactions..., @actions...]
-      @next = @next_next
       @passes_required = 0
       @next()
     else
       @print "# No tests"
       @exit()
   no_next: ->
-  next_next: ->
+  next: ->
     if not @actions.length
       clearTimeout @paused_timeout
       # all done - clean up

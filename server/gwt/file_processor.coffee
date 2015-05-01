@@ -1,4 +1,4 @@
-#!/bin/bash
+# Copyright (C) 2013-5 paul@marrington.net, see GPL for license
 line_reader = require 'line_reader'
 require 'common/strings'; path = require 'path'
 dirs = require 'dirs'
@@ -15,8 +15,8 @@ module.exports = file_processor:
         else
           statement = accumulator.join('') + statement
           accumulator = []
-          gwt.add (gwt) ->
-            gwt.test_statement statement
+          gwt.add_action ->
+            @test_statement statement
 
   'coffee': (script, next) ->
     parents = []
@@ -44,7 +44,7 @@ module.exports = file_processor:
         actor = require(script)
         if typeof actor is 'function'
           if not actor.length and not actor.name.length
-            gwt.add actor # no params and not prototype
+            gwt.add_action actor # no params and not prototype
       catch err
         if (err.code isnt 'MODULE_NOT_FOUND') or
         (err.message.indexOf(script) == -1)
