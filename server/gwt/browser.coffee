@@ -12,7 +12,9 @@ module.exports = (ws) ->
   host = gwt.browsers[name]
   ws._events = host._events # event proxy
   host.inject = (func) ->
-    ws.send "(#{func.toString()}).call(gwt);"
+    action = -> ws.send "(#{func.toString()}).call(gwt);"
+    setTimeout action, host.start_delay
+    host.start_delay = 0
   host.test = (data) ->
     gwt.expect /^Passed: /, /^Failed: /
     host.inject data
@@ -54,13 +56,14 @@ class Browser extends EventEmitter
       else
         @platform_name = null if @platform_name is 'default'
         @platform_open = @browser_open
-  open: (@url, options) ->
+  open: (@url, @options = {}) ->
+    @start_delay = (@options.delay ? 0) * 1000
     ws_server_ready (error) =>
       @emit 'error', error if error
       sep = if @url.indexOf('?') == -1 then '?' else '&'
       full_url = @url+sep+"usdlc2-name=#{@name}&usdlc2-port=#{port}"
       full_url += "&usdlc2-instrumentation=#{gwt.options.host}"
-      full_url += "&usdlc2-retain-page=true" if options?.retain
+      full_url += "&usdlc2-retain-page=true" if @options.retain
       @platform_open full_url
     return @ # for page = gwt.browser().page(name).open(url)
   send: (message) -> # filled in on connection

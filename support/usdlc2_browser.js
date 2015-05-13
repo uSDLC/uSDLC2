@@ -26,7 +26,8 @@
                     ") for "+usdlc2.url);
       };
       usdlc2.ws.onmessage = function(event) {
-        eval(event.data);
+        try { eval(event.data); }
+        catch (err) { console.log(err); }
       };
       original_console = window.console;
       window.console = {
@@ -44,7 +45,7 @@
           original_console.log.apply(original_console, arguments);
           for (var i = 0; i < arguments.length; i++) {
             var arg = arguments[i];
-            if (typeof arg == "object") {
+            if (typeof arg == "object" && !(arg instanceof Error)) {
               try { arg = JSON.stringify(arg); }
               catch (e) { arg = arg.toString(); }
             }
@@ -90,13 +91,16 @@
       usdlc2.check = function(left, right) {
         usdlc2.test(left == right, left+" isn't "+right);
       };
-      usdlc2.wait_for = function(checker, interval) {
-        if (!interval) interval = 2000;
+      usdlc2.wait_for = function(checker, interval, timeout) {
+        if (!interval) interval = 1000;
+        if (!timeout) timeout = 10000;
         var full_check = function() {
           if (checker()) {
             usdlc2.pass();
-          } else {
+          } else if ((timeout -= interval) > 0) {
             setTimeout(full_check, interval);
+          } else {
+            usdlc2.fail("Timeout exceeded")
           }
         };
         full_check();
@@ -106,5 +110,6 @@
       "/server/gwt/browser.coffee?name="+handle;
     open();
   }
-  window.addEventListener("load", go, false);
+  //window.addEventListener("load", go, false);
+  go();
 })();
