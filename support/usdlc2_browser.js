@@ -91,19 +91,27 @@
       usdlc2.check = function(left, right) {
         usdlc2.test(left == right, left+" isn't "+right);
       };
-      usdlc2.wait_for = function(checker, interval, timeout) {
+      usdlc2.on_loaded = function(checker, interval, timeout) {
         if (!interval) interval = 1000;
         if (!timeout) timeout = 10000;
         var full_check = function() {
-          if (checker()) {
-            usdlc2.pass();
-          } else if ((timeout -= interval) > 0) {
-            setTimeout(full_check, interval);
-          } else {
-            usdlc2.fail("Timeout exceeded")
+          if (!checker()) {
+            if ((timeout -= interval) > 0) {
+              setTimeout(full_check, interval);
+            } else {
+              checker(true);
+            }
           }
         };
         full_check();
+      };
+      usdlc2.wait_for = function(checker, interval, timeout) {
+        var pass_checker = function(timed_out) {
+          if (timed_out) return usdlc2.fail("Timeout exceeded");
+          if (checker()) { usdlc.pass(); return true; }
+          return false;
+        }
+        usdlc.on_loaded(pass_checker, interval, timeout);
       };
     }
     usdlc2.url = "ws://"+host+":"+port+
