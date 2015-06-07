@@ -92,7 +92,7 @@ class GWT extends EventEmitter
     process_ext = (ext) =>
       filenames = artifacts[ext]
       delete artifacts[ext] # only once
-      return if not filenames?.length or not (processor = @file_processor[ext])  
+      return if not filenames?.length or not (processor = @file_processor[ext])
       if filenames[filenames.length - 1].indexOf('.gwt.') isnt -1
         filenames.unshift filenames.pop() # put bridge at start
       actions.push [processor, filename] for filename in filenames
@@ -117,7 +117,7 @@ class GWT extends EventEmitter
     return @add_action title if not action # no title
     @add_action ->
       console.log '#2 '+title
-      action.call @     
+      action.call @
   # add an action without the title        
   add_action: (action) ->
     @actions.push ->
