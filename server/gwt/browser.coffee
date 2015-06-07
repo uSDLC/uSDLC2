@@ -12,16 +12,25 @@ module.exports = (ws) ->
   host = gwt.browsers[name]
   ws._events = host._events # event proxy
   host.inject = (func) ->
-    action = -> ws.send "(#{func.toString()}).call(gwt);"
-    setTimeout action, host.start_delay
-    host.start_delay = 0
+    func = "(#{func.toString()}).call(gwt);"
+    if host.start_delay
+      action = ->
+        ws.send host.injection_queue.join('\n')
+        delete host.injection_queue
+      setTimeout action, host.start_delay
+      host.start_delay = 0
+      host.injection_queue = [func]
+    else if host.injection_queue
+      host.injection_queue.push func
+    else
+      ws.send func
   host.test = (data) ->
     gwt.expect /^Passed: /, /^Failed: /
     host.inject data
   host.on 'message', (message) ->
     process.stdout.write message
   host.emit 'open'
-  
+
 # and the following is called by gwt to start the required
 # websocket server, start up the browser and support the
 # instrumentation
@@ -39,7 +48,7 @@ ws_server_ready = wait_for (started) ->
           action = require filename
           action.call(gwt, wss)
       started()
-          
+
 # events are: error(error), close(code, message),
 # message(data, flags:binary), ping(data, flags:binary),
 # pong(data, flags:binary), open()
@@ -80,7 +89,7 @@ module.exports.page = (name, platform) ->
   instance = gwt.browsers[name] ?= new Browser(name)
   instance.platform(platform) if platform
   return instance
-  
+
 module.exports.open = (url, opts={retain:false}) ->
   return @current_page if @current_page?.url is url
   @current_page = module.exports.page('live')
