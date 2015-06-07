@@ -31,12 +31,11 @@ module.exports =
       negate = ''
     else if @count >= 0
       @failures++
-      msg = (++@count)+' '+msg
+      msg = (++@count)+' - '+msg
       @skip.section('fail')
     else
       @skip.all('fail on pre')
     msg += "\n"+msg.stack if msg.stack
-    msg = " - #{msg}" if msg.length
     console.log "\n#{negate}ok #{msg}"
     console.log msg.stack if msg?.stack
     @tests = []
@@ -88,7 +87,10 @@ module.exports =
       return false if x[k] isnt v
     return true
   # call if test is not yet created
-  todo: (msg) -> @fail "# TODO #{msg ? 'under construction'}"
+  todo: (msg) ->
+    console.log "\nnot ok #{++@count} - #{msg}"
+    @failures++
+    @next()
   # call if test is not valid in the current setting
   skip: (msg) -> @pass "# SKIP #{msg}"
   # require a file from the project under test
