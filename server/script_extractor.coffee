@@ -2,10 +2,9 @@
 Sax = require 'sax'; fs = require 'fs'; path = require 'path'
 dirs = require('dirs'); newer = require 'newer'
 npm = require 'npm'; streams = require 'streams'
+require 'common/strings'
 punct =
   /(<.*?>|&nbsp;|&quot;|[\s"'\(\)\*\+\^\$\?\\:;,\/\[\]])+/g
-
-decode = null
 
 module.exports = (options, extraction_complete) ->
   options.runner_file = "gen/usdlc2/#{options.document}.list"
@@ -66,7 +65,7 @@ module.exports = (options, extraction_complete) ->
     code_section = name in ['pre','textarea']
     
     if script_content? and (gwt_span or code_section)
-      content = decode script_content.join '\n'
+      content = script_content.join('\n').unescape()
       script_content = null
       dirs.mkdirs path.dirname(script_name), ->
         fs.appendFile script_name, content+'\n', ->
@@ -77,11 +76,8 @@ module.exports = (options, extraction_complete) ->
 
   sax.on 'finish', extraction_complete
 
-  npm 'ent', (err, ent) ->
-    throw err if err
-    decode = ent.decode
-    dirs.rmdirs "gen/usdlc2", ->
-      streams.pipe fs.createReadStream(input_path), sax, (e) ->
-        return if not e
-        console.log e
-        extraction_complete e
+  dirs.rmdirs "gen/usdlc2", ->
+    streams.pipe fs.createReadStream(input_path), sax, (e) ->
+      return if not e
+      console.log e
+      extraction_complete e
