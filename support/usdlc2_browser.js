@@ -81,23 +81,28 @@
       usdlc2.pass = function(msg) {
         console.log("Passed: "+(msg ? msg : ''));
       };
-      usdlc2.test = function(passed, msg) {
+      usdlc2.test = function(passed, msg_or_timeout, interval) {
+        if (passed instanceof Function) {
+          return usdlc2.wait_for(passed, msg_or_timeout, interval)
+        }
         if (passed) {
           usdlc2.pass();
         } else {
-          usdlc2.fail(msg);
+          usdlc2.fail(msg_or_interval);
         }
       };
       usdlc2.check = function(left, right) {
         usdlc2.test(left == right, left+" isn't "+right);
       };
-      usdlc2.on_loaded = function(checker, interval, timeout) {
+      usdlc2.on_loaded = function(checker, timeout, interval) {
         if (!interval) interval = 200;
         if (!timeout) timeout = 10000;
+        var waiter = 5; // Wait a few ticks the first time
         var full_check = function() {
           if (!checker()) {
             if ((timeout -= interval) > 0) {
-              setTimeout(full_check, interval);
+              setTimeout(full_check, waiter);
+              waiter = interval
             } else {
               checker(true);
             }
@@ -105,13 +110,13 @@
         };
         full_check();
       };
-      usdlc2.wait_for = function(checker, interval, timeout) {
+      usdlc2.wait_for = function(checker, timeout, interval) {
         var pass_checker = function(timed_out) {
           if (timed_out) return usdlc2.fail("Timeout exceeded");
           if (checker()) { usdlc2.pass(); return true; }
           return false;
         }
-        usdlc2.on_loaded(pass_checker, interval, timeout);
+        usdlc2.on_loaded(pass_checker, timeout, interval);
       };
     }
     usdlc2.url = "ws://"+host+":"+port+

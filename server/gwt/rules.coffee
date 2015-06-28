@@ -2,7 +2,7 @@
 
 gwt.instrument_section = (name) -> gwt.once name, ->
   [actions,@actions] = [@actions,[]]
-  re = new RegExp("/#{name.replace(/\W+/g, '.+')}")
+  re = new RegExp("/#{name.replace(/\W+/g, '[^/]+')}")
   scripts = (scr for scr in @all_scripts when re.test scr)
   return fail("no matching section for #{name}") if not scripts.length
   artifacts = @collect_artifacts_from scripts
